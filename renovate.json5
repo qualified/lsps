@@ -1,0 +1,13 @@
+{
+  extends: ["config:base", "schedule:weekend"],
+  ignoreDeps: [
+    // Packages in workspace
+    "@qualified/vscode-jsonrpc-ws",
+    "@qualified/lsp-connection",
+    "@qualified/codemirror-workspace",
+  ],
+  ignorePaths: [
+    // Demos
+    "examples/",
+  ],
+}

@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig-base.json",
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "composite": true,
+    "rootDir": "src",
+    "outDir": "lib/cjs",
+    "tsBuildInfoFile": "lib/cjs/tsconfig.tsbuildinfo"
+  },
+  "include": ["src/**/*"],
+  "references": [
+    { "path": "../vscode-jsonrpc-ws" },
+    { "path": "../lsp-connection" }
+  ]
+}

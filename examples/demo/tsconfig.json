@@ -1,0 +1,11 @@
+{
+  "extends": "../../packages/tsconfig-base.json",
+  "compilerOptions": {
+    "composite": true,
+    "rootDir": "src",
+    "outDir": "public/js",
+    "tsBuildInfoFile": ".tmp/tsconfig.tsbuildinfo"
+  },
+  "include": ["src/**/*"],
+  "references": [{ "path": "../../packages/codemirror-workspace" }]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@qualified/vscode-jsonrpc-ws",
+  "description": "Create VSCode JSON RPC MessageConnection over WebSocket",
+  "keywords": [
+    "vscode-jsonrpc",
+    "websocket"
+  ],
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "lib/cjs/index",
+  "module": "lib/esm/index",
+  "files": [
+    "lib/**/*.js",
+    "lib/**/*.js.map",
+    "lib/**/*.d.ts"
+  ],
+  "dependencies": {
+    "vscode-jsonrpc": "^6.0.0-next.4"
+  },
+  "devDependencies": {
+    "typescript": "^4.0.2"
+  }
+}

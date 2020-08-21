@@ -1,0 +1,24 @@
+{
+  "name": "@qualified/lsp-ws-client",
+  "private": true,
+  "scripts": {
+    "prepare": "pnpm build && pnpm build:esm",
+    "build": "tsc --build packages",
+    "clean": "tsc --build --clean packages",
+    "watch": "tsc --build --watch packages",
+    "build:esm": "tsc --build packages/tsconfig-esm.json",
+    "clean:esm": "tsc --build --clean packages/tsconfig-esm.json",
+    "watch:esm": "tsc --build --watch packages/tsconfig-esm.json"
+  },
+  "devDependencies": {
+    "husky": "^4.2.5",
+    "prettier": "^2.0.5",
+    "pretty-quick": "^3.0.0",
+    "typescript": "^4.0.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "@qualified/lsp-connection",
+  "description": "VSCode JSON RPC MessageConnection wrapper for LSP messages",
+  "keywords": [
+    "LSP",
+    "language-server-protocol",
+    "languageserver",
+    "vscode-jsonrpc"
+  ],
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "lib/cjs/index",
+  "module": "lib/esm/index",
+  "files": [
+    "lib/**/*.js",
+    "lib/**/*.js.map",
+    "lib/**/*.d.ts"
+  ],
+  "dependencies": {
+    "vscode-languageserver-protocol": "^3.16.0-next.6"
+  },
+  "devDependencies": {
+    "typescript": "^4.0.2",
+    "vscode-jsonrpc": "^6.0.0-next.4"
+  }
+}

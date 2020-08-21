@@ -1,0 +1,53 @@
+:root {
+  --color-cm-lsp-error: #e03131;
+  --color-cm-lsp-warning: #fcc419;
+  --color-cm-lsp-information: #74c0fc;
+  --color-cm-lsp-hint: #fd7e14;
+}
+
+/* Gutter */
+.cm-lsp-gutter {
+  width: 10px;
+}
+
+/* Completion item details shown on the right of completion popup. */
+.cm-lsp-completion-item-doc,
+/* Hover Information and Signature Help */
+.cm-lsp-tooltip {
+  background: white;
+  border: 1px solid black;
+}
+
+/* Text Marker styles for Document Highlight */
+.cm-lsp-highlight {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Text Marker styles for Diagnostics */
+.cm-lsp-mark-error {
+  text-decoration: underline wavy var(--color-cm-lsp-error);
+}
+.cm-lsp-mark-warning {
+  text-decoration: underline dashed var(--color-cm-lsp-warning);
+}
+.cm-lsp-mark-information {
+  text-decoration: underline dotted var(--color-cm-lsp-information);
+}
+.cm-lsp-mark-hint {
+  text-decoration: underline dotted var(--color-cm-lsp-hint);
+}
+
+/* Gutter Marker Colors */
+/* TODO We should make marks customizable, not just the color. */
+.cm-lsp-guttermark-error {
+  color: var(--color-cm-lsp-error);
+}
+.cm-lsp-guttermark-warning {
+  color: var(--color-cm-lsp-warning);
+}
+.cm-lsp-guttermark-information {
+  color: var(--color-cm-lsp-information);
+}
+.cm-lsp-guttermark-hint {
+  color: var(--color-cm-lsp-hint);
+}

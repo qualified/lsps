@@ -1,0 +1,8 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./vscode-jsonrpc-ws/tsconfig-esm.json" },
+    { "path": "./lsp-connection/tsconfig-esm.json" },
+    { "path": "./codemirror-workspace/tsconfig-esm.json" }
+  ]
+}
