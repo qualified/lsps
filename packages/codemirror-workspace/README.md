@@ -4,7 +4,7 @@ Provides intelligence to CodeMirror editors.
 
 `Workspace` is an abstraction to allow CodeMirror editors to use Language Servers.
 
-### Example Usage
+## Usage
 
 ```typescript
 import { Workspace } from "@qualified/codemirror-workspace";
@@ -22,3 +22,10 @@ const workspace = new Workspace({
 // `cm` is CodeMirror.Editor instance with contents of the file.
 workspace.openTextDocument("file:///workspace/example.js", cm);
 ```
+
+## Prior Art
+
+- [`lsp-editor-adapter`] by [@wylieconlon]
+
+[`lsp-editor-adapter`]: https://github.com/wylieconlon/lsp-editor-adapter
+[@wylieconlon]: https://github.com/wylieconlon

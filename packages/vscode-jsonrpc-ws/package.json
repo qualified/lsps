@@ -7,6 +7,9 @@
   ],
   "version": "0.1.0",
   "license": "MIT",
+  "homepage": "https://github.com/qualified/lsps#readme",
+  "repository": "https://github.com/qualified/lsps",
+  "bugs": "https://github.com/qualified/lsps/issues",
   "main": "lib/cjs/index",
   "module": "lib/esm/index",
   "files": [

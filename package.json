@@ -1,6 +1,9 @@
 {
-  "name": "@qualified/lsp-ws-client",
+  "name": "@qualified/lsps",
   "private": true,
+  "homepage": "https://github.com/qualified/lsps#readme",
+  "repository": "https://github.com/qualified/lsps",
+  "bugs": "https://github.com/qualified/lsps/issues",
   "scripts": {
     "prepare": "pnpm build && pnpm build:esm",
     "build": "tsc --build packages",
