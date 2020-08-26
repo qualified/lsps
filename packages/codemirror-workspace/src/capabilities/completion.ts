@@ -184,30 +184,38 @@ const lcsScore = (item: string, typed: string): number => {
   // Prefer shorter item if it includes typed word.
   if (item.includes(typed)) return typed.length + 1 / item.length;
 
-  return item.length < typed.length ? lcs(typed, item) : lcs(item, typed);
+  return item.length < typed.length
+    ? lcsLength(typed, item)
+    : lcsLength(item, typed);
 };
 
-// LCS with 2*min(m, n) space
-// x.length >= y.length
-const lcs = (x: string, y: string): number => {
+// Returns LCS length.
+// Uses single array of size min(x.length, y.length) + 1 for look up.
+// Assumes x.length >= y.length > 0.
+//
+// For X = AGCAT, Y = GAC, L changes like the following:
+//
+//      Ø  G  A  C
+//   Ø  0  0  0  0
+//   A  0  0 *1  1
+//   G  0 *1  1  1
+//   C  0  1  1 *2
+//   A  0  1 *2  2
+//   T  0  1  2  2
+//
+// where * denotes a match that incremented the value from previous column/row.
+const lcsLength = (x: string, y: string): number => {
   const m = x.length;
   const n = y.length;
-  const zs = [0];
-  for (let i = 0; i <= n; ++i) zs[i] = 0;
-  const L = [zs, zs.slice()];
-  let b = 0;
-  for (let i = 0; i <= m; ++i) {
-    b = i & 1;
-    for (let j = 0; j <= n; ++j) {
-      if (i === 0 || j === 0) {
-        L[b][j] = 0;
-      } else {
-        L[b][j] =
-          x[i - 1] === y[j - 1]
-            ? L[b ^ 1][j - 1] + 1
-            : Math.max(L[b ^ 1][j], L[b][j - 1]);
-      }
+  const L = [0];
+  for (let i = 1; i <= n; ++i) L[i] = 0;
+  for (let i = 1; i <= m; ++i) {
+    // prev is the value from previous column/row
+    for (let j = 1, prev = L[0]; j <= n; ++j) {
+      const tmp = L[j];
+      L[j] = x[i - 1] === y[j - 1] ? prev + 1 : Math.max(L[j - 1], L[j]);
+      prev = tmp;
     }
   }
-  return L[b][n];
+  return L[n];
 };
