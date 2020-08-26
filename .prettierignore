@@ -1,1 +1,6 @@
 pnpm-*.yaml
+node_modules/
+lib/
+.tmp/
+examples/demo/lib/
+examples/demo/public/js/
