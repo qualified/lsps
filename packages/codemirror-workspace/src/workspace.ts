@@ -198,6 +198,7 @@ export class Workspace {
         ) {
           // TODO Show both completion and signature help
           hideCompletions(cm);
+          removeSignatureHelp(cm);
           // const getActiveSignatureHelp = getActiveSignatureHelp(cm);
           conn
             .getSignatureHelp({
