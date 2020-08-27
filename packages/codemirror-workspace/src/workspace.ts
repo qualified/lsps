@@ -144,13 +144,7 @@ export class Workspace {
       changeStream(([cm, change]) => {
         const pos = cm.getCursor();
         const token = cm.getTokenAt(pos);
-        // console.log(token);
-        if (
-          token.type === "variable" ||
-          token.type === "property" ||
-          /^\w+$/.test(token.string)
-        ) {
-          const wordRange = cm.findWordAt(pos);
+        if (token.type && /\b(?:variable|property|type)\b/.test(token.type)) {
           // TODO Show both completion and signature help
           removeSignatureHelp(cm);
           conn
@@ -164,7 +158,10 @@ export class Workspace {
               if (!items) return;
               // CompletionList to CompletionItem[]
               if (!Array.isArray(items)) items = items.items;
-              showInvokedCompletions(cm, items, wordRange);
+              showInvokedCompletions(cm, items, [
+                { line: pos.line, ch: token.start },
+                { line: pos.line, ch: token.end },
+              ]);
             });
           return;
         }

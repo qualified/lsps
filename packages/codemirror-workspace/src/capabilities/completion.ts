@@ -19,24 +19,24 @@ import {
  * Show completion triggered by typing an identifier or manual invocation.
  * @param editor
  * @param items - Completion items from the server.
- * @param wordRange - Range describing the span of the typed identifier.
+ * @param tokenRange - Range describing the span of the typed identifier.
  */
 export const showInvokedCompletions = (
   editor: Editor,
   items: CompletionItem[],
-  wordRange: Range
+  [tokenFrom, tokenTo]: [Position, Position]
 ) => {
   items = excludeSnippets(items);
   if (items.length === 0) return;
 
-  const typed = editor.getRange(wordRange.from(), wordRange.to());
+  const typed = editor.getRange(tokenFrom, tokenTo);
   const filtered = filteredItems(items, typed, 30);
   editor.showHint({
     completeSingle: false,
     hint: () =>
       withItemTooltip({
-        from: wordRange.from(),
-        to: wordRange.to(),
+        from: tokenFrom,
+        to: tokenTo,
         // To handle more complex completions, we can provide `hint` function
         // to apply the completion ourselves as well.
         list: filtered.map((item) => {
