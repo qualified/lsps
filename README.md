@@ -13,6 +13,8 @@ Monorepo of packages related to [LSP][lsp].
 
 ## Demo
 
+![demo](./docs/img/demo.gif)
+
 See [examples/demo](./examples/demo).
 
 ## Tools
