@@ -257,32 +257,38 @@ export class Workspace {
     // Show hover information on mouseover
     const mouseoverStream = piped(
       fromDomEvent<MouseEvent>(editor.getWrapperElement(), "mouseover"),
-      debounceTime(200),
+      debounceTime(100),
       map((ev) => editor.coordsChar({ left: ev.clientX, top: ev.clientY })),
       // Ignore same position
-      skipDuplicates((p1, p2) => p1.line === p2.line && p1.ch === p2.ch),
-      filter((pos) => {
+      skipDuplicates((p1, p2) => {
+        if (p1.line !== p2.line) return false;
+        if (p1.ch === p2.ch) return true;
+
+        const t1 = editor.getTokenAt(p1);
+        const t2 = editor.getTokenAt(p2);
+        return (
+          t1.string === t2.string && t1.start === t2.start && t1.end === t2.end
+        );
+      })
+    );
+    disposers.push(
+      mouseoverStream((pos) => {
+        removeHoverInfo(editor);
         const token = editor.getTokenAt(pos);
         if (
           token.type === "comment" ||
           token.string.length === 0 ||
           token.type === null
         ) {
-          removeHoverInfo(editor);
-          return false;
+          return;
         }
-        return true;
-      })
-    );
-    disposers.push(
-      mouseoverStream((pos) => {
+
         conn
           .getHoverInfo({
             textDocument: { uri },
             position: lspPosition(pos),
           })
           .then((hover) => {
-            removeHoverInfo(editor);
             if (hover) {
               removeSignatureHelp(editor);
               showHoverInfo(editor, pos, hover);
