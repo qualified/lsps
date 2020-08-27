@@ -7,6 +7,9 @@ import "codemirror/theme/idea.css";
 // ShowHint addon is required for completion capability.
 import "codemirror/addon/hint/show-hint.css";
 import "codemirror/addon/hint/show-hint";
+import "codemirror/addon/edit/matchbrackets";
+import "codemirror/addon/edit/closebrackets";
+// import "codemirror/keymap/vim";
 
 import { Workspace } from "@qualified/codemirror-workspace";
 import "@qualified/codemirror-workspace/css/default.css";
@@ -22,36 +25,37 @@ const $ = (sel: string) => {
   return el as HTMLElement;
 };
 
-const tsEditor1 = CodeMirror($("#ts-editor-1"), {
+const config: CodeMirror.EditorConfiguration = {
   theme: "idea",
-  lineNumbers: true,
-  mode: "text/typescript",
-  value: addTs,
+  // keyMap: "vim",
   gutters: ["cm-lsp-gutter"],
+  lineNumbers: true,
+  matchBrackets: true,
+  autoCloseBrackets: true,
+};
+
+const tsEditor1 = CodeMirror($("#ts-editor-1"), {
+  ...config,
+  mode: "text/typescript",
+  value: sampleTs,
 });
 
 const tsEditor2 = CodeMirror($("#ts-editor-2"), {
-  theme: "idea",
-  lineNumbers: true,
+  ...config,
   mode: "text/typescript",
-  value: sampleTs,
-  gutters: ["cm-lsp-gutter"],
+  value: addTs,
 });
 
 const htmlEditor = CodeMirror($("#html-editor"), {
-  theme: "idea",
-  lineNumbers: true,
-  mode: "htmlmixed",
+  ...config,
+  mode: "text/html",
   value: sampleHtml,
-  gutters: ["cm-lsp-gutter"],
 });
 
 const cssEditor = CodeMirror($("#css-editor"), {
-  theme: "idea",
-  lineNumbers: true,
-  mode: "css",
+  ...config,
+  mode: "text/css",
   value: sampleCss,
-  gutters: ["cm-lsp-gutter"],
 });
 
 const rootUri = ROOT_URI;
