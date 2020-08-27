@@ -38,10 +38,7 @@ export const showDiagnostics = (editor: Editor, diagnostics: Diagnostic[]) => {
     // const code = d.code;
     // const source = d.source;
     state.marks.push(
-      editor.markText(start, end, {
-        title: d.message,
-        className: `cm-lsp-mark-${severity}`,
-      })
+      editor.markText(start, end, { className: `cm-lsp-mark-${severity}` })
     );
 
     // TODO Improve appearance
