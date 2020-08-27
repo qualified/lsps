@@ -2,9 +2,11 @@
 
 import type { Editor, Position, Range, Hint, Hints } from "codemirror";
 import type { CompletionItem } from "vscode-languageserver-protocol";
+import { TextEdit, InsertTextFormat } from "vscode-languageserver-protocol";
 import CodeMirror from "codemirror";
 
 import {
+  cmRange,
   documentationToString,
   completionItemKindToString,
 } from "../utils/conversions";
@@ -32,13 +34,31 @@ export const showInvokedCompletions = (
         to: wordRange.to(),
         // To handle more complex completions, we can provide `hint` function
         // to apply the completion ourselves as well.
-        list: filtered.map((item) => ({
-          // TODO Add from/to here to handle some edge cases.
-          text: item.label,
-          displayText: item.label,
-          render: itemRenderer(item),
-          data: getItemData(item),
-        })),
+        list: filtered.map((item) => {
+          // TODO Support InsertTextFormat.Snippet
+          if (item.textEdit) {
+            const edit = item.textEdit;
+            const [from, to] = cmRange(
+              TextEdit.is(edit) ? edit.range : edit.replace
+            );
+            return {
+              text: edit.newText,
+              displayText: item.label,
+              from,
+              to,
+              render: itemRenderer(item),
+              data: getItemData(item),
+            };
+          }
+
+          return {
+            // TODO Add from/to here to handle some edge cases.
+            text: item.insertText || item.label,
+            displayText: item.label,
+            render: itemRenderer(item),
+            data: getItemData(item),
+          };
+        }),
       }),
   });
 };
@@ -165,6 +185,14 @@ const filteredItems = (
   typed: string,
   maxItems: number = 30
 ) => {
+  items = items.filter((item) => {
+    // Snippet is not supported yet
+    if (item.insertTextFormat === InsertTextFormat.Snippet) {
+      return false;
+    }
+    return true;
+  });
+
   const scores = items.reduce((o, item) => {
     o[item.label] = lcsScore(item.filterText || item.label, typed);
     // Boost the score if preselect

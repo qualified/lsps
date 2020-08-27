@@ -145,7 +145,11 @@ export class Workspace {
         const pos = cm.getCursor();
         const token = cm.getTokenAt(pos);
         // console.log(token);
-        if (token.type === "variable" || token.type === "property") {
+        if (
+          token.type === "variable" ||
+          token.type === "property" ||
+          /^\w+$/.test(token.string)
+        ) {
           const wordRange = cm.findWordAt(pos);
           // TODO Show both completion and signature help
           removeSignatureHelp(cm);
@@ -366,9 +370,12 @@ export class Workspace {
             dynamicRegistration: true,
             completionItem: {
               // TODO Support snippet (completion with placeholders).
-              // Required for some LS (like CSS/HTML) to provide completion.
-              // Should be possible by providing `hint` method in completion object.
-              snippetSupport: false,
+              //      Should be possible by providing `hint` method in completion object.
+              // Enabling even though we don't support snippet yet because some LS requires this capability
+              // to provide completions that uses `textEdit`.
+              // Any completion items with `insertTextFormat` of Snippet are currently ignored.
+              snippetSupport: true,
+              insertReplaceSupport: true,
               // TODO Look into this. Commit character accepts the completion and then get inserted.
               commitCharactersSupport: false,
               // TODO Markdown is currently shown as is. Move "markdown" to first once we fully support it.
