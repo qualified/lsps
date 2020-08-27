@@ -3,6 +3,16 @@ import type { Diagnostic } from "vscode-languageserver-protocol";
 
 import { cmRange, diagnosticSeverityName } from "../utils/conversions";
 
+// TODO Group diagnostic by start line (and maybe separate if end is on different line)
+//      - Gutter marker should use the most significant severity (lowest severity number)
+// TODO Find a way to show the diagnostic messages, some ideas:
+//      - On "gutterClick", toggle line widgets of diagnotics on that line
+//      - On hover over TextMarker, show tooptip under the marker with messages.
+//        1. Get mouse coordinates from event listener on the wrapper element.
+//        2. pos = editor.coordsChar({ left: ev.clientX, top: ev.clientY });
+//        3. markers = editor.findMarksAt(pos);
+//
+
 const GUTTER_ID = "cm-lsp-gutter";
 const states = new WeakMap<Editor, LspDiagnosticsState>();
 
