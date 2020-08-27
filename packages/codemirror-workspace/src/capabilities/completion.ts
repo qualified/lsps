@@ -228,8 +228,10 @@ const filteredItems = (
 // Similarity score between strings based on the length of the longest common subsequence.
 const lcsScore = (item: string, typed: string): number => {
   if (item.length === 0 || typed.length === 0) return 0;
-  // Prefer shorter item if it includes typed word.
-  if (item.includes(typed)) return typed.length + 1 / item.length;
+  // Prefer shorter item if it includes typed word. Boost if it starts with it.
+  if (item.includes(typed)) {
+    return typed.length + 1 / item.length + (item.startsWith(typed) ? 1 : 0);
+  }
 
   return item.length < typed.length
     ? lcsLength(typed, item)
