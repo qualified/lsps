@@ -26,6 +26,7 @@ export const showInvokedCompletions = (
   items: CompletionItem[],
   wordRange: Range
 ) => {
+  items = excludeSnippets(items);
   if (items.length === 0) return;
 
   const typed = editor.getRange(wordRange.from(), wordRange.to());
@@ -79,6 +80,7 @@ export const showTriggeredCompletions = (
   items: CompletionItem[],
   cursorPosition: Position
 ) => {
+  items = excludeSnippets(items);
   if (items.length === 0) return;
 
   editor.showHint({
@@ -195,19 +197,15 @@ const itemRenderer = (item: CompletionItem) => (el: HTMLElement) => {
   el.append(custom);
 };
 
+// Snippet is not supported yet
+const excludeSnippets = (items: CompletionItem[]) =>
+  items.filter((x) => x.insertTextFormat !== InsertTextFormat.Snippet);
+
 const filteredItems = (
   items: CompletionItem[],
   typed: string,
   maxItems: number = 30
 ) => {
-  items = items.filter((item) => {
-    // Snippet is not supported yet
-    if (item.insertTextFormat === InsertTextFormat.Snippet) {
-      return false;
-    }
-    return true;
-  });
-
   const scores = items.reduce((o, item) => {
     o[item.label] = lcsScore(item.filterText || item.label, typed);
     // Boost the score if preselect
