@@ -2,7 +2,11 @@
 
 import type { Editor, Position, Range, Hint, Hints } from "codemirror";
 import type { CompletionItem } from "vscode-languageserver-protocol";
-import { TextEdit, InsertTextFormat } from "vscode-languageserver-protocol";
+import {
+  CompletionItemKind,
+  TextEdit,
+  InsertTextFormat,
+} from "vscode-languageserver-protocol";
 import CodeMirror from "codemirror";
 
 import {
@@ -170,11 +174,22 @@ const itemRenderer = (item: CompletionItem) => (el: HTMLElement) => {
   // TODO Use meaningful icons for each kind
   // TODO Show matching characters in different color?
   const hue = Math.floor(((item.kind || 0) / 30) * 180 + 180);
+  let color = `hsl(${hue}, 75%, 50%)`;
+  // If completing a color, show the color.
+  // TODO This is just an example and only handles 6 digit hex.
+  if (item.kind === CompletionItemKind.Color) {
+    const doc = documentationToString(item.documentation);
+    if (doc) {
+      const hex = doc.match(/#[\da-f]{6}/i);
+      if (hex) color = hex[0];
+    }
+  }
+
   const custom = document.createElement("div");
   custom.style.display = "flex";
   custom.style.alignItems = "center";
   custom.innerHTML = [
-    `<span style="color: hsl(${hue}, 75%, 50%); font-size: 8px;">⬤</span>`,
+    `<span style="color: ${color}; font-size: 8px;">⬤</span>`,
     `<span style="margin-left: 4px">${item.label}</span>`,
   ].join("\n");
   el.append(custom);
