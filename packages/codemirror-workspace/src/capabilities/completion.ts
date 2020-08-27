@@ -197,9 +197,15 @@ const itemRenderer = (item: CompletionItem) => (el: HTMLElement) => {
   el.append(custom);
 };
 
-// Snippet is not supported yet
+// Exclude snippet item because it's not supported yet.
+// Allow items that can be inserted as plaintext because
+// TypeScript server seems return items that can be inserted as plaintext as snippet.
 const excludeSnippets = (items: CompletionItem[]) =>
-  items.filter((x) => x.insertTextFormat !== InsertTextFormat.Snippet);
+  items.filter(
+    (x) =>
+      x.insertTextFormat !== InsertTextFormat.Snippet ||
+      !(x.insertText || x.label).includes("$")
+  );
 
 const filteredItems = (
   items: CompletionItem[],
