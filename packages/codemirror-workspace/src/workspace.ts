@@ -31,7 +31,7 @@ import {
   skipDuplicates,
   Disposer,
   debouncedBuffer,
-} from "./utils/events";
+} from "./utils/event-stream";
 import { lspPosition, lspChange } from "./utils/conversions";
 
 export interface WorkspaceOptions {
