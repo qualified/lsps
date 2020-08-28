@@ -1,4 +1,4 @@
-import type { Position as CMPosition } from "codemirror";
+import type { Position as CMPosition, EditorChange } from "codemirror";
 import type {
   Position,
   Range,
@@ -6,6 +6,7 @@ import type {
   DiagnosticTag,
   MarkupContent,
   CompletionItemKind,
+  TextDocumentContentChangeEvent,
 } from "vscode-languageserver-protocol";
 
 export const lspPosition = ({ line, ch }: CMPosition): Position => ({
@@ -16,6 +17,13 @@ export const lspPosition = ({ line, ch }: CMPosition): Position => ({
 export const lspRange = (start: CMPosition, end: CMPosition): Range => ({
   start: lspPosition(start),
   end: lspPosition(end),
+});
+
+export const lspChange = (
+  change: EditorChange
+): TextDocumentContentChangeEvent => ({
+  range: lspRange(change.from, change.to),
+  text: change.text.join("\n"),
 });
 
 export const cmPosition = ({ line, character }: Position): CMPosition => ({

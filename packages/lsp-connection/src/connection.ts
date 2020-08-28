@@ -42,6 +42,7 @@ import {
   ShowMessageNotification,
   ShutdownRequest,
   SignatureHelpRequest,
+  TextDocumentSyncKind,
   TypeDefinitionRequest,
   UnregistrationRequest,
   WorkspaceSymbolRequest,
@@ -159,8 +160,6 @@ export const createLspConnection = (conn: MessageConnection) => {
      */
     configurationChanged: notifier(DidChangeConfigurationNotification.type),
 
-    // TODO capabilities.textDocumentSync
-
     /** If supported, request completion at a given text document position. */
     getCompletion: maybeReq(
       () => !!capabilities.completionProvider,
@@ -262,6 +261,14 @@ export const createLspConnection = (conn: MessageConnection) => {
       WorkspaceSymbolRequest.type
     ),
 
+    get syncsIncrementally() {
+      let syncCapability =
+        capabilities.textDocumentSync ?? TextDocumentSyncKind.None;
+      if (typeof syncCapability !== "number") {
+        syncCapability = syncCapability.change ?? TextDocumentSyncKind.None;
+      }
+      return syncCapability === TextDocumentSyncKind.Incremental;
+    },
     get completionTriggers() {
       return capabilities.completionProvider?.triggerCharacters || [];
     },

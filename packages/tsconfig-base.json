@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2017",
+    "lib": ["es2020", "dom", "dom.iterable"],
     "module": "commonjs",
     "strict": true,
     "composite": true,

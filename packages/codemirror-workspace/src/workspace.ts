@@ -29,10 +29,10 @@ import {
   map,
   piped,
   skipDuplicates,
-  tap,
   Disposer,
+  debouncedBuffer,
 } from "./utils/events";
-import { lspPosition } from "./utils/conversions";
+import { lspPosition, lspChange } from "./utils/conversions";
 
 export interface WorkspaceOptions {
   /**
@@ -112,20 +112,24 @@ export class Workspace {
 
     const disposers: Disposer[] = [];
     const changeStream = piped(
-      fromEditorEvent<[Editor, EditorChange]>(editor, "change"),
-      debounceTime(50),
-      tap(([cm]) => {
+      fromEditorEvent<[Editor, EditorChange[]]>(editor, "changes"),
+      debouncedBuffer(50),
+      map((buffered) => {
+        const cm = buffered[0][0];
+        // Send incremental contentChanges
         conn.textDocumentChanged({
           textDocument: {
             uri,
             version: ++this.documentVersions[uri],
           },
-          contentChanges: [
-            {
-              text: cm.getValue(),
-            },
-          ],
+          contentChanges: conn.syncsIncrementally
+            ? buffered.flatMap(([_, cs]) => cs.map(lspChange))
+            : [{ text: cm.getValue() }],
         });
+
+        // Only pass the editor and the last change object.
+        const lastChanges = buffered[buffered.length - 1][1];
+        return [cm, lastChanges[lastChanges.length - 1]] as const;
       }),
       filter(([cm, change]) => {
         // Text removed

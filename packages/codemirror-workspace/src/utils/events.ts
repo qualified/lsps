@@ -96,6 +96,26 @@ export const debounceTime = <T>(ms: number) => (
   };
 };
 
+export const debouncedBuffer = <T>(ms: number) => (
+  stream: Stream<T>
+): Stream<T[]> => {
+  return (cb) => {
+    let timeout: ReturnType<typeof setTimeout> | null = null;
+    const buffer: T[] = [];
+    return stream((x) => {
+      if (timeout !== null) {
+        clearTimeout(timeout);
+        timeout = null;
+      }
+      buffer.push(x);
+      timeout = setTimeout(() => {
+        cb(buffer.slice());
+        buffer.length = 0;
+      }, ms);
+    });
+  };
+};
+
 export const filter = <T>(test: (x: T) => boolean) => (
   stream: Stream<T>
 ): Stream<T> => {
