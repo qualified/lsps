@@ -25,13 +25,13 @@ import {
   debounceTime,
   filter,
   fromDomEvent,
-  fromEditorEvent,
   map,
   piped,
   skipDuplicates,
   Disposer,
   debouncedBuffer,
 } from "./utils/event-stream";
+import { fromEditorEvent } from "./events";
 import { lspPosition, lspChange } from "./utils/conversions";
 
 export interface WorkspaceOptions {
@@ -112,7 +112,7 @@ export class Workspace {
 
     const disposers: Disposer[] = [];
     const changeStream = piped(
-      fromEditorEvent<[Editor, EditorChange[]]>(editor, "changes"),
+      fromEditorEvent(editor, "changes"),
       debouncedBuffer(50),
       map((buffered) => {
         const cm = buffered[0][0];
@@ -230,9 +230,9 @@ export class Workspace {
       })
     );
 
-    // Highlights identifiers matching thw word under cursor
+    // Highlights identifiers matching the word under cursor
     const cursorActivityStream = piped(
-      fromEditorEvent<[Editor]>(editor, "cursorActivity"),
+      fromEditorEvent(editor, "cursorActivity"),
       debounceTime(100),
       map(([cm]) => [cm, cm.getCursor()] as const),
       filter(([cm, pos]) => {
@@ -260,7 +260,7 @@ export class Workspace {
 
     // Show hover information on mouseover
     const mouseoverStream = piped(
-      fromDomEvent<MouseEvent>(editor.getWrapperElement(), "mouseover"),
+      fromDomEvent(editor.getWrapperElement(), "mouseover"),
       debounceTime(100),
       map((ev) => editor.coordsChar({ left: ev.clientX, top: ev.clientY })),
       // Ignore same position

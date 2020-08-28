@@ -6,40 +6,26 @@ export type Subscriber<T> = (x: T) => void;
 export type Disposer = () => void;
 export type Stream<T> = (cb: Subscriber<T>) => Disposer;
 
-export interface EventTargetAddRemove<T> {
-  addEventListener(type: string, listener: (x: T) => void): void;
-  removeEventListener(type: string, listener?: (x: T) => void): void;
-}
-
-export interface EventTargetOnOff<T extends unknown[]> {
-  on(type: string, handler: (...args: T) => void): void;
-  off(type: string, handler: (...args: T) => void): void;
+export interface DomEventTarget<K extends keyof HTMLElementEventMap> {
+  addEventListener(
+    type: string,
+    listener: (x: HTMLElementEventMap[K]) => void
+  ): void;
+  removeEventListener(
+    type: string,
+    listener?: (x: HTMLElementEventMap[K]) => void
+  ): void;
 }
 
 // Creating Streams
-export const fromDomEvent = <T>(
-  target: EventTargetAddRemove<T>,
-  type: string
-): Stream<T> => {
+export const fromDomEvent = <K extends keyof HTMLElementEventMap>(
+  target: DomEventTarget<K>,
+  type: K
+): Stream<HTMLElementEventMap[K]> => {
   return (cb) => {
     target.addEventListener(type, cb);
     return () => {
       target.removeEventListener(type, cb);
-    };
-  };
-};
-
-export const fromEditorEvent = <T extends unknown[]>(
-  target: EventTargetOnOff<T>,
-  type: string
-): Stream<T> => {
-  return (cb) => {
-    const untupled = (...args: T) => {
-      cb(args);
-    };
-    target.on(type, untupled);
-    return () => {
-      target.off(type, untupled);
     };
   };
 };
