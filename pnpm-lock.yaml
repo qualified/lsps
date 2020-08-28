@@ -2,12 +2,12 @@ importers:
   .:
     devDependencies:
       husky: 4.2.5
-      prettier: 2.0.5
-      pretty-quick: 3.0.0_prettier@2.0.5
+      prettier: 2.1.1
+      pretty-quick: 3.0.0_prettier@2.1.1
       typescript: 4.0.2
     specifiers:
       husky: ^4.2.5
-      prettier: ^2.0.5
+      prettier: ^2.1.1
       pretty-quick: ^3.0.0
       typescript: ^4.0.2
   examples/demo:
@@ -3161,14 +3161,14 @@ packages:
       node: '>=6.0.0'
     resolution:
       integrity: sha512-03eXong5NLnNCD05xscnGKGDZ98CyzoqPSMjOe6SuoQY7Z2hIj0Ld1g/O/UQRuOle2aRtiIRDg9tDcTGAkLfKw==
-  /prettier/2.0.5:
+  /prettier/2.1.1:
     dev: true
     engines:
       node: '>=10.13.0'
     hasBin: true
     resolution:
-      integrity: sha512-7PtVymN48hGcO4fGjybyBSIWDsLU4H4XlvOHfq91pz9kkGlonzwTfYkaIEwiRg/dAJF9YlbsduBAgtYLi+8cFg==
-  /pretty-quick/3.0.0_prettier@2.0.5:
+      integrity: sha512-9bY+5ZWCfqj3ghYBLxApy2zf6m+NJo5GzmLTpr9FsApsfjriNnS2dahWReHMi7qNPhhHl9SYHJs2cHZLgexNIw==
+  /pretty-quick/3.0.0_prettier@2.1.1:
     dependencies:
       chalk: 3.0.0
       execa: 4.0.3
@@ -3176,7 +3176,7 @@ packages:
       ignore: 5.1.8
       mri: 1.1.6
       multimatch: 4.0.0
-      prettier: 2.0.5
+      prettier: 2.1.1
     dev: true
     engines:
       node: '>=10.13'
