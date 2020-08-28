@@ -156,6 +156,7 @@ export class Workspace {
         if (token.type && /\b(?:variable|property|type)\b/.test(token.type)) {
           // TODO Show both completion and signature help
           removeSignatureHelp(cm);
+          if (token.string.length < 3) return;
           conn
             .getCompletion({
               textDocument: { uri },
