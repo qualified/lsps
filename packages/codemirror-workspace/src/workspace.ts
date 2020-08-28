@@ -22,7 +22,7 @@ import {
   removeSignatureHelp,
 } from "./capabilities";
 import {
-  debounceTime,
+  debounce,
   filter,
   fromDomEvent,
   map,
@@ -239,7 +239,7 @@ export class Workspace {
     // Highlights identifiers matching the word under cursor
     const cursorActivityStream = piped(
       fromEditorEvent(editor, "cursorActivity"),
-      debounceTime(100),
+      debounce(100),
       map(([cm]) => [cm, cm.getCursor()] as const),
       filter(([cm, pos]) => {
         const token = cm.getTokenAt(pos);
@@ -267,7 +267,7 @@ export class Workspace {
     // Show hover information on mouseover
     const mouseoverStream = piped(
       fromDomEvent(editor.getWrapperElement(), "mouseover"),
-      debounceTime(100),
+      debounce(100),
       map((ev) => editor.coordsChar({ left: ev.clientX, top: ev.clientY })),
       // Ignore same position
       skipDuplicates((p1, p2) => {

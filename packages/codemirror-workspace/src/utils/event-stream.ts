@@ -67,9 +67,7 @@ export const skipDuplicates = <T>(
   };
 };
 
-export const debounceTime = <T>(ms: number) => (
-  stream: Stream<T>
-): Stream<T> => {
+export const debounce = <T>(ms: number) => (stream: Stream<T>): Stream<T> => {
   return (cb) => {
     let timeout: ReturnType<typeof setTimeout> | null = null;
     return stream((x) => {
