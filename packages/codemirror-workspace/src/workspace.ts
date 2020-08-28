@@ -110,6 +110,11 @@ export class Workspace {
       },
     });
 
+    this.addEventHandlers(uri, editor, conn);
+  }
+
+  // TODO Clean up. Workspace should signal custom events for providers to react
+  private addEventHandlers(uri: string, editor: Editor, conn: LspConnection) {
     const disposers: Disposer[] = [];
     const changeStream = piped(
       fromEditorEvent(editor, "changes"),
@@ -319,6 +324,13 @@ export class Workspace {
     const conn = this.connections[languageId];
     if (!conn) return;
 
+    this.removeEventHandlers(editor);
+    conn.textDocumentClosed({
+      textDocument: { uri },
+    });
+  }
+
+  private removeEventHandlers(editor: Editor) {
     const disposers = this.editorStreamDisposers.get(editor);
     if (disposers) {
       for (const dispose of disposers) dispose();
@@ -331,10 +343,6 @@ export class Workspace {
     removeHighlights(editor);
     hideCompletions(editor);
     removeSignatureHelp(editor);
-
-    conn.textDocumentClosed({
-      textDocument: { uri },
-    });
   }
 
   /**
