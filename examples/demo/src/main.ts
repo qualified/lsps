@@ -34,13 +34,13 @@ const config: CodeMirror.EditorConfiguration = {
   autoCloseBrackets: true,
 };
 
-const tsEditor1 = CodeMirror($("#ts-editor-1"), {
+const tsEditorSource = CodeMirror($("#ts-editor-1"), {
   ...config,
   mode: "text/typescript",
   value: sampleTs,
 });
 
-const tsEditor2 = CodeMirror($("#ts-editor-2"), {
+const tsEditorAdd = CodeMirror($("#ts-editor-2"), {
   ...config,
   mode: "text/typescript",
   value: addTs,
@@ -76,10 +76,10 @@ const workspace = new Workspace({
   },
 });
 
-workspace.openTextDocument(rootUri + "/add.ts", tsEditor1).then(() => {
+workspace.openTextDocument(rootUri + "/add.ts", tsEditorAdd).then(() => {
   // This is necessary to ensure that workspace doesn't try to make more than one connection per file type.
   // Workspace might provide convenience method to open multiple files safely in the future.
-  workspace.openTextDocument(rootUri + "/source.ts", tsEditor2);
+  workspace.openTextDocument(rootUri + "/source.ts", tsEditorSource);
 });
 // No need to wait if using different language servers.
 workspace.openTextDocument(rootUri + "/project.html", htmlEditor);
