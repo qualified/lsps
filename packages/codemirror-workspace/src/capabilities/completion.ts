@@ -232,9 +232,16 @@ const lcsScore = (item: string, typed: string): number => {
     return typed.length + 1 / item.length + (item.startsWith(typed) ? 1 : 0);
   }
 
-  return item.length < typed.length
-    ? lcsLength(typed, item)
-    : lcsLength(item, typed);
+  const lcs =
+    item.length < typed.length
+      ? lcsLength(typed, item)
+      : lcsLength(item, typed);
+  // Boost if the first character matches.
+  if (item[0].toLowerCase() === typed[0].toLowerCase()) {
+    // Another boost if matching case.
+    return lcs + 1 + (item[0] === typed[0] ? 1 : 0);
+  }
+  return lcs;
 };
 
 // Returns LCS length.
