@@ -66,6 +66,11 @@ export interface WorkspaceOptions {
   // showMessage?: (message: string, level: "error" | "warning" | "info" | "log") => void;
   // Called on logMeessage notification
   // logMessage?: (message: string, level: "error" | "warning" | "info" | "log") => void;
+  /**
+   * Function to render Markdown to HTML string.
+   * If not provided and the server's response contains Markdown, it'll be displayed as is.
+   */
+  renderMarkdown?: (this: void, markdown: string) => string;
 }
 
 // Manages communications with the Language Server.
@@ -85,6 +90,9 @@ export class Workspace {
   private getLanguageAssociation: (
     uri: string
   ) => LanguageAssociation | null | undefined;
+  // Function to get convert Markdown to HTML string.
+  private renderMarkdown: (markdown: string) => string;
+  private canHandleMarkdown: boolean;
   // The URI of the project root.
   private rootUri: string;
 
@@ -100,6 +108,9 @@ export class Workspace {
     this.rootUri = options.rootUri;
     this.getServerUri = options.getServerUri.bind(void 0);
     this.getLanguageAssociation = options.getLanguageAssociation.bind(void 0);
+    this.canHandleMarkdown = typeof options.renderMarkdown === "function";
+    const renderMarkdown = options.renderMarkdown || ((x: string) => x);
+    this.renderMarkdown = renderMarkdown.bind(void 0);
   }
 
   /**
@@ -196,10 +207,15 @@ export class Workspace {
               if (!items) return;
               // CompletionList to CompletionItem[]
               if (!Array.isArray(items)) items = items.items;
-              showInvokedCompletions(cm, items, [
-                { line: pos.line, ch: token.start },
-                { line: pos.line, ch: token.end },
-              ]);
+              showInvokedCompletions(
+                cm,
+                items,
+                [
+                  { line: pos.line, ch: token.start },
+                  { line: pos.line, ch: token.end },
+                ],
+                this.renderMarkdown
+              );
             });
           return;
         }
@@ -224,7 +240,7 @@ export class Workspace {
               if (!items) return;
               // CompletionList to CompletionItem[]
               if (!Array.isArray(items)) items = items.items;
-              showTriggeredCompletions(cm, items, pos);
+              showTriggeredCompletions(cm, items, pos, this.renderMarkdown);
             });
           return;
         }
@@ -253,7 +269,7 @@ export class Workspace {
             })
             .then((help) => {
               if (!help || help.signatures.length === 0) return;
-              showSignatureHelp(cm, help, pos);
+              showSignatureHelp(cm, help, pos, this.renderMarkdown);
             });
 
           return;
@@ -329,7 +345,7 @@ export class Workspace {
           .then((hover) => {
             if (hover) {
               removeSignatureHelp(editor);
-              showHoverInfo(editor, pos, hover);
+              showHoverInfo(editor, pos, hover, this.renderMarkdown);
             }
           });
       })
@@ -421,8 +437,9 @@ export class Workspace {
               insertReplaceSupport: true,
               // TODO Look into this. Commit character accepts the completion and then get inserted.
               commitCharactersSupport: false,
-              // TODO Markdown is currently shown as is. Move "markdown" to first once we fully support it.
-              documentationFormat: ["plaintext", "markdown"],
+              documentationFormat: this.canHandleMarkdown
+                ? ["markdown", "plaintext"]
+                : ["plaintext"],
               deprecatedSupport: true,
               preselectSupport: true,
             },
@@ -430,14 +447,16 @@ export class Workspace {
           },
           hover: {
             dynamicRegistration: true,
-            // TODO Markdown is currently shown as is. Move "markdown" to first once we fully support it.
-            contentFormat: ["plaintext", "markdown"],
+            contentFormat: this.canHandleMarkdown
+              ? ["markdown", "plaintext"]
+              : ["plaintext"],
           },
           signatureHelp: {
             dynamicRegistration: true,
             signatureInformation: {
-              // TODO Markdown is currently shown as is. Move "markdown" to first once we fully support it.
-              documentationFormat: ["plaintext", "markdown"],
+              documentationFormat: this.canHandleMarkdown
+                ? ["markdown", "plaintext"]
+                : ["plaintext"],
               parameterInformation: {
                 labelOffsetSupport: true,
               },

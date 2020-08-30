@@ -1,9 +1,8 @@
 import type { Editor, Position, TextMarker } from "codemirror";
 import type { Hover } from "vscode-languageserver-protocol";
-import { MarkupContent, MarkedString } from "vscode-languageserver-protocol";
 
 import { addTooltip } from "../utils/tooltip";
-import { cmRange } from "../utils/conversions";
+import { cmRange, hoverContentsToString } from "../utils/conversions";
 
 const states = new WeakMap<Editor, LspHoverState>();
 
@@ -18,10 +17,15 @@ interface LspHoverState {
  * @param pos Position of the event
  * @param hover
  */
-export const showHoverInfo = (editor: Editor, pos: Position, hover: Hover) => {
+export const showHoverInfo = (
+  editor: Editor,
+  pos: Position,
+  hover: Hover,
+  renderMarkdown: (x: string) => string = (x) => x
+) => {
   removeHoverInfo(editor);
   if (Array.isArray(hover.contents) && hover.contents.length === 0) return;
-  const info = hoverContentsToString(hover.contents);
+  const info = hoverContentsToString(hover.contents, renderMarkdown);
   if (!info) return;
 
   const state = states.get(editor) || {};
@@ -35,7 +39,7 @@ export const showHoverInfo = (editor: Editor, pos: Position, hover: Hover) => {
   }
 
   const el = document.createElement("div");
-  el.innerText = info;
+  el.innerHTML = info;
   const coords = editor.charCoords(start, "page");
   state.tooltip = addTooltip(el, coords.left, coords.top);
   states.set(editor, state);
@@ -52,26 +56,4 @@ export const removeHoverInfo = (editor: Editor) => {
   if (state.marker) state.marker.clear();
   if (state.tooltip) state.tooltip.remove();
   states.delete(editor);
-};
-
-const hoverContentsToString = (contents: Hover["contents"]): string => {
-  if (MarkupContent.is(contents)) {
-    // TODO Handle Markdown (contents.kind == "markdown")
-    return contents.value;
-  }
-
-  // MarkedString is considereed deprecated
-  if (MarkedString.is(contents)) return handleMarkedString(contents);
-  // MarkedString[]
-  if (Array.isArray(contents)) return handleMarkedString(contents[0]);
-
-  // Shouldn't be possible
-  return "";
-};
-
-const handleMarkedString = (m: MarkedString) => {
-  if (typeof m === "string") return m;
-  // Code block with language
-  // m.language;
-  return m.value;
 };

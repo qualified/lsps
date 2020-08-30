@@ -24,7 +24,8 @@ import {
 export const showInvokedCompletions = (
   editor: Editor,
   items: CompletionItem[],
-  [tokenFrom, tokenTo]: [Position, Position]
+  [tokenFrom, tokenTo]: [Position, Position],
+  renderMarkdown: (x: string) => string = (x) => x
 ) => {
   items = excludeSnippets(items);
   if (items.length === 0) return;
@@ -52,7 +53,7 @@ export const showInvokedCompletions = (
               from,
               to,
               render: itemRenderer(item),
-              data: getItemData(item),
+              data: getItemData(item, renderMarkdown),
             };
           }
 
@@ -61,7 +62,7 @@ export const showInvokedCompletions = (
             text: item.insertText || item.label,
             displayText: item.label,
             render: itemRenderer(item),
-            data: getItemData(item),
+            data: getItemData(item, renderMarkdown),
           };
         }),
       }),
@@ -78,7 +79,8 @@ export const showInvokedCompletions = (
 export const showTriggeredCompletions = (
   editor: Editor,
   items: CompletionItem[],
-  cursorPosition: Position
+  cursorPosition: Position,
+  renderMarkdown: (x: string) => string = (x) => x
 ) => {
   items = excludeSnippets(items);
   if (items.length === 0) return;
@@ -93,7 +95,7 @@ export const showTriggeredCompletions = (
           text: item.label,
           displayText: item.label,
           render: itemRenderer(item),
-          data: getItemData(item),
+          data: getItemData(item, renderMarkdown),
         })),
       }),
   });
@@ -139,9 +141,7 @@ const withItemTooltip = (hints: Hints): Hints => {
     if (!data) return;
 
     // TODO Generate content from attached data
-    let content = `${data.kind}`;
-    if (data.documentation) content += ` ${data.documentation}`;
-    else content += ` ${cur.text}`;
+    const content = data.documentation;
     if (!content) return;
 
     const x =
@@ -158,6 +158,8 @@ const withItemTooltip = (hints: Hints): Hints => {
     tooltip.style.top = `${y}px`;
     tooltip.style.fontSize = "12px";
     tooltip.style.padding = "2px";
+    tooltip.style.maxHeight = "400px";
+    tooltip.style.overflowY = "auto";
 
     tooltip.appendChild(el);
     document.body.appendChild(tooltip);
@@ -165,10 +167,13 @@ const withItemTooltip = (hints: Hints): Hints => {
   return hints;
 };
 
-const getItemData = (item: CompletionItem): HintData => ({
+const getItemData = (
+  item: CompletionItem,
+  renderMarkdown: (x: string) => string
+): HintData => ({
   kind: completionItemKindToString(item.kind),
   detail: item.detail || "",
-  documentation: documentationToString(item.documentation),
+  documentation: documentationToString(item.documentation, renderMarkdown),
 });
 
 // Returns a function to render `item` in completion popup.

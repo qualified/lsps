@@ -4,10 +4,10 @@ import type {
   Range,
   DiagnosticSeverity,
   DiagnosticTag,
-  MarkupContent,
   CompletionItemKind,
   TextDocumentContentChangeEvent,
 } from "vscode-languageserver-protocol";
+import { MarkupContent, MarkedString } from "vscode-languageserver-protocol";
 
 export const lspPosition = ({ line, ch }: CMPosition): Position => ({
   line,
@@ -62,11 +62,45 @@ export const diagnosticTagName = (tag: DiagnosticTag): string => {
   }
 };
 
-export const documentationToString = (doc?: string | MarkupContent) => {
+export const documentationToString = (
+  doc?: string | MarkupContent,
+  renderMarkdown: (x: string) => string = (x) => x
+) => {
   if (!doc) return "";
   if (typeof doc === "string") return doc;
-  // TODO Handle doc.kind === "markdown"
-  return doc.value;
+  return markupContentToString(doc, renderMarkdown);
+};
+
+export const hoverContentsToString = (
+  contents: MarkupContent | MarkedString | MarkedString[],
+  renderMarkdown: (x: string) => string
+): string => {
+  // Note that MarkedString is considereed deprecated
+  // MarkedString[]
+  if (Array.isArray(contents)) {
+    return contents
+      .map((c) => markedStringToString(c, renderMarkdown))
+      .join("\n");
+  }
+  if (MarkedString.is(contents)) {
+    return markedStringToString(contents, renderMarkdown);
+  }
+
+  return markupContentToString(contents, renderMarkdown);
+};
+
+const markupContentToString = (
+  content: MarkupContent,
+  renderMarkdown: (x: string) => string
+): string =>
+  content.kind === "markdown" ? renderMarkdown(content.value) : content.value;
+
+const markedStringToString = (
+  m: MarkedString,
+  render: (x: string) => string
+) => {
+  if (typeof m === "string") return m;
+  return render(["```" + m.language, m.value, "```"].join("\n"));
 };
 
 export const completionItemKindToString = (() => {

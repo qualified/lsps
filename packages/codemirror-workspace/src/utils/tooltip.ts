@@ -13,6 +13,8 @@ export const addTooltip = (
     `left: ${x}px;`,
     `top: ${y}px;`,
     `max-width: 50ch;`,
+    `max-height: 120px;`,
+    `overflow-y: auto;`,
   ].join(" ");
   tooltip.appendChild(tooltipContent);
   document.body.appendChild(tooltip);

@@ -57,6 +57,8 @@ const workspace = new Workspace({
     // Workspace will ignore the file if null is returned.
     return null;
   },
+  // Optional function to return HTML string from Markdown.
+  // renderMarkdown: (markdown: string): string => markdown,
 });
 // Open text document in workspace to enable code intelligence.
 // `cm` is CodeMirror.Editor instance with contents of the file.

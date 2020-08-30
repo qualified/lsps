@@ -23,7 +23,8 @@ interface LspSignatureHelpState {
 export const showSignatureHelp = (
   editor: Editor,
   help: SignatureHelp,
-  pos: Position
+  pos: Position,
+  renderMarkdown: (x: string) => string = (x) => x
 ) => {
   if (help.activeSignature === null) return;
 
@@ -57,12 +58,15 @@ export const showSignatureHelp = (
     }
     sig.appendChild(label);
 
-    const paramDoc = documentationToString(paramInfo.documentation);
+    const paramDoc = documentationToString(
+      paramInfo.documentation,
+      renderMarkdown
+    );
     if (paramDoc) {
       hasParameterDoc = true;
       const paramDocEl = document.createElement("div");
       paramDocEl.style.marginTop = "4px";
-      paramDocEl.innerText = paramDoc;
+      paramDocEl.innerHTML = paramDoc;
       sig.appendChild(paramDocEl);
     }
   } else {
@@ -70,11 +74,11 @@ export const showSignatureHelp = (
     sig.appendChild(label);
   }
 
-  const sigDoc = documentationToString(info.documentation);
+  const sigDoc = documentationToString(info.documentation, renderMarkdown);
   if (sigDoc) {
     const sigDocEl = document.createElement("div");
     if (hasParameterDoc) sigDocEl.style.marginTop = "8px";
-    sigDocEl.innerText = sigDoc;
+    sigDocEl.innerHTML = sigDoc;
     sig.appendChild(sigDocEl);
   }
 
