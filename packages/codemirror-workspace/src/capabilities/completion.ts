@@ -38,8 +38,6 @@ export const showInvokedCompletions = (
       withItemTooltip({
         from: tokenFrom,
         to: tokenTo,
-        // To handle more complex completions, we can provide `hint` function
-        // to apply the completion ourselves as well.
         list: filtered.map((item) => {
           // TODO Support InsertTextFormat.Snippet
           if (item.textEdit) {
@@ -50,8 +48,24 @@ export const showInvokedCompletions = (
             return {
               text: edit.newText,
               displayText: item.label,
-              from,
-              to,
+              hint: (cm: Editor) => {
+                cm.replaceRange(edit.newText, from, to, "complete");
+                if (item.insertTextFormat === InsertTextFormat.Snippet) {
+                  // TODO Handle more than one placeholders
+                  // If `$0` exists, remove it and jump there
+                  const line = cm.getLine(from.line);
+                  const marker = line.indexOf("$0", from.ch);
+                  if (marker !== -1) {
+                    cm.replaceRange(
+                      "",
+                      { line: from.line, ch: marker },
+                      { line: from.line, ch: marker + 2 },
+                      "complete"
+                    );
+                    cm.setCursor({ line: from.line, ch: marker });
+                  }
+                }
+              },
               render: itemRenderer(item),
               data: getItemData(item, renderMarkdown),
             };
@@ -205,11 +219,12 @@ const itemRenderer = (item: CompletionItem) => (el: HTMLElement) => {
 // Allow items that can be inserted as plaintext because
 // TypeScript server seems return items that can be inserted as plaintext as snippet.
 const excludeSnippets = (items: CompletionItem[]) =>
-  items.filter(
-    (x) =>
+  items.filter((x) => {
+    return (
       x.insertTextFormat !== InsertTextFormat.Snippet ||
-      !(x.insertText || x.label).includes("$")
-  );
+      !/\$[1-9{]/.test(x.textEdit?.newText || x.insertText || x.label)
+    );
+  });
 
 const filteredItems = (
   items: CompletionItem[],
