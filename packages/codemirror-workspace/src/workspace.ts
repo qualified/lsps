@@ -34,6 +34,16 @@ import {
 import { fromEditorEvent } from "./events";
 import { lspPosition, lspChange } from "./utils/conversions";
 
+export interface LanguageAssociation {
+  /** Language ID associated with the file. */
+  languageId: string;
+  /**
+   * IDs of language servers to connect to.
+   * Currently, only the first value is used.
+   */
+  languageServerIds: string[];
+}
+
 export interface WorkspaceOptions {
   /**
    * The URI of the project root.
@@ -42,7 +52,14 @@ export interface WorkspaceOptions {
   /**
    * Provide Language Server endpoint.
    */
-  getServerUri: (id: string) => Promise<string>;
+  getServerUri: (this: void, langserverId: string) => Promise<string>;
+  /**
+   * Provide language association (language id, language server id) for a file with the uri.
+   */
+  getLanguageAssociation: (
+    this: void,
+    uri: string
+  ) => LanguageAssociation | null | undefined;
   // Called when jumping to different document.
   // showTextDocument?: (uri: string, line?: number, character?: number) => void;
   // Called on showMeessage notification
@@ -62,8 +79,12 @@ export class Workspace {
   private documentVersions: { [uri: string]: number };
   // Array of Disposers to remove event listeners.
   private editorStreamDisposers: WeakMap<Editor, Disposer[]>;
-  // Function to get the server uri for language id when needed.
-  private getServerUri: (languageId: string) => Promise<string>;
+  // Function to get the language server's uri when creating new connection.
+  private getServerUri: (langserverId: string) => Promise<string>;
+  // Function to get the language association from the document uri.
+  private getLanguageAssociation: (
+    uri: string
+  ) => LanguageAssociation | null | undefined;
   // The URI of the project root.
   private rootUri: string;
 
@@ -77,7 +98,8 @@ export class Workspace {
     this.documentVersions = Object.create(null);
     this.editorStreamDisposers = new WeakMap();
     this.rootUri = options.rootUri;
-    this.getServerUri = (id: string) => options.getServerUri(id);
+    this.getServerUri = options.getServerUri.bind(void 0);
+    this.getLanguageAssociation = options.getLanguageAssociation.bind(void 0);
   }
 
   /**
@@ -95,12 +117,17 @@ export class Workspace {
    * @param editor CodeMirror Editor instance.
    */
   async openTextDocument(uri: string, editor: Editor) {
-    this.editors[uri] = editor;
-    this.documentVersions[uri] = 0;
-    const languageId = languageIdFromUri(uri);
-    const conn = await this.connect(languageId);
+    const assoc = this.getLanguageAssociation(uri);
+    if (!assoc) return;
+    // TODO Allow connecting to multiple language servers
+    const serverId = assoc.languageServerIds[0];
+    if (!serverId) return;
+    const conn = await this.connect(serverId);
     if (!conn) return;
 
+    this.editors[uri] = editor;
+    this.documentVersions[uri] = 0;
+    const languageId = assoc.languageId;
     conn.textDocumentOpened({
       textDocument: {
         uri,
@@ -317,15 +344,16 @@ export class Workspace {
    * @param uri The document URI.
    */
   async closeTextDocument(uri: string) {
-    const editor = this.editors[uri];
-    if (!editor) return;
-
-    delete this.editors[uri];
-    delete this.documentVersions[uri];
-    const languageId = languageIdFromUri(uri);
-    const conn = this.connections[languageId];
+    const assoc = this.getLanguageAssociation(uri);
+    if (!assoc) return;
+    const serverId = assoc.languageServerIds[0];
+    if (!serverId) return;
+    const conn = this.connections[serverId];
     if (!conn) return;
 
+    const editor = this.editors[uri];
+    delete this.editors[uri];
+    delete this.documentVersions[uri];
     this.removeEventHandlers(editor);
     conn.textDocumentClosed({
       textDocument: { uri },
@@ -351,15 +379,13 @@ export class Workspace {
    * Private method to connect to the language server if possible.
    * If existing connection exists, it'll be shared.
    *
-   * @param languageId
+   * @param serverId - ID of the language server.
    */
-  private async connect(
-    languageId: string
-  ): Promise<LspConnection | undefined> {
-    const existing = this.connections[languageId];
+  private async connect(serverId: string): Promise<LspConnection | undefined> {
+    const existing = this.connections[serverId];
     if (existing) return existing;
 
-    const proxyEndpoint = await this.getServerUri(languageId);
+    const proxyEndpoint = await this.getServerUri(serverId);
     if (!proxyEndpoint) return;
 
     // Note that we can support Language Servers in Workers
@@ -367,9 +393,9 @@ export class Workspace {
     const conn = await createMessageConnection(
       new WebSocket(proxyEndpoint)
     ).then(createLspConnection);
-    this.connections[languageId] = conn;
+    this.connections[serverId] = conn;
     conn.onClose(() => {
-      delete this.connections[languageId];
+      delete this.connections[serverId];
     });
 
     conn.listen();
@@ -496,14 +522,3 @@ export class Workspace {
 // 2. Delete
 // 3. Create
 // 4. Open
-
-// TODO Add option for this. Similar to VSCode's `files.associations`
-// https://code.visualstudio.com/docs/languages/overview#_language-id
-// We also need a mapping from language id to language server id because some can handle multiple types.
-const languageIdFromUri = (uri: string): string => {
-  if (uri.endsWith(".ts")) return "typescript";
-  if (uri.endsWith(".js")) return "javascript";
-  if (uri.endsWith(".css")) return "css";
-  if (uri.endsWith(".html")) return "html";
-  return "";
-};

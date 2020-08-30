@@ -63,16 +63,41 @@ const workspace = new Workspace({
   rootUri,
   async getServerUri(id: string) {
     switch (id) {
-      case "javascript":
-      case "typescript":
+      case "typescript-language-server":
         return "ws://localhost:9990";
-      case "html":
+      case "html-language-server":
         return "ws://localhost:9991";
-      case "css":
+      case "css-language-server":
         return "ws://localhost:9992";
       default:
         return "";
     }
+  },
+  getLanguageAssociation(uri: string) {
+    // javascript, javascriptreact, typescript, typescriptreact
+    if (/\.(?:[jt]sx?)$/.test(uri)) {
+      const languageServerIds = ["typescript-language-server"];
+      const languageId = /\.tsx?$/.test(uri) ? "typescript" : "javascript";
+      return {
+        languageId: languageId + (uri.endsWith("x") ? "react" : ""),
+        languageServerIds,
+      };
+    }
+
+    const m = uri.match(/\.(css|less|scss|sass)$/);
+    if (m !== null) {
+      return { languageId: m[1], languageServerIds: ["css-language-server"] };
+    }
+
+    if (uri.endsWith(".html")) {
+      return {
+        languageId: "html",
+        languageServerIds: ["html-language-server"],
+      };
+    }
+
+    // Workspace will ignore the file if null is returned.
+    return null;
   },
 });
 

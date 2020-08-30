@@ -13,9 +13,49 @@ const workspace = new Workspace({
   // Project root. Required.
   rootUri: "file:///workspace",
   // Provide server URI so Workspace can make connections. Required.
-  async getServerUri(id: string) {
-    if (id === "javascript") return "ws://localhost:9990";
-    return "";
+  async getServerUri(langserverId: string) {
+    switch (langserverId) {
+      case "typescript-language-server":
+        // const res = await fetch("/start", { method: "POST" });
+        // return res.json().uri;
+        return "ws://localhost:9990";
+      case "css-language-server":
+        return "ws://localhost:9991";
+      case "html-language-server":
+        return "ws://localhost:9992";
+      default:
+        return "";
+    }
+  },
+  // Provide language associaton (language id and server ids) for URI. Required.
+  getLanguageAssociation(uri: string) {
+    // javascript, javascriptreact, typescript, typescriptreact
+    if (/\.(?:[jt]sx?)$/.test(uri)) {
+      const languageServerIds = ["typescript-language-server"];
+      const languageId = /\.tsx?$/.test(uri) ? "typescript" : "javascript";
+      return {
+        languageId: languageId + (uri.endsWith("x") ? "react" : ""),
+        languageServerIds,
+      };
+    }
+
+    const m = uri.match(/\.(css|less|scss|sass)$/);
+    if (m !== null) {
+      return {
+        languageId: m[1],
+        languageServerIds: ["css-language-server"],
+      };
+    }
+
+    if (uri.endsWith(".html")) {
+      return {
+        languageId: "html",
+        languageServerIds: ["html-language-server"],
+      };
+    }
+
+    // Workspace will ignore the file if null is returned.
+    return null;
   },
 });
 // Open text document in workspace to enable code intelligence.
