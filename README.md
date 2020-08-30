@@ -13,9 +13,20 @@ Monorepo of packages related to [LSP][lsp].
 
 ## Demo
 
-![demo](./docs/img/demo.gif)
+Example with [Rust Analyzer](https://github.com/rust-analyzer/rust-analyzer):
 
-See [examples/demo](./examples/demo).
+![demo](./docs/img/demo-rust-analyzer.gif)
+
+The styling definitely needs work, but the above shows:
+
+- Realtime diagnostics
+- Completion with items from the server
+- Fuzzy matching (e.g., `prl` to `println!`)
+- Completion items with Markdown docs
+- Completion items with icons for each kind
+- Hover information with Markdown docs
+
+See [examples/demo](./examples/demo) for a simple demo project with TypeScript + CSS + HTML editors.
 
 ## Tools
 
