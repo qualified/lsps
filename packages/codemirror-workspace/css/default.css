@@ -10,6 +10,106 @@
   width: 10px;
 }
 
+/*
+ * Icons for completion item.
+ * VSCode has icons for the folloing kinds:
+ * - metohd/function
+ * - variable
+ * - field
+ * - class
+ * - interface
+ * - module
+ * - property
+ * - value/enum
+ * - reference
+ * - keyword
+ * - color
+ * - unit
+ * - snippet
+ * - text
+ * Icons used in VSCode is available at: https://github.com/microsoft/vscode-codicons
+ * For now, we'll just use letters and some unicode symbols like CodeMirror v6.
+ * https://github.com/codemirror/codemirror.next/blob/master/autocomplete/src/theme.ts
+ */
+.cmw-completion-icon {
+  font-size: 90%;
+  width: 0.8em;
+  display: inline-block;
+  text-align: center;
+  padding-right: 0.6em;
+  opacity: 0.9;
+}
+
+.cmw-completion-icon--function::after,
+.cmw-completion-icon--method::after {
+  /* latin small letter f with hook (U+0192)  */
+  content: "\0192";
+}
+.cmw-completion-icon--variable::after {
+  /* mathematical italic small x (U+1d465)  */
+  content: "\1d465";
+}
+.cmw-completion-icon--field::after {
+  /* medium small white circle (U+26ac)  */
+  content: "\26ac";
+}
+.cmw-completion-icon--module::after {
+  /* white square (U+25a1)  */
+  content: "\25a1";
+}
+.cmw-completion-icon--color::after {
+  /* horizontal black hexagon (U+2b23)  */
+  content: "\2b23";
+}
+.cmw-completion-icon--value::after {
+  content: "v";
+}
+.cmw-completion-icon--enum::after,
+.cmw-completion-icon--enum-member::after {
+  /* union (U+222a)  */
+  content: "\222a";
+}
+.cmw-completion-icon--interface::after {
+  content: "I";
+}
+.cmw-completion-icon--text::after {
+  content: "abc";
+  font-size: 50%;
+  vertical-align: middle;
+}
+.cmw-completion-icon--keyword::after {
+  content: "k";
+}
+.cmw-completion-icon--constructor::after,
+.cmw-completion-icon--class::after {
+  content: "c";
+}
+.cmw-completion-icon--property::after {
+  content: "p";
+}
+.cmw-completion-icon--constant::after {
+  /* mathematical italic capital c (U+1d436)  */
+  content: "\1d436";
+}
+.cmw-completion-icon--type-parameter::after {
+  content: "T";
+}
+.cmw-completion-icon--struct::after {
+  /* white hexagon (U+2b21)  */
+  content: "\2b21";
+}
+.cmw-completion-icon--event::after,
+.cmw-completion-icon--unit::after,
+.cmw-completion-icon--snippet::after,
+.cmw-completion-icon--file::after,
+.cmw-completion-icon--reference::after,
+.cmw-completion-icon--folder::after,
+.cmw-completion-icon--operator::after,
+.cmw-completion-icon--unknown::after {
+  /* dotted circle (U+25cc)  */
+  content: "\25cc";
+}
+
 /* Completion item details shown on the right of completion popup. */
 .cm-lsp-completion-item-doc,
 /* Hover Information and Signature Help */

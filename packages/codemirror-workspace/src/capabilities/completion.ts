@@ -187,14 +187,13 @@ const itemRenderer = (item: CompletionItem) => (el: HTMLElement) => {
     }
   }
 
-  const custom = document.createElement("div");
-  custom.style.display = "flex";
-  custom.style.alignItems = "center";
-  custom.innerHTML = [
-    `<span style="color: ${color}; font-size: 8px;">⬤</span>`,
-    `<span style="margin-left: 4px">${item.label}</span>`,
-  ].join("\n");
-  el.append(custom);
+  const icon = el.appendChild(document.createElement("div"));
+  icon.style.color = color;
+  icon.className = [
+    `cmw-completion-icon`,
+    `cmw-completion-icon--${completionItemKindToString(item.kind)}`,
+  ].join(" ");
+  el.appendChild(document.createTextNode(item.label));
 };
 
 // Exclude snippet item because it's not supported yet.
