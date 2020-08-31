@@ -1,5 +1,5 @@
 {
-  extends: ["config:base", "schedule:weekend"],
+  extends: ["config:base", "schedule:weekends"],
   ignoreDeps: [
     // Packages in workspace
     "@qualified/vscode-jsonrpc-ws",
