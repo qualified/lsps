@@ -1,4 +1,5 @@
-import type { Editor, EditorChange } from "codemirror";
+import type { Editor } from "codemirror";
+import { normalizeKeyMap } from "codemirror";
 import {
   CompletionTriggerKind,
   SignatureHelpTriggerKind,
@@ -20,6 +21,7 @@ import {
   hideCompletions,
   showSignatureHelp,
   removeSignatureHelp,
+  gotoLocation,
 } from "./capabilities";
 import {
   debounce,
@@ -351,6 +353,74 @@ export class Workspace {
       })
     );
 
+    // Add some keymaps for jumping to various locations.
+    // TODO Show a menu when right clicked on symbol
+    const keyMap = normalizeKeyMap({
+      // TODO Make this configurable
+      // Go to Definition
+      "Alt-G D": (cm: Editor) => {
+        conn
+          .getDefinition({
+            textDocument: { uri },
+            position: lspPosition(cm.getCursor()),
+          })
+          .then((location) => {
+            if (location) gotoLocation(cm, uri, location);
+          });
+      },
+      // Go to Declaration
+      "Alt-G H": (cm: Editor) => {
+        conn
+          .getDeclaration({
+            textDocument: { uri },
+            position: lspPosition(cm.getCursor()),
+          })
+          .then((location) => {
+            if (location) gotoLocation(cm, uri, location);
+          });
+      },
+      // Go to TypeDefinition
+      "Alt-G T": (cm: Editor) => {
+        conn
+          .getTypeDefinition({
+            textDocument: { uri },
+            position: lspPosition(cm.getCursor()),
+          })
+          .then((location) => {
+            if (location) gotoLocation(cm, uri, location);
+          });
+      },
+      // Go to Implementations
+      "Alt-G I": (cm: Editor) => {
+        conn
+          .getImplementation({
+            textDocument: { uri },
+            position: lspPosition(cm.getCursor()),
+          })
+          .then((location) => {
+            if (location) gotoLocation(cm, uri, location);
+          });
+      },
+      // Go to References
+      "Alt-G R": (cm: Editor) => {
+        conn
+          .getReferences({
+            textDocument: { uri },
+            position: lspPosition(cm.getCursor()),
+            context: {
+              includeDeclaration: true,
+            },
+          })
+          .then((location) => {
+            if (location) gotoLocation(cm, uri, location);
+          });
+      },
+    });
+    editor.addKeyMap(keyMap);
+    disposers.push(() => {
+      editor.removeKeyMap(keyMap);
+    });
+
     this.editorStreamDisposers.set(editor, disposers);
   }
 
@@ -464,25 +534,25 @@ export class Workspace {
             },
             contextSupport: true,
           },
-          // declaration: {
-          //   dynamicRegistration: true,
-          //   linkSupport: false,
-          // },
-          // definition: {
-          //   dynamicRegistration: true,
-          //   linkSupport: false,
-          // },
-          // typeDefinition: {
-          //   dynamicRegistration: true,
-          //   linkSupport: false,
-          // },
-          // implementation: {
-          //   dynamicRegistration: true,
-          //   linkSupport: false,
-          // },
-          // references: {
-          //   dynamicRegistration: true,
-          // },
+          declaration: {
+            dynamicRegistration: true,
+            linkSupport: false,
+          },
+          definition: {
+            dynamicRegistration: true,
+            linkSupport: true,
+          },
+          typeDefinition: {
+            dynamicRegistration: true,
+            linkSupport: true,
+          },
+          implementation: {
+            dynamicRegistration: true,
+            linkSupport: true,
+          },
+          references: {
+            dynamicRegistration: true,
+          },
           documentHighlight: {
             dynamicRegistration: true,
           },
