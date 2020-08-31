@@ -3,6 +3,7 @@
   "references": [
     { "path": "./vscode-jsonrpc-ws/tsconfig-esm.json" },
     { "path": "./vscode-jsonrpc-ww/tsconfig-esm.json" },
+    { "path": "./vscode-snippet-parser/tsconfig-esm.json" },
     { "path": "./lsp-connection/tsconfig-esm.json" },
     { "path": "./codemirror-workspace/tsconfig-esm.json" }
   ]

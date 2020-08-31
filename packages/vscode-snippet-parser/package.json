@@ -1,0 +1,19 @@
+{
+  "name": "@qualified/vscode-snippet-parser",
+  "description": "",
+  "keywords": [
+    "vscode"
+  ],
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "lib/cjs/index",
+  "module": "lib/esm/index",
+  "files": [
+    "lib/**/*.js",
+    "lib/**/*.js.map",
+    "lib/**/*.d.ts"
+  ],
+  "devDependencies": {
+    "typescript": "^4.0.2"
+  }
+}
