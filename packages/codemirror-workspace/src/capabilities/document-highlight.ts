@@ -24,7 +24,7 @@ export const showHighlights = (
     const [start, end] = cmRange(range);
     state.marks.push(
       editor.markText(start, end, {
-        className: `cm-lsp-highlight`,
+        className: `cmw-highlight`,
       })
     );
   }

@@ -28,7 +28,7 @@ const $ = (sel: string) => {
 const config: CodeMirror.EditorConfiguration = {
   theme: "idea",
   // keyMap: "vim",
-  gutters: ["cm-lsp-gutter"],
+  gutters: ["cmw-gutter"],
   lineNumbers: true,
   matchBrackets: true,
   autoCloseBrackets: true,

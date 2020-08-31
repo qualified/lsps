@@ -165,7 +165,7 @@ const withItemTooltip = (hints: Hints): Hints => {
     const el = document.createElement("div");
     el.innerHTML = content;
     tooltip = document.createElement("div");
-    tooltip.classList.add("cm-lsp-completion-item-doc");
+    tooltip.classList.add("cmw-completion-item-doc");
     tooltip.style.position = "absolute";
     tooltip.style.zIndex = "10";
     tooltip.style.left = `${x}px`;

@@ -13,7 +13,7 @@ import { cmRange, diagnosticSeverityName } from "../utils/conversions";
 //        3. markers = editor.findMarksAt(pos);
 //
 
-const GUTTER_ID = "cm-lsp-gutter";
+const GUTTER_ID = "cmw-gutter";
 const states = new WeakMap<Editor, LspDiagnosticsState>();
 
 interface LspDiagnosticsState {
@@ -38,12 +38,12 @@ export const showDiagnostics = (editor: Editor, diagnostics: Diagnostic[]) => {
     // const code = d.code;
     // const source = d.source;
     state.marks.push(
-      editor.markText(start, end, { className: `cm-lsp-mark-${severity}` })
+      editor.markText(start, end, { className: `cmw-mark-${severity}` })
     );
 
     // TODO Improve appearance
     const el = document.createElement("div");
-    el.classList.add(`cm-lsp-guttermark-${severity}`);
+    el.classList.add(`cmw-guttermark-${severity}`);
     el.style.width = "10px";
     el.style.fontSize = "8px";
     el.style.textAlign = "center";

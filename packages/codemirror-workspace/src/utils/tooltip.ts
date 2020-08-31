@@ -4,7 +4,7 @@ export const addTooltip = (
   y: number
 ) => {
   const tooltip = document.createElement("div");
-  tooltip.classList.add("cm-lsp-tooltip");
+  tooltip.classList.add("cmw-tooltip");
   tooltip.style.cssText = [
     "font-size: 12px;",
     "padding: 2px;",
