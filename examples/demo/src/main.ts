@@ -11,6 +11,10 @@ import "codemirror/addon/edit/matchbrackets";
 import "codemirror/addon/edit/closebrackets";
 // import "codemirror/keymap/vim";
 
+import marked from "marked";
+import hljs from "highlight.js";
+import "highlight.js/styles/github.css";
+
 import { Workspace } from "@qualified/codemirror-workspace";
 import "@qualified/codemirror-workspace/css/default.css";
 
@@ -18,6 +22,12 @@ import addTs from "!!raw-loader!../workspace/add.ts";
 import sampleTs from "!!raw-loader!../workspace/source.ts";
 import sampleHtml from "!!raw-loader!../workspace/project.html";
 import sampleCss from "!!raw-loader!../workspace/style.css";
+
+marked.setOptions({
+  highlight: (code, language) =>
+    hljs.highlight(hljs.getLanguage(language) ? language : "plaintext", code)
+      .value,
+});
 
 const $ = (sel: string) => {
   const el = document.querySelector(sel);
@@ -99,6 +109,8 @@ const workspace = new Workspace({
     // Workspace will ignore the file if null is returned.
     return null;
   },
+  // Support Markdown documentation
+  renderMarkdown: (markdown) => marked(markdown),
 });
 
 workspace.openTextDocument(rootUri + "/add.ts", tsEditorAdd).then(() => {
