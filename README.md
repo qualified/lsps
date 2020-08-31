@@ -26,6 +26,8 @@ The styling definitely needs work, but the above shows:
 - Completion items with icons for each kind
 - Hover information with Markdown docs
 
+See [examples/demo-rust](./examples/demo-rust) to run this locally.
+
 See [examples/demo](./examples/demo) for a simple demo project with TypeScript + CSS + HTML editors.
 
 ## Tools

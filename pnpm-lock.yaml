@@ -58,6 +58,48 @@ importers:
       webpack: ^4.44.1
       webpack-bundle-analyzer: ^3.8.0
       webpack-cli: ^3.3.12
+  examples/demo-rust:
+    dependencies:
+      '@qualified/codemirror-workspace': 'link:../../packages/codemirror-workspace'
+      codemirror: 5.57.0
+      highlight.js: 10.1.2
+      marked: 1.1.1
+    devDependencies:
+      '@types/codemirror': 0.0.97
+      '@types/highlight.js': 9.12.4
+      '@types/marked': 1.1.0
+      '@types/webpack': 4.41.21
+      concurrently: 5.3.0
+      css-loader: 4.2.1_webpack@4.44.1
+      raw-loader: 4.0.1_webpack@4.44.1
+      rimraf: 3.0.2
+      serve: 11.3.2
+      style-loader: 1.2.1_webpack@4.44.1
+      ts-loader: 8.0.2_typescript@4.0.2
+      typescript: 4.0.2
+      webpack: 4.44.1_7d74d9f6ceb0e540c1e44d9709220c58
+      webpack-bundle-analyzer: 3.8.0
+      webpack-cli: 3.3.12_webpack@4.44.1
+    specifiers:
+      '@qualified/codemirror-workspace': ^0.1.0
+      '@types/codemirror': 0.0.97
+      '@types/highlight.js': ^9.12.4
+      '@types/marked': ^1.1.0
+      '@types/webpack': ^4.41.21
+      codemirror: ^5.56.0
+      concurrently: ^5.3.0
+      css-loader: ^4.2.1
+      highlight.js: ^10.1.2
+      marked: ^1.1.1
+      raw-loader: ^4.0.1
+      rimraf: ^3.0.2
+      serve: ^11.3.2
+      style-loader: ^1.2.1
+      ts-loader: ^8.0.2
+      typescript: ^4.0.2
+      webpack: ^4.44.1
+      webpack-bundle-analyzer: ^3.8.0
+      webpack-cli: ^3.3.12
   packages/codemirror-workspace:
     dependencies:
       '@qualified/lsp-connection': 'link:../lsp-connection'
@@ -635,7 +677,7 @@ packages:
     dependencies:
       ansi-align: 2.0.0
       camelcase: 4.1.0
-      chalk: 2.4.1
+      chalk: 2.4.2
       cli-boxes: 1.0.0
       string-width: 2.1.1
       term-size: 1.2.0
