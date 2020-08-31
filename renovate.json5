@@ -10,4 +10,6 @@
     // Demos
     "examples/",
   ],
+  // Override to use semver range for devDependencies as well.
+  rangeStrategy: "replace",
 }
