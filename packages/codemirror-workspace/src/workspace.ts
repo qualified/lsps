@@ -37,23 +37,39 @@ import {
 import { fromEditorEvent } from "./events";
 import { lspPosition, lspChange } from "./utils/conversions";
 
+/**
+ * Describes text document's language association.
+ */
 export interface LanguageAssociation {
-  /** Language ID associated with the file. */
+  /**
+   * Language ID associated with the file.
+   */
   languageId: string;
   /**
    * IDs of language servers to connect to.
-   * Currently, only the first value is used.
+   * Accepts multiple IDs for future extension, but currently only the first one is used.
    */
   languageServerIds: string[];
 }
 
+/**
+ * Options for Workspace.
+ */
 export interface WorkspaceOptions {
   /**
    * The URI of the project root.
    */
   rootUri: string;
+  // TODO Rename this option to something without `Uri`.
   /**
    * Provide Language Server endpoint.
+   *
+   * The returned string can be either:
+   *
+   * - URI of a WebSocket proxy of a Language Server
+   * - Path to a script to start Language Server in Web Worker
+   *
+   * If the returned string does not start with `wss?://`, it's assumed to be a Worker script.
    */
   getServerUri: (this: void, langserverId: string) => Promise<string>;
   /**
@@ -62,37 +78,38 @@ export interface WorkspaceOptions {
   getLanguageAssociation: (
     this: void,
     uri: string
-  ) => LanguageAssociation | null | undefined;
+  ) => LanguageAssociation | null;
+  /**
+   * Function to render Markdown to HTML string.
+   * If not provided and the server's response contains Markdown, it'll be displayed as is.
+   */
+  renderMarkdown?: (this: void, markdown: string) => string;
   // Called when jumping to different document.
   // showTextDocument?: (uri: string, line?: number, character?: number) => void;
   // Called on showMeessage notification
   // showMessage?: (message: string, level: "error" | "warning" | "info" | "log") => void;
   // Called on logMeessage notification
   // logMessage?: (message: string, level: "error" | "warning" | "info" | "log") => void;
-  /**
-   * Function to render Markdown to HTML string.
-   * If not provided and the server's response contains Markdown, it'll be displayed as is.
-   */
-  renderMarkdown?: (this: void, markdown: string) => string;
 }
 
-// Manages communications with the Language Server.
+/**
+ * Workspace provides code intelligence to CodeMirror editors by managing
+ * communications with Language Servers and adding event handlers.
+ */
 export class Workspace {
   // Map of `documentUri` to open editors in the workspace.
   // Used to find the editor to apply actions on event.
   private editors: { [uri: string]: Editor };
-  // Map of language id to connection.
+  // Map of Language Server ID to connection.
   private connections: { [id: string]: LspConnection };
   // Map of `documentUri` to document versions.
   private documentVersions: { [uri: string]: number };
   // Array of Disposers to remove event listeners.
-  private editorStreamDisposers: WeakMap<Editor, Disposer[]>;
+  private subscriptionDisposers: WeakMap<Editor, Disposer[]>;
   // Function to get the language server's uri when creating new connection.
   private getServerUri: (langserverId: string) => Promise<string>;
   // Function to get the language association from the document uri.
-  private getLanguageAssociation: (
-    uri: string
-  ) => LanguageAssociation | null | undefined;
+  private getLanguageAssociation: (uri: string) => LanguageAssociation | null;
   // Function to get convert Markdown to HTML string.
   private renderMarkdown: (markdown: string) => string;
   private canHandleMarkdown: boolean;
@@ -107,7 +124,7 @@ export class Workspace {
     this.editors = Object.create(null);
     this.connections = Object.create(null);
     this.documentVersions = Object.create(null);
-    this.editorStreamDisposers = new WeakMap();
+    this.subscriptionDisposers = new WeakMap();
     this.rootUri = options.rootUri;
     this.getServerUri = options.getServerUri.bind(void 0);
     this.getLanguageAssociation = options.getLanguageAssociation.bind(void 0);
@@ -422,7 +439,7 @@ export class Workspace {
       editor.removeKeyMap(keyMap);
     });
 
-    this.editorStreamDisposers.set(editor, disposers);
+    this.subscriptionDisposers.set(editor, disposers);
   }
 
   /**
@@ -448,11 +465,11 @@ export class Workspace {
   }
 
   private removeEventHandlers(editor: Editor) {
-    const disposers = this.editorStreamDisposers.get(editor);
+    const disposers = this.subscriptionDisposers.get(editor);
     if (disposers) {
       for (const dispose of disposers) dispose();
       disposers.length = 0;
-      this.editorStreamDisposers.delete(editor);
+      this.subscriptionDisposers.delete(editor);
     }
 
     removeDiagnostics(editor);
