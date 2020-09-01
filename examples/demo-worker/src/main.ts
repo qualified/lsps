@@ -61,13 +61,13 @@ const tsEditorAdd = CodeMirror($("#editor"), {
 const JSON_WORKER = "json-worker";
 const workspace = new Workspace({
   rootUri: "inmemory://workspace",
-  getLanguageAssociation(uri: string) {
+  getLanguageAssociation: (uri: string) => {
     if (uri.endsWith(".json")) {
       return { languageId: "json", languageServerIds: [JSON_WORKER] };
     }
     return null;
   },
-  async getServerUri(id: string) {
+  getServerUri: async (id: string) => {
     switch (id) {
       case JSON_WORKER:
         return "js/worker.js";

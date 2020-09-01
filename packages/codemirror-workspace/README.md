@@ -14,7 +14,7 @@ const workspace = new Workspace({
   rootUri: "file:///workspace",
 
   // Provide language associaton (language id and server ids) for URI. Required.
-  getLanguageAssociation(uri: string) {
+  getLanguageAssociation: (uri: string) => {
     // javascript, javascriptreact, typescript, typescriptreact
     if (/\.(?:[jt]sx?)$/.test(uri)) {
       const languageId = /\.tsx?$/.test(uri) ? "typescript" : "javascript";
@@ -53,7 +53,7 @@ const workspace = new Workspace({
   // Provide server to connect to. Required.
   // The returned string can be a URI of WebSocket proxy or
   // a location of Worker script to start Language Server.
-  async getServerUri(langserverId: string) {
+  getServerUri: async (langserverId: string) => {
     switch (langserverId) {
       case "typescript-language-server":
         // Use some API to start remote Language Server and return a string.

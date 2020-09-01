@@ -71,32 +71,22 @@ const cssEditor = CodeMirror($("#css-editor"), {
 const rootUri = ROOT_URI;
 const workspace = new Workspace({
   rootUri,
-  async getServerUri(id: string) {
-    switch (id) {
-      case "typescript-language-server":
-        return "ws://localhost:9990";
-      case "html-language-server":
-        return "ws://localhost:9991";
-      case "css-language-server":
-        return "ws://localhost:9992";
-      default:
-        return "";
-    }
-  },
-  getLanguageAssociation(uri: string) {
+  getLanguageAssociation: (uri: string) => {
     // javascript, javascriptreact, typescript, typescriptreact
     if (/\.(?:[jt]sx?)$/.test(uri)) {
-      const languageServerIds = ["typescript-language-server"];
       const languageId = /\.tsx?$/.test(uri) ? "typescript" : "javascript";
       return {
         languageId: languageId + (uri.endsWith("x") ? "react" : ""),
-        languageServerIds,
+        languageServerIds: ["typescript-language-server"],
       };
     }
 
-    const m = uri.match(/\.(css|less|scss|sass)$/);
-    if (m !== null) {
-      return { languageId: m[1], languageServerIds: ["css-language-server"] };
+    const styles = uri.match(/\.(css|less|s[ac]ss)$/);
+    if (styles !== null) {
+      return {
+        languageId: styles[1],
+        languageServerIds: ["css-language-server"],
+      };
     }
 
     if (uri.endsWith(".html")) {
@@ -108,6 +98,18 @@ const workspace = new Workspace({
 
     // Workspace will ignore the file if null is returned.
     return null;
+  },
+  getServerUri: async (id: string) => {
+    switch (id) {
+      case "typescript-language-server":
+        return "ws://localhost:9990";
+      case "html-language-server":
+        return "ws://localhost:9991";
+      case "css-language-server":
+        return "ws://localhost:9992";
+      default:
+        return "";
+    }
   },
   // Support Markdown documentation
   renderMarkdown: (markdown) => marked(markdown),

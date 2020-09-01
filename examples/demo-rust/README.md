@@ -1,9 +1,9 @@
 # @qualified/codemirror-workspace demo with Rust Analyzer
 
-Install `pnpm` if you don't have it installed:
+Install [`pnpm`] if you don't have it installed:
 
 ```
-npm i -g pnpm
+npm i -g pnpm@5
 ```
 
 Install [`lsp-ws-proxy`] by downloading a binary from [releases][proxy-releases] and moving it in `PATH`.
@@ -29,3 +29,4 @@ pnpm start
 [proxy-releases]: https://github.com/qualified/lsp-ws-proxy/releases
 [`rust-analyzer`]: https://github.com/rust-analyzer/rust-analyzer
 [analyzer-releases]: https://github.com/rust-analyzer/rust-analyzer/releases
+[`pnpm`]: https://pnpm.js.org/

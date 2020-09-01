@@ -52,8 +52,7 @@ const rustEditor = CodeMirror($("#rust-editor"), {
 const rootUri = ROOT_URI;
 const workspace = new Workspace({
   rootUri,
-
-  getLanguageAssociation(uri: string) {
+  getLanguageAssociation: (uri: string) => {
     if (uri.endsWith(".rs")) {
       return {
         languageId: "rust",
@@ -62,7 +61,7 @@ const workspace = new Workspace({
     }
     return null;
   },
-  async getServerUri(id: string) {
+  getServerUri: async (id: string) => {
     switch (id) {
       case "rust-analyzer":
         return "ws://localhost:9999";

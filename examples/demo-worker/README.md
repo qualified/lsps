@@ -3,12 +3,14 @@
 Demo with [minimal JSON Language Server][json-ls] in Web Worker.
 Everything runs in browser.
 
+Live demo is also available at https://qualified.github.io/lsps/.
+
 ---
 
-Install `pnpm` if you don't have it installed:
+Install [`pnpm`] if you don't have it installed:
 
 ```
-npm i -g pnpm
+npm i -g pnpm@5
 ```
 
 In project root:
@@ -24,3 +26,4 @@ pnpm start
 ```
 
 [json-ls]: ./src/worker.ts
+[`pnpm`]: https://pnpm.js.org/
