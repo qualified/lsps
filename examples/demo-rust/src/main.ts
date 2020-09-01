@@ -7,24 +7,38 @@ import "codemirror/addon/hint/show-hint.css";
 import "codemirror/addon/hint/show-hint";
 import "codemirror/addon/edit/matchbrackets";
 import "codemirror/addon/edit/closebrackets";
+import "codemirror/addon/runmode/runmode";
 // import "codemirror/keymap/vim";
 
 import marked from "marked";
-import hljs from "highlight.js";
-import "highlight.js/styles/github.css";
 
 import { Workspace } from "@qualified/codemirror-workspace";
 import "@qualified/codemirror-workspace/css/default.css";
 
 import sampleRust from "!!raw-loader!../workspace/src/main.rs";
 
-marked.setOptions({
-  highlight(code, language) {
-    if (language === "no_run") language = "rust";
-    return hljs.highlight(
-      hljs.getLanguage(language) ? language : "plaintext",
-      code
-    ).value;
+const highlight = (code: string, language: string) => {
+  const mode =
+    language === "rust" || language === "no_run"
+      ? "text/x-rustsrc"
+      : "text/plain";
+  const tmp = document.createElement("div");
+  CodeMirror.runMode(code, mode, tmp, { tabSize: 4 });
+  return tmp.innerHTML;
+};
+
+marked.use({
+  // @ts-ignore renderer can be object literal
+  renderer: {
+    code(code: string, language: string | undefined) {
+      // Some examples are missing language tag, assume Rust.
+      if (!language) language = "rust";
+      code = highlight(code, language);
+      // We need to add a class for the theme (e.g., `cm-s-idea`) on the wrapper.
+      // If we're using a custom theme, it can apply its styles to `code[class^="language-"]`
+      // and use Marked's default `code` with `highlight` option.
+      return `<pre><code class="cm-s-idea language-${language}">${code}</code></pre>`;
+    },
   },
 });
 

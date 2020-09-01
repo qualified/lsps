@@ -10,14 +10,12 @@
   "dependencies": {
     "@qualified/codemirror-workspace": "^0.1.0",
     "codemirror": "^5.56.0",
-    "highlight.js": "^10.1.2",
     "marked": "^1.1.1",
     "vscode-json-languageservice": "^3.8.3",
     "vscode-languageserver-protocol": "3.16.0-next.6"
   },
   "devDependencies": {
     "@types/codemirror": "0.0.97",
-    "@types/highlight.js": "^9.12.4",
     "@types/marked": "^1.1.0",
     "concurrently": "^5.3.0",
     "css-loader": "^4.2.1",

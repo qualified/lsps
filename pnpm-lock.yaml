@@ -14,14 +14,12 @@ importers:
     dependencies:
       '@qualified/codemirror-workspace': 'link:../../packages/codemirror-workspace'
       codemirror: 5.57.0
-      highlight.js: 10.1.2
       marked: 1.1.1
       typescript-language-server: 0.4.0
       vscode-css-languageserver-bin: 1.4.0
       vscode-html-languageserver-bin: 1.4.0
     devDependencies:
       '@types/codemirror': 0.0.97
-      '@types/highlight.js': 9.12.4
       '@types/marked': 1.1.0
       '@types/webpack': 4.41.21
       concurrently: 5.3.0
@@ -38,13 +36,11 @@ importers:
     specifiers:
       '@qualified/codemirror-workspace': ^0.1.0
       '@types/codemirror': 0.0.97
-      '@types/highlight.js': ^9.12.4
       '@types/marked': ^1.1.0
       '@types/webpack': ^4.41.21
       codemirror: ^5.56.0
       concurrently: ^5.3.0
       css-loader: ^4.2.1
-      highlight.js: ^10.1.2
       marked: ^1.1.1
       raw-loader: ^4.0.1
       rimraf: ^3.0.2
@@ -62,11 +58,9 @@ importers:
     dependencies:
       '@qualified/codemirror-workspace': 'link:../../packages/codemirror-workspace'
       codemirror: 5.57.0
-      highlight.js: 10.1.2
       marked: 1.1.1
     devDependencies:
       '@types/codemirror': 0.0.97
-      '@types/highlight.js': 9.12.4
       '@types/marked': 1.1.0
       '@types/webpack': 4.41.21
       concurrently: 5.3.0
@@ -83,13 +77,11 @@ importers:
     specifiers:
       '@qualified/codemirror-workspace': ^0.1.0
       '@types/codemirror': 0.0.97
-      '@types/highlight.js': ^9.12.4
       '@types/marked': ^1.1.0
       '@types/webpack': ^4.41.21
       codemirror: ^5.56.0
       concurrently: ^5.3.0
       css-loader: ^4.2.1
-      highlight.js: ^10.1.2
       marked: ^1.1.1
       raw-loader: ^4.0.1
       rimraf: ^3.0.2
@@ -104,13 +96,11 @@ importers:
     dependencies:
       '@qualified/codemirror-workspace': 'link:../../packages/codemirror-workspace'
       codemirror: 5.57.0
-      highlight.js: 10.1.2
       marked: 1.1.1
       vscode-json-languageservice: 3.8.3
       vscode-languageserver-protocol: 3.16.0-next.6
     devDependencies:
       '@types/codemirror': 0.0.97
-      '@types/highlight.js': 9.12.4
       '@types/marked': 1.1.0
       concurrently: 5.3.0
       css-loader: 4.2.1_webpack@4.44.1
@@ -125,12 +115,10 @@ importers:
     specifiers:
       '@qualified/codemirror-workspace': ^0.1.0
       '@types/codemirror': 0.0.97
-      '@types/highlight.js': ^9.12.4
       '@types/marked': ^1.1.0
       codemirror: ^5.56.0
       concurrently: ^5.3.0
       css-loader: ^4.2.1
-      highlight.js: ^10.1.2
       marked: ^1.1.1
       rimraf: ^3.0.2
       serve: ^11.3.2
@@ -224,10 +212,6 @@ packages:
     dev: true
     resolution:
       integrity: sha512-jnqIUKDUqJbDIUxm0Uj7bnlMnRm1T/eZ9N+AVMqhPgzrba2GhGG5o/jCTwmdPK709nEZsGoMzXEDUjcXHa3W0g==
-  /@types/highlight.js/9.12.4:
-    dev: true
-    resolution:
-      integrity: sha512-t2szdkwmg2JJyuCM20e8kR2X59WCE5Zkl4bzm1u1Oukjm79zpbiAv+QjnwLnuuV0WHEcX2NgUItu0pAMKuOPww==
   /@types/json-schema/7.0.5:
     dev: true
     resolution:
@@ -2079,10 +2063,6 @@ packages:
     dev: true
     resolution:
       integrity: sha512-taOaskGt4z4SOANNseOviYDvjEJinIkRgmp7LbKP2YTTmVxWBl87s/uzK9r+44BclBSp2X7K1hqeNfz9JbBeXA==
-  /highlight.js/10.1.2:
-    dev: false
-    resolution:
-      integrity: sha512-Q39v/Mn5mfBlMff9r+zzA+gWxRsCRKwEMvYTiisLr/XUiFI/4puWt0Ojdko3R3JCNWGdOWaA5g/Yxqa23kC5AA==
   /hmac-drbg/1.0.1:
     dependencies:
       hash.js: 1.1.7

@@ -12,7 +12,6 @@
   "dependencies": {
     "@qualified/codemirror-workspace": "^0.1.0",
     "codemirror": "^5.56.0",
-    "highlight.js": "^10.1.2",
     "marked": "^1.1.1",
     "typescript-language-server": "^0.4.0",
     "vscode-css-languageserver-bin": "^1.4.0",
@@ -20,7 +19,6 @@
   },
   "devDependencies": {
     "@types/codemirror": "0.0.97",
-    "@types/highlight.js": "^9.12.4",
     "@types/marked": "^1.1.0",
     "@types/webpack": "^4.41.21",
     "concurrently": "^5.3.0",
