@@ -74,7 +74,7 @@ const config: CodeMirror.EditorConfiguration = {
   autoCloseBrackets: true,
 };
 
-const tsEditorAdd = CodeMirror($("#editor"), {
+const jsonEditor = CodeMirror($("#editor"), {
   ...config,
   mode: "application/json",
   value: sampleJson,
@@ -101,4 +101,4 @@ const workspace = new Workspace({
   renderMarkdown: (markdown) => marked(markdown),
 });
 
-workspace.openTextDocument("inmemory://workspace/tsconfig.json", tsEditorAdd);
+workspace.openTextDocument("inmemory://workspace/tsconfig.json", jsonEditor);
