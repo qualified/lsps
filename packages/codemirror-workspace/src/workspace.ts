@@ -60,18 +60,17 @@ export interface WorkspaceOptions {
    * The URI of the project root.
    */
   rootUri: string;
-  // TODO Rename this option to something without `Uri`.
   /**
-   * Provide Language Server endpoint.
+   * Provide Language Server connection string.
    *
    * The returned string can be either:
    *
-   * - URI of a WebSocket proxy of a Language Server
+   * - URI of a WebSocket proxy of a Language Server (`wss?://`)
    * - Path to a script to start Language Server in Web Worker
    *
    * If the returned string does not start with `wss?://`, it's assumed to be a Worker script.
    */
-  getServerUri: (this: void, langserverId: string) => Promise<string>;
+  getConnectionString: (this: void, langserverId: string) => Promise<string>;
   /**
    * Provide language association (language id, language server id) for a file with the uri.
    */
@@ -106,8 +105,8 @@ export class Workspace {
   private documentVersions: { [uri: string]: number };
   // Array of Disposers to remove event listeners.
   private subscriptionDisposers: WeakMap<Editor, Disposer[]>;
-  // Function to get the language server's uri when creating new connection.
-  private getServerUri: (langserverId: string) => Promise<string>;
+  // Function to get the language server's connection string when creating new connection.
+  private getConnectionString: (langserverId: string) => Promise<string>;
   // Function to get the language association from the document uri.
   private getLanguageAssociation: (uri: string) => LanguageAssociation | null;
   // Function to get convert Markdown to HTML string.
@@ -126,7 +125,7 @@ export class Workspace {
     this.documentVersions = Object.create(null);
     this.subscriptionDisposers = new WeakMap();
     this.rootUri = options.rootUri;
-    this.getServerUri = options.getServerUri.bind(void 0);
+    this.getConnectionString = options.getConnectionString.bind(void 0);
     this.getLanguageAssociation = options.getLanguageAssociation.bind(void 0);
     this.canHandleMarkdown = typeof options.renderMarkdown === "function";
     const renderMarkdown = options.renderMarkdown || ((x: string) => x);
@@ -489,14 +488,14 @@ export class Workspace {
     const existing = this.connections[serverId];
     if (existing) return existing;
 
-    const proxyEndpoint = await this.getServerUri(serverId);
-    if (!proxyEndpoint) return;
+    const connectionString = await this.getConnectionString(serverId);
+    if (!connectionString) return;
 
     // If we got some string that doesn't start with Web Socket protocol, assume
     // it's the worker's location.
-    const messageConn = /^wss?:\/\//.test(proxyEndpoint)
-      ? createWebSocketMessageConnection(new WebSocket(proxyEndpoint))
-      : createWorkerMessageConnection(new Worker(proxyEndpoint));
+    const messageConn = /^wss?:\/\//.test(connectionString)
+      ? createWebSocketMessageConnection(new WebSocket(connectionString))
+      : createWorkerMessageConnection(new Worker(connectionString));
     const conn = await messageConn.then(createLspConnection);
     this.connections[serverId] = conn;
     conn.onClose(() => {

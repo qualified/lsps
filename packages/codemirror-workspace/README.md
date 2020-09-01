@@ -50,10 +50,10 @@ const workspace = new Workspace({
     return null;
   },
 
-  // Provide server to connect to. Required.
+  // Provide the server's connection string. Required.
   // The returned string can be a URI of WebSocket proxy or
   // a location of Worker script to start Language Server.
-  getServerUri: async (langserverId: string) => {
+  getConnectionString: async (langserverId: string) => {
     switch (langserverId) {
       case "typescript-language-server":
         // Use some API to start remote Language Server and return a string.

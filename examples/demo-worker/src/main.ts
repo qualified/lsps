@@ -89,7 +89,7 @@ const workspace = new Workspace({
     }
     return null;
   },
-  getServerUri: async (id: string) => {
+  getConnectionString: async (id: string) => {
     switch (id) {
       case JSON_WORKER:
         return "js/worker.js";

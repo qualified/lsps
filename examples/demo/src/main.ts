@@ -120,7 +120,7 @@ const workspace = new Workspace({
     // Workspace will ignore the file if null is returned.
     return null;
   },
-  getServerUri: async (id: string) => {
+  getConnectionString: async (id: string) => {
     switch (id) {
       case "typescript-language-server":
         return "ws://localhost:9990";

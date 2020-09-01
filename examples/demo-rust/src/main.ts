@@ -75,7 +75,7 @@ const workspace = new Workspace({
     }
     return null;
   },
-  getServerUri: async (id: string) => {
+  getConnectionString: async (id: string) => {
     switch (id) {
       case "rust-analyzer":
         return "ws://localhost:9999";
