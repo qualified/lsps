@@ -6,6 +6,8 @@ Monorepo of packages related to [LSP][lsp].
 
 - [`@qualified/vscode-jsonrpc-ws`]
   - Create VSCode JSON RPC `MessageConnection` over WebSocket
+- [`@qualified/vscode-jsonrpc-ww`]
+  - Create VSCode JSON RPC `MessageConnection` to Web Worker
 - [`@qualified/lsp-connection`]
   - VSCode JSON RPC `MessageConnection` wrapper for LSP messages
 - [`@qualified/codemirror-workspace`]
@@ -99,6 +101,7 @@ See [examples/demo](./examples/demo) for a simple demo project with TypeScript +
 [lsp]: https://microsoft.github.io/language-server-protocol/
 [`lsp-ws-proxy`]: https://github.com/qualified/lsp-ws-proxy
 [`@qualified/vscode-jsonrpc-ws`]: ./packages/vscode-jsonrpc-ws
+[`@qualified/vscode-jsonrpc-ww`]: ./packages/vscode-jsonrpc-ww
 [`@qualified/lsp-connection`]: ./packages/lsp-connection
 [`@qualified/codemirror-workspace`]: ./packages/codemirror-workspace
 [ok]: ./docs/img/ok.svg

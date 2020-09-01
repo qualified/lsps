@@ -2,6 +2,7 @@
   "files": [],
   "references": [
     { "path": "./vscode-jsonrpc-ws" },
+    { "path": "./vscode-jsonrpc-ww" },
     { "path": "./lsp-connection" },
     { "path": "./codemirror-workspace" }
   ]

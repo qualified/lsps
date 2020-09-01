@@ -1,16 +1,12 @@
 {
   "extends": "../tsconfig-base.json",
   "compilerOptions": {
+    "lib": ["es2020", "webworker", "scripthost"],
     "skipLibCheck": true,
     "composite": true,
     "rootDir": "src",
     "outDir": "lib/cjs",
     "tsBuildInfoFile": "lib/cjs/tsconfig.tsbuildinfo"
   },
-  "include": ["src/**/*"],
-  "references": [
-    { "path": "../vscode-jsonrpc-ws" },
-    { "path": "../vscode-jsonrpc-ww" },
-    { "path": "../lsp-connection" }
-  ]
+  "include": ["src/**/*"]
 }

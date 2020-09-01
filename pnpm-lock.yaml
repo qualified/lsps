@@ -104,6 +104,7 @@ importers:
     dependencies:
       '@qualified/lsp-connection': 'link:../lsp-connection'
       '@qualified/vscode-jsonrpc-ws': 'link:../vscode-jsonrpc-ws'
+      '@qualified/vscode-jsonrpc-ww': 'link:../vscode-jsonrpc-ww'
       vscode-languageserver-protocol: 3.16.0-next.6
     devDependencies:
       '@types/codemirror': 0.0.97
@@ -112,6 +113,7 @@ importers:
     specifiers:
       '@qualified/lsp-connection': ^0.1.0
       '@qualified/vscode-jsonrpc-ws': ^0.1.0
+      '@qualified/vscode-jsonrpc-ww': ^0.1.0
       '@types/codemirror': ^0.0.97
       codemirror: ^5.56.0
       typescript: ^4.0.2
@@ -127,6 +129,14 @@ importers:
       vscode-jsonrpc: ^6.0.0-next.4
       vscode-languageserver-protocol: ^3.16.0-next.6
   packages/vscode-jsonrpc-ws:
+    dependencies:
+      vscode-jsonrpc: 6.0.0-next.4
+    devDependencies:
+      typescript: 4.0.2
+    specifiers:
+      typescript: ^4.0.2
+      vscode-jsonrpc: ^6.0.0-next.4
+  packages/vscode-jsonrpc-ww:
     dependencies:
       vscode-jsonrpc: 6.0.0-next.4
     devDependencies:

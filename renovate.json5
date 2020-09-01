@@ -3,6 +3,7 @@
   ignoreDeps: [
     // Packages in workspace
     "@qualified/vscode-jsonrpc-ws",
+    "@qualified/vscode-jsonrpc-ww",
     "@qualified/lsp-connection",
     "@qualified/codemirror-workspace",
   ],

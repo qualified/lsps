@@ -1,0 +1,26 @@
+{
+  "name": "@qualified/vscode-jsonrpc-ww",
+  "description": "Create VSCode JSON RPC MessageConnection to Web Worker",
+  "keywords": [
+    "vscode-jsonrpc",
+    "webworker"
+  ],
+  "version": "0.1.0",
+  "license": "MIT",
+  "homepage": "https://github.com/qualified/lsps#readme",
+  "repository": "https://github.com/qualified/lsps",
+  "bugs": "https://github.com/qualified/lsps/issues",
+  "main": "lib/cjs/index",
+  "module": "lib/esm/index",
+  "files": [
+    "lib/**/*.js",
+    "lib/**/*.js.map",
+    "lib/**/*.d.ts"
+  ],
+  "dependencies": {
+    "vscode-jsonrpc": "^6.0.0-next.4"
+  },
+  "devDependencies": {
+    "typescript": "^4.0.2"
+  }
+}

@@ -6,7 +6,8 @@ import {
   DiagnosticTag,
 } from "vscode-languageserver-protocol";
 
-import { createMessageConnection } from "@qualified/vscode-jsonrpc-ws";
+import { createMessageConnection as createWebSocketMessageConnection } from "@qualified/vscode-jsonrpc-ws";
+import { createMessageConnection as createWorkerMessageConnection } from "@qualified/vscode-jsonrpc-ww";
 import { createLspConnection, LspConnection } from "@qualified/lsp-connection";
 
 import {
@@ -474,11 +475,12 @@ export class Workspace {
     const proxyEndpoint = await this.getServerUri(serverId);
     if (!proxyEndpoint) return;
 
-    // Note that we can support Language Servers in Workers
-    // by changing the inner MessageConnection.
-    const conn = await createMessageConnection(
-      new WebSocket(proxyEndpoint)
-    ).then(createLspConnection);
+    // If we got some string that doesn't start with Web Socket protocol, assume
+    // it's the worker's location.
+    const messageConn = /^wss?:\/\//.test(proxyEndpoint)
+      ? createWebSocketMessageConnection(new WebSocket(proxyEndpoint))
+      : createWorkerMessageConnection(new Worker(proxyEndpoint));
+    const conn = await messageConn.then(createLspConnection);
     this.connections[serverId] = conn;
     conn.onClose(() => {
       delete this.connections[serverId];
