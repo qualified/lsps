@@ -70,7 +70,7 @@ const workspace = new Workspace({
   async getServerUri(id: string) {
     switch (id) {
       case JSON_WORKER:
-        return "/js/worker.js";
+        return "js/worker.js";
       default:
         return "";
     }

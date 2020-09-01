@@ -69,7 +69,7 @@ const workspace = new Workspace({
 
       case "json-worker":
         // Return a location of a script to start Language Server in Web Worker.
-        return "/js/json-worker.js";
+        return "js/json-worker.js";
 
       default:
         return "";
