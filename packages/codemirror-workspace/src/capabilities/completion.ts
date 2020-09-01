@@ -27,7 +27,6 @@ export const showInvokedCompletions = (
   [tokenFrom, tokenTo]: [Position, Position],
   renderMarkdown: (x: string) => string = (x) => x
 ) => {
-  items = excludeSnippets(items);
   if (items.length === 0) return;
 
   const typed = editor.getRange(tokenFrom, tokenTo);
@@ -96,7 +95,6 @@ export const showTriggeredCompletions = (
   cursorPosition: Position,
   renderMarkdown: (x: string) => string = (x) => x
 ) => {
-  items = excludeSnippets(items);
   if (items.length === 0) return;
 
   editor.showHint({
@@ -214,17 +212,6 @@ const itemRenderer = (item: CompletionItem) => (el: HTMLElement) => {
   ].join(" ");
   el.appendChild(document.createTextNode(item.label));
 };
-
-// Exclude snippet item because it's not supported yet.
-// Allow items that can be inserted as plaintext because
-// TypeScript server seems return items that can be inserted as plaintext as snippet.
-const excludeSnippets = (items: CompletionItem[]) =>
-  items.filter((x) => {
-    return (
-      x.insertTextFormat !== InsertTextFormat.Snippet ||
-      !/\$[1-9{]/.test(x.textEdit?.newText || x.insertText || x.label)
-    );
-  });
 
 const filteredItems = (
   items: CompletionItem[],
