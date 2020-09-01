@@ -30,6 +30,8 @@ The styling definitely needs work, but the above shows:
 
 See [examples/demo-rust](./examples/demo-rust) to run this locally.
 
+See [examples/demo-worker](./examples/demo-worker) for an example with simple JSON Language Server running in Web Worker.
+
 See [examples/demo](./examples/demo) for a simple demo project with TypeScript + CSS + HTML editors.
 
 ## Tools

@@ -100,6 +100,46 @@ importers:
       webpack: ^4.44.1
       webpack-bundle-analyzer: ^3.8.0
       webpack-cli: ^3.3.12
+  examples/demo-worker:
+    dependencies:
+      '@qualified/codemirror-workspace': 'link:../../packages/codemirror-workspace'
+      codemirror: 5.57.0
+      highlight.js: 10.1.2
+      marked: 1.1.1
+      vscode-json-languageservice: 3.8.3
+      vscode-languageserver-protocol: 3.16.0-next.6
+    devDependencies:
+      '@types/codemirror': 0.0.97
+      '@types/highlight.js': 9.12.4
+      '@types/marked': 1.1.0
+      concurrently: 5.3.0
+      css-loader: 4.2.1_webpack@4.44.1
+      rimraf: 3.0.2
+      serve: 11.3.2
+      style-loader: 1.2.1_webpack@4.44.1
+      ts-loader: 8.0.2_typescript@4.0.2
+      typescript: 4.0.2
+      webpack: 4.44.1_7d74d9f6ceb0e540c1e44d9709220c58
+      webpack-cli: 3.3.12_webpack@4.44.1
+    specifiers:
+      '@qualified/codemirror-workspace': ^0.1.0
+      '@types/codemirror': 0.0.97
+      '@types/highlight.js': ^9.12.4
+      '@types/marked': ^1.1.0
+      codemirror: ^5.56.0
+      concurrently: ^5.3.0
+      css-loader: ^4.2.1
+      highlight.js: ^10.1.2
+      marked: ^1.1.1
+      rimraf: ^3.0.2
+      serve: ^11.3.2
+      style-loader: ^1.2.1
+      ts-loader: ^8.0.2
+      typescript: ^4.0.2
+      vscode-json-languageservice: ^3.8.3
+      vscode-languageserver-protocol: 3.16.0-next.6
+      webpack: ^4.44.1
+      webpack-cli: ^3.3.12
   packages/codemirror-workspace:
     dependencies:
       '@qualified/lsp-connection': 'link:../lsp-connection'
@@ -2435,6 +2475,10 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-KXPvOm8K9IJKFM0bmdn8QXh7udDh1g/giieX0NLCaMnb4hEiVFqnop2ImTXCc5e0/oHz3LTqmHGtExn5hfMkOA==
+  /jsonc-parser/2.3.0:
+    dev: false
+    resolution:
+      integrity: sha512-b0EBt8SWFNnixVdvoR2ZtEGa9ZqLhbJnOjezn+WP+8kspFm+PFYDN8Z4Bc7pRlDjvuVcADSUkroIuTWWn/YiIA==
   /jsonfile/4.0.0:
     dev: false
     optionalDependencies:
@@ -4428,6 +4472,16 @@ packages:
     dev: false
     resolution:
       integrity: sha512-mIb5VMXM5jI97HzCk2eadI1K//rCEZXte0wBqA7PGXsyJH4KTyJUaYk9MR+mbfpUl2vMi3HZw9GUOLGYLc6l5w==
+  /vscode-json-languageservice/3.8.3:
+    dependencies:
+      jsonc-parser: 2.3.0
+      vscode-languageserver-textdocument: 1.0.1
+      vscode-languageserver-types: 3.15.1
+      vscode-nls: 4.1.2
+      vscode-uri: 2.1.2
+    dev: false
+    resolution:
+      integrity: sha512-8yPag/NQHCuTthahyaTtzK0DHT0FKM/xBU0mFBQ8nMo8C1i2P+FCyIVqICoNoHkRI2BTGlXKomPUpsqjSz0TnQ==
   /vscode-jsonrpc/5.0.1:
     dev: false
     engines:
@@ -4460,6 +4514,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-tW8LMFBBr6WJ33mzYAjiLTu/4tch9nvJ+rBhUNzJ8X1zNR39vj8CV3FsnrxzAqvOB+qBWEOQa0tjupW1mNo2GQ==
+  /vscode-languageserver-textdocument/1.0.1:
+    dev: false
+    resolution:
+      integrity: sha512-UIcJDjX7IFkck7cSkNNyzIz5FyvpQfY7sdzVy+wkKN/BLaD4DQ0ppXQrKePomCxTS7RrolK1I0pey0bG9eh8dA==
   /vscode-languageserver-types/3.15.1:
     dev: false
     resolution:
@@ -4500,6 +4558,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-obtSWTlbJ+a+TFRYGaUumtVwb+InIUVI0Lu0VBUAPmj2cU5JutEXg3xUE0c2J5Tcy7h2DEKVJBFi+Y9ZSFzzPQ==
+  /vscode-uri/2.1.2:
+    dev: false
+    resolution:
+      integrity: sha512-8TEXQxlldWAuIODdukIb+TR5s+9Ds40eSJrw+1iDDA9IFORPjMELarNQE3myz5XIkWWpdprmJjm1/SxMlWOC8A==
   /watchpack-chokidar2/2.0.0:
     dependencies:
       chokidar: 2.1.8
