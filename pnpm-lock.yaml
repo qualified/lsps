@@ -120,6 +120,7 @@ importers:
       ts-loader: 8.0.2_typescript@4.0.2
       typescript: 4.0.2
       webpack: 4.44.1_7d74d9f6ceb0e540c1e44d9709220c58
+      webpack-bundle-analyzer: 3.8.0
       webpack-cli: 3.3.12_webpack@4.44.1
     specifiers:
       '@qualified/codemirror-workspace': ^0.1.0
@@ -139,6 +140,7 @@ importers:
       vscode-json-languageservice: ^3.8.3
       vscode-languageserver-protocol: 3.16.0-next.6
       webpack: ^4.44.1
+      webpack-bundle-analyzer: ^3.8.0
       webpack-cli: ^3.3.12
   packages/codemirror-workspace:
     dependencies:
@@ -2987,11 +2989,11 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-8AV/sCtuzUeTo8gQK5qDZzARrulB3egtLzFgteqB2tcT4Mw7B8Kt7JcDHmltjz6FOAHsvTevk70gZEbhM4ZS9Q==
-  /opener/1.5.1:
+  /opener/1.5.2:
     dev: true
     hasBin: true
     resolution:
-      integrity: sha512-goYSy5c2UXE4Ra1xixabeVh1guIX/ZV/YokJksb6q2lubWu6UbvPQ20p542/sFIll1nl8JnCyK9oBaOcCWXwvA==
+      integrity: sha512-ur5UIdyw5Y7yEj9wLzhqXiy6GZ3Mwx0yGI+5sMn2r0N0v3cKJvUmFH5yPP+WXh9e0xfyzyJX95D8l088DNFj7A==
   /os-browserify/0.3.0:
     dev: true
     resolution:
@@ -4594,7 +4596,7 @@ packages:
       gzip-size: 5.1.1
       lodash: 4.17.20
       mkdirp: 0.5.5
-      opener: 1.5.1
+      opener: 1.5.2
       ws: 6.2.1
     dev: true
     engines:

@@ -1,12 +1,17 @@
 const path = require("path");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
 
 module.exports = [
   {
-    mode: "development",
     entry: {
       main: "./src/main.ts",
     },
-    plugins: [],
+    plugins: [
+      ...(process.env.BUNDLE_ANALYZER === "1"
+        ? [new BundleAnalyzerPlugin()]
+        : []),
+    ],
     module: {
       rules: [
         {
@@ -30,7 +35,6 @@ module.exports = [
     },
   },
   {
-    mode: "development",
     entry: {
       main: "./src/worker.ts",
     },

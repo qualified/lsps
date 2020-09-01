@@ -10,7 +10,11 @@ import "codemirror/addon/edit/closebrackets";
 // import "codemirror/keymap/vim";
 
 import marked from "marked";
-import hljs from "highlight.js";
+// @ts-expect-error Type not provided
+import hljs from "highlight.js/lib/core";
+// @ts-expect-error Type not provided
+import json from "highlight.js/lib/languages/json";
+hljs.registerLanguage("json", json);
 import "highlight.js/styles/github.css";
 
 import { Workspace } from "@qualified/codemirror-workspace";

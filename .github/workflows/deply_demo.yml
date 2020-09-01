@@ -19,7 +19,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-
       - run: pnpm install
-      - run: cd examples/demo-worker && pnpm build
+      - run: |
+          cd examples/demo-worker && pnpm build:production
       - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
