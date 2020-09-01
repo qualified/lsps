@@ -28,7 +28,7 @@ jsonService.configure({
     {
       // "name": "tsconfig.json",
       // description: "TypeScript compiler configuration file",
-      uri: "http://json.schemastore.org/tsconfig",
+      uri: "https://json.schemastore.org/tsconfig",
       fileMatch: ["tsconfig.json"],
     },
   ],
