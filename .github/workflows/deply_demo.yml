@@ -1,0 +1,28 @@
+name: Deploy Demo
+on:
+  push:
+    branches:
+      - master
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12"
+      - run: npm i -g pnpm@5
+      - uses: actions/cache@v2
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+      - run: pnpm install
+      - run: cd examples/demo-worker && pnpm build
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./examples/demo-worker/public
+      # Remove unreferenced packages from the store before caching to prevent the cache from growing.
+      - run: pnpm store prune
