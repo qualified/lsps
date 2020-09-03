@@ -17,7 +17,7 @@ Monorepo of packages related to [LSP][lsp].
 
 Example with [Rust Analyzer](https://github.com/rust-analyzer/rust-analyzer):
 
-![demo](./docs/img/demo-rust-analyzer.gif)
+![demo-rust-analyzer](./docs/img/demo-rust-analyzer.gif)
 
 The styling definitely needs work, but the above shows:
 
@@ -27,6 +27,10 @@ The styling definitely needs work, but the above shows:
 - Completion items with Markdown docs
 - Completion items with icons for each kind
 - Hover information with Markdown docs
+
+Simple snippets are supported as well:
+
+![demo-snippet-completion](./docs/img/demo-snippet-completion.gif)
 
 See [examples/demo-rust](./examples/demo-rust) to run this locally.
 
