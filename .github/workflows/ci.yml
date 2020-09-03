@@ -23,6 +23,8 @@ jobs:
             ${{ runner.os }}-pnpm-
       # Install and build projects
       - run: pnpm install
+      # Run tests for all projects
+      - run: pnpm test
       # Check code formatting
       - run: pnpx prettier --check .
       # Remove unreferenced packages from the store before caching to prevent the cache from growing.

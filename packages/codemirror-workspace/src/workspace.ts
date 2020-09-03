@@ -516,11 +516,6 @@ export class Workspace {
           completion: {
             dynamicRegistration: true,
             completionItem: {
-              // TODO Support snippet (completion with placeholders).
-              //      Should be possible by providing `hint` method in completion object.
-              // Enabling even though we don't support snippet yet because some LS requires this capability
-              // to provide completions that uses `textEdit`.
-              // We're currently treating them like plaintext so you'll see placeholders inserted as is.
               snippetSupport: true,
               insertReplaceSupport: true,
               // TODO Look into this. Commit character accepts the completion and then get inserted.

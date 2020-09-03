@@ -1,6 +1,6 @@
 /// <reference types="codemirror/addon/hint/show-hint" />
 
-import type { Editor, Position, Range, Hint, Hints } from "codemirror";
+import type { Editor, Position, Hint, Hints } from "codemirror";
 import type { CompletionItem } from "vscode-languageserver-protocol";
 import {
   CompletionItemKind,
@@ -14,6 +14,7 @@ import {
   documentationToString,
   completionItemKindToString,
 } from "../utils/conversions";
+import { insertSnippet } from "./snippet";
 
 /**
  * Show completion triggered by typing an identifier or manual invocation.
@@ -38,7 +39,30 @@ export const showInvokedCompletions = (
         from: tokenFrom,
         to: tokenTo,
         list: filtered.map((item) => {
-          // TODO Support InsertTextFormat.Snippet
+          if (item.insertTextFormat === InsertTextFormat.Snippet) {
+            let text = item.insertText || item.label;
+            let from = tokenFrom;
+            let to = tokenTo;
+            if (item.textEdit) {
+              const edit = item.textEdit;
+              [from, to] = cmRange(
+                TextEdit.is(edit) ? edit.range : edit.replace
+              );
+              text = edit.newText;
+            }
+
+            return {
+              // Note that `text` field is only set because @types/codemirror wrongly requires it.
+              text: "",
+              displayText: item.label,
+              hint: (cm: Editor) => {
+                insertSnippet(cm, text, from, to);
+              },
+              render: itemRenderer(item),
+              data: getItemData(item, renderMarkdown),
+            };
+          }
+
           if (item.textEdit) {
             const edit = item.textEdit;
             const [from, to] = cmRange(
@@ -49,21 +73,6 @@ export const showInvokedCompletions = (
               displayText: item.label,
               hint: (cm: Editor) => {
                 cm.replaceRange(edit.newText, from, to, "complete");
-                if (item.insertTextFormat === InsertTextFormat.Snippet) {
-                  // TODO Handle more than one placeholders
-                  // If `$0` exists, remove it and jump there
-                  const line = cm.getLine(from.line);
-                  const marker = line.indexOf("$0", from.ch);
-                  if (marker !== -1) {
-                    cm.replaceRange(
-                      "",
-                      { line: from.line, ch: marker },
-                      { line: from.line, ch: marker + 2 },
-                      "complete"
-                    );
-                    cm.setCursor({ line: from.line, ch: marker });
-                  }
-                }
               },
               render: itemRenderer(item),
               data: getItemData(item, renderMarkdown),

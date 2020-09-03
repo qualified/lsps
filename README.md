@@ -56,7 +56,7 @@ See [examples/demo](./examples/demo) for a simple demo project with TypeScript +
   - `insertText` ![ok]
   - `additionalTextEdits` ![no]
   - `textEdit` ![ok]
-  - `InsertTextFormat.Snippet` ![no]
+  - `InsertTextFormat.Snippet` ![meh]
   - `documentation` ![meh]
   - `command` ![no]
   - `tags` ![no]
