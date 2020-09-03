@@ -39,50 +39,29 @@ export const showInvokedCompletions = (
         from: tokenFrom,
         to: tokenTo,
         list: filtered.map((item) => {
-          if (item.insertTextFormat === InsertTextFormat.Snippet) {
-            let text = item.insertText || item.label;
-            let from = tokenFrom;
-            let to = tokenTo;
-            if (item.textEdit) {
-              const edit = item.textEdit;
-              [from, to] = cmRange(
-                TextEdit.is(edit) ? edit.range : edit.replace
-              );
-              text = edit.newText;
-            }
-
-            return {
-              // Note that `text` field is only set because @types/codemirror wrongly requires it.
-              text: "",
-              displayText: item.label,
-              hint: (cm: Editor) => {
-                insertSnippet(cm, text, from, to);
-              },
-              render: itemRenderer(item),
-              data: getItemData(item, renderMarkdown),
-            };
-          }
-
+          const displayText = item.label;
+          let text = item.insertText || item.label;
+          let from = tokenFrom;
+          let to = tokenTo;
           if (item.textEdit) {
             const edit = item.textEdit;
-            const [from, to] = cmRange(
-              TextEdit.is(edit) ? edit.range : edit.replace
-            );
-            return {
-              text: edit.newText,
-              displayText: item.label,
-              hint: (cm: Editor) => {
-                cm.replaceRange(edit.newText, from, to, "complete");
-              },
-              render: itemRenderer(item),
-              data: getItemData(item, renderMarkdown),
-            };
+            [from, to] = cmRange(TextEdit.is(edit) ? edit.range : edit.replace);
+            text = edit.newText;
           }
+          const isSnippet = item.insertTextFormat === InsertTextFormat.Snippet;
 
           return {
-            // TODO Add from/to here to handle some edge cases.
-            text: item.insertText || item.label,
-            displayText: item.label,
+            // Note that `text` field is only set because @types/codemirror wrongly requires it.
+            text: "",
+            displayText,
+            hint: (cm: Editor) => {
+              if (isSnippet) {
+                // Insert snippet and start snippet mode.
+                return insertSnippet(cm, text, from, to);
+              }
+
+              cm.replaceRange(text, from, to, "complete");
+            },
             render: itemRenderer(item),
             data: getItemData(item, renderMarkdown),
           };
