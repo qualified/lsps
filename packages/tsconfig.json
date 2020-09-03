@@ -3,6 +3,7 @@
   "references": [
     { "path": "./vscode-jsonrpc-ws" },
     { "path": "./vscode-jsonrpc-ww" },
+    { "path": "./vscode-snippet-parser" },
     { "path": "./lsp-connection" },
     { "path": "./codemirror-workspace" }
   ]

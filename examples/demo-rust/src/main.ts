@@ -55,6 +55,7 @@ const config: CodeMirror.EditorConfiguration = {
   lineNumbers: true,
   matchBrackets: true,
   autoCloseBrackets: true,
+  indentUnit: 4,
 };
 
 const rustEditor = CodeMirror($("#rust-editor"), {

@@ -5,3 +5,5 @@ lib/
 examples/*/lib/
 examples/*/public/
 examples/*/workspace/
+packages/vscode-snippet-parser/src/charCode.ts
+packages/vscode-snippet-parser/src/snippetParser.ts

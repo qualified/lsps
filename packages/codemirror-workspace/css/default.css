@@ -151,3 +151,12 @@
 .cmw-guttermark-hint {
   color: var(--color-cmw-hint);
 }
+
+/* Snippet completion */
+.cmw-snippet-tabstop {
+  text-decoration: dashed underline overline #495057;
+}
+
+.cmw-snippet-final-tabstop {
+  border-left: 2px solid rgba(0, 0, 0, 0.6);
+}

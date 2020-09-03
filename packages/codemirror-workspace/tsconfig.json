@@ -8,9 +8,11 @@
     "tsBuildInfoFile": "lib/cjs/tsconfig.tsbuildinfo"
   },
   "include": ["src/**/*"],
+  "exclude": ["src/**/*.test.ts"],
   "references": [
     { "path": "../vscode-jsonrpc-ws" },
     { "path": "../vscode-jsonrpc-ww" },
+    { "path": "../vscode-snippet-parser" },
     { "path": "../lsp-connection" }
   ]
 }
