@@ -137,8 +137,13 @@ const withItemTooltip = (hints: Hints): Hints => {
     const data = cur.data;
     if (!data) return;
 
-    // TODO Generate content from attached data
-    const content = data.documentation;
+    let content: string;
+    if (data.detail) {
+      content = data.detail;
+      if (data.documentation) content += "<br>" + data.documentation;
+    } else {
+      content = data.documentation;
+    }
     if (!content) return;
 
     const x =
