@@ -331,7 +331,7 @@ export class Workspace {
     const mouseoverStream = piped(
       fromDomEvent(editor.getWrapperElement(), "mouseover"),
       debounce(100),
-      map((ev) => editor.coordsChar({ left: ev.clientX, top: ev.clientY })),
+      map((ev) => editor.coordsChar({ left: ev.pageX, top: ev.pageY }, "page")),
       // Ignore same position
       skipDuplicates((p1, p2) => {
         if (p1.line !== p2.line) return false;
