@@ -32,17 +32,53 @@ export const showInvokedCompletions = (
 
   const typed = editor.getRange(tokenFrom, tokenTo);
   const filtered = filteredItems(items, typed, 30);
+  showCompletionItems(editor, filtered, tokenFrom, tokenTo, renderMarkdown);
+};
+
+/**
+ * Show completions triggered by a trigger character specified by the `triggerCharacters`.
+ * Completion items are inserted differently from when it's invoked.
+ * @param editor - The editor.
+ * @param items - Completion items from the server.
+ * @param pos - Current cursor position where the item will be inserted after.
+ */
+export const showTriggeredCompletions = (
+  editor: Editor,
+  items: CompletionItem[],
+  pos: Position,
+  renderMarkdown: (x: string) => string = (x) => x
+) => {
+  if (items.length === 0) return;
+
+  showCompletionItems(editor, items, pos, pos, renderMarkdown);
+};
+
+/**
+ * Hide completion popup.
+ * @param editor
+ */
+export const hideCompletions = (editor: Editor) => {
+  if (editor.state.completionActive) editor.state.completionActive.close();
+};
+
+const showCompletionItems = (
+  editor: Editor,
+  items: CompletionItem[],
+  posFrom: Position,
+  posTo: Position,
+  renderMarkdown: (s: string) => string
+) => {
   editor.showHint({
     completeSingle: false,
     hint: () =>
       withItemTooltip({
-        from: tokenFrom,
-        to: tokenTo,
-        list: filtered.map((item) => {
+        from: posFrom,
+        to: posTo,
+        list: items.map((item) => {
           const displayText = item.label;
           let text = item.insertText || item.label;
-          let from = tokenFrom;
-          let to = tokenTo;
+          let from = posFrom;
+          let to = posTo;
           if (item.textEdit) {
             const edit = item.textEdit;
             [from, to] = cmRange(TextEdit.is(edit) ? edit.range : edit.replace);
@@ -68,45 +104,6 @@ export const showInvokedCompletions = (
         }),
       }),
   });
-};
-
-/**
- * Show completions triggered by a trigger character specified by the `triggerCharacters`.
- * Completion items are inserted differently from when it's invoked.
- * @param editor - The editor.
- * @param items - Completion items from the server.
- * @param cursorPosition - Current cursor position where the item will be inserted after.
- */
-export const showTriggeredCompletions = (
-  editor: Editor,
-  items: CompletionItem[],
-  cursorPosition: Position,
-  renderMarkdown: (x: string) => string = (x) => x
-) => {
-  if (items.length === 0) return;
-
-  editor.showHint({
-    completeSingle: false,
-    hint: () =>
-      withItemTooltip({
-        from: cursorPosition,
-        to: cursorPosition,
-        list: items.map((item) => ({
-          text: item.label,
-          displayText: item.label,
-          render: itemRenderer(item),
-          data: getItemData(item, renderMarkdown),
-        })),
-      }),
-  });
-};
-
-/**
- * Hide completion popup.
- * @param editor
- */
-export const hideCompletions = (editor: Editor) => {
-  if (editor.state.completionActive) editor.state.completionActive.close();
 };
 
 interface HintData {
