@@ -58,7 +58,7 @@ See [examples/demo](./examples/demo) for a simple demo project with TypeScript +
   - `didClose` ![ok]
 - `completion`
   - `insertText` ![ok]
-  - `additionalTextEdits` ![no]
+  - `additionalTextEdits` ![ok]
   - `textEdit` ![ok]
   - `InsertTextFormat.Snippet` ![meh]
   - `documentation` ![meh]

@@ -14,6 +14,7 @@ import {
   documentationToString,
   completionItemKindToString,
 } from "../utils/conversions";
+import { applyEdits } from "../utils/editor";
 import { insertSnippet } from "./snippet";
 
 /**
@@ -93,10 +94,19 @@ const showCompletionItems = (
             hint: (cm: Editor) => {
               if (isSnippet) {
                 // Insert snippet and start snippet mode.
-                return insertSnippet(cm, text, from, to);
+                return insertSnippet(
+                  cm,
+                  text,
+                  from,
+                  to,
+                  item.additionalTextEdits
+                );
               }
 
               cm.replaceRange(text, from, to, "complete");
+              if (item.additionalTextEdits) {
+                applyEdits(cm, item.additionalTextEdits, "+complete");
+              }
             },
             render: itemRenderer(item),
             data: getItemData(item, renderMarkdown),

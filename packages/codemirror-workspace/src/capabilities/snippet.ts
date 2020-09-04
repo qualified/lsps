@@ -1,4 +1,5 @@
 import type { Editor, TextMarker, Position } from "codemirror";
+import type { TextEdit } from "vscode-languageserver-protocol";
 import { normalizeKeyMap } from "codemirror";
 import {
   SnippetParser,
@@ -9,6 +10,7 @@ import {
 } from "@qualified/vscode-snippet-parser";
 
 import { groupBy } from "../utils/array";
+import { applyEdits } from "../utils/editor";
 
 /**
  * Insert snippet by replacing the range (`from` `to`).
@@ -17,12 +19,14 @@ import { groupBy } from "../utils/array";
  * @param text - Snippet template.
  * @param from - The start of range to replace with the snippet.
  * @param to - The end of range to replace with the snippet.
+ * @param edits - Additional edits from completion item.
  */
 export const insertSnippet = (
   cm: Editor,
   text: string,
   from: Position,
-  to: Position
+  to: Position,
+  edits?: TextEdit[]
 ) => {
   // Parse and insert the final tabstop if missing.
   const snippet = new SnippetParser().parse(text, true, true);
@@ -32,7 +36,6 @@ export const insertSnippet = (
   // console.log(JSON.stringify(snippet.toTextmateString()));
   // console.log(JSON.stringify(snippet.toString()));
   cm.replaceRange(snippet.toString(), from, to, "complete");
-  if (snippet.placeholders.length === 0) return;
 
   // Add markers to tabstops so we can keep track of them after insertions.
   const markers = new Map<Placeholder, TextMarker>();
@@ -50,6 +53,9 @@ export const insertSnippet = (
       })
     );
   }
+
+  if (edits) applyEdits(cm, edits, "+complete");
+  if (snippet.placeholders.length === 0) return;
 
   let groupIndex = 0;
   const tabstopGroups = groupBy(
@@ -128,6 +134,10 @@ export const insertSnippet = (
   cm.addKeyMap(tabstopKeyMap);
   cm.on("mousedown", onMousedown);
   jumpTo(0);
+  // Finish immediately if the snippet only contained single final tabstop.
+  if (tabstopGroups.length === 1 && tabstopGroups[0].length === 1) {
+    dispose();
+  }
 };
 
 const getPlaceholderRange = (
