@@ -36,9 +36,10 @@ jsonService.configure({
 const docs: { [uri: string]: TextDocument } = {};
 
 const worker: Worker = self as any;
-const reader: BrowserMessageReader = new BrowserMessageReader(worker);
-const writer: BrowserMessageWriter = new BrowserMessageWriter(worker);
-const conn = createProtocolConnection(reader, writer);
+const conn = createProtocolConnection(
+  new BrowserMessageReader(worker),
+  new BrowserMessageWriter(worker)
+);
 conn.onRequest(
   InitializeRequest.type,
   (params): InitializeResult => {
