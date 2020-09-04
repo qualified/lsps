@@ -4,6 +4,8 @@
 import CodeMirror, { Pos, Position, Range } from "codemirror";
 import { insertSnippet } from "./snippet";
 
+import { fakeKeyInput } from "../../test-helpers/key-events";
+
 describe("insertSnippet", () => {
   // CodeMirror.Range to simple plain object with two positions
   const rangeObj = (r: Range) => ({
@@ -52,13 +54,7 @@ describe("insertSnippet", () => {
     ]);
     expect(cm.getSelections()).toEqual(["test_name"]);
 
-    // @ts-ignore Undocumented method
-    cm.triggerOnKeyDown({
-      type: "keydown",
-      keyCode: "\t".charCodeAt(0),
-      preventDefault: () => {},
-      stopPropagation: () => {},
-    });
+    fakeKeyInput(cm, "Tab");
     // Jumps to the next tabstop. `$0` (the final tabstop) in this case.
     expect(cm.listSelections().map(rangeObj)).toEqual([
       range(Pos(6, 8), Pos(6, 8)),
@@ -77,14 +73,59 @@ describe("insertSnippet", () => {
       range(Pos(0, 11), Pos(0, 11)),
       range(Pos(0, 21), Pos(0, 21)),
     ]);
-    // TODO Find a way to type characters
-    // @ts-ignore Undocumented method
-    // cm.triggerOnKeyDown({
-    //   type: "keydown",
-    //   keyCode: "a".charCodeAt(0),
-    //   preventDefault: () => {},
-    //   // stopPropagation: () => {},
-    // });
-    // expect(cm.getValue()).toEqual('eprintln!("a = {:?}", a);');
+    // Updates both tabstops
+    fakeKeyInput(cm, "a");
+    expect(cm.getValue()).toEqual('eprintln!("a = {:?}", a);');
+    fakeKeyInput(cm, "b");
+    expect(cm.getValue()).toEqual('eprintln!("ab = {:?}", ab);');
+    // Jump to the final tabstop
+    fakeKeyInput(cm, "Tab");
+    expect(cm.listSelections().map(rangeObj)).toEqual([
+      range(Pos(0, 27), Pos(0, 27)),
+    ]);
+  });
+
+  test("jumps", () => {
+    const div = document.createElement("div");
+    document.body.appendChild(div);
+    const cm = CodeMirror(div, { value: "" });
+    insertSnippet(cm, "${1:one} ${2:two} ${3:three}$0", Pos(0, 0), Pos(0, 0));
+    // inserted without tabstops/placeholders
+    expect(cm.getValue()).toEqual("one two three");
+    // The first placeholder 'one' is selected
+    expect(cm.listSelections().map(rangeObj)).toEqual([
+      range(Pos(0, 0), Pos(0, 3)),
+    ]);
+    expect(cm.getSelections()).toEqual(["one"]);
+
+    // Jump to the next tabstop
+    fakeKeyInput(cm, "Tab");
+    expect(cm.listSelections().map(rangeObj)).toEqual([
+      range(Pos(0, 4), Pos(0, 7)),
+    ]);
+    expect(cm.getSelections()).toEqual(["two"]);
+    // Jump back to the previous tabstop
+    fakeKeyInput(cm, "Shift-Tab");
+    expect(cm.listSelections().map(rangeObj)).toEqual([
+      range(Pos(0, 0), Pos(0, 3)),
+    ]);
+    expect(cm.getSelections()).toEqual(["one"]);
+    // Shift-Tab has no effect on first tabstop
+    fakeKeyInput(cm, "Shift-Tab");
+    expect(cm.listSelections().map(rangeObj)).toEqual([
+      range(Pos(0, 0), Pos(0, 3)),
+    ]);
+    // Jump two tabstops
+    fakeKeyInput(cm, "Tab");
+    fakeKeyInput(cm, "Tab");
+    expect(cm.listSelections().map(rangeObj)).toEqual([
+      range(Pos(0, 8), Pos(0, 13)),
+    ]);
+    expect(cm.getSelections()).toEqual(["three"]);
+    // Jump to the final tabstop
+    fakeKeyInput(cm, "Tab");
+    expect(cm.listSelections().map(rangeObj)).toEqual([
+      range(Pos(0, 13), Pos(0, 13)),
+    ]);
   });
 });

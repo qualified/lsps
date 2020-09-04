@@ -22,7 +22,8 @@
     "css/*.css"
   ],
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "peerDependencies": {
     "codemirror": "^5.x"
