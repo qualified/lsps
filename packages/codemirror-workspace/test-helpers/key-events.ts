@@ -48,15 +48,15 @@ const triggerFakeKeyEvent = (cm: Editor, type: KeyEvent, keyInfo: KeyInfo) => {
   const e = fakeKeyEvent(type, keyInfo);
   switch (type) {
     case "keydown":
-      // @ts-ignore Undocument method that exists for testing
+      // @ts-ignore Undocumented method that exists for testing
       cm.triggerOnKeyDown(e);
       break;
     case "keypress":
-      // @ts-ignore Undocument method that exists for testing
+      // @ts-ignore Undocumented method that exists for testing
       cm.triggerOnKeyPress(e);
       break;
     case "keyup":
-      // @ts-ignore Undocument method that exists for testing
+      // @ts-ignore Undocumented method that exists for testing
       cm.triggerOnKeyUp(e);
       break;
   }

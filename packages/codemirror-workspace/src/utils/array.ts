@@ -17,7 +17,7 @@ export const groupBy = <T>(xs: readonly T[], compare: Compare<T>): T[][] => {
 };
 
 // For stable sorting.
-// Insertion sort works well for small input, especiall when nearly sorted.
+// Insertion sort works well for small input, especially when nearly sorted.
 export const insertionSort = <T>(xs: T[], compare: Compare<T>): T[] => {
   for (let i = 1; i < xs.length; ++i) {
     if (compare(xs[i - 1], xs[i]) > 0) {

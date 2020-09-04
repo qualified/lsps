@@ -77,7 +77,7 @@ See [examples/demo](./examples/demo) for a simple demo project with TypeScript +
 - `codeAction` ![no]
 - `codeLens` ![no]
 - `documentLink` ![no]
-- `colorProvier` ![no]
+- `colorProvider` ![no]
 - Formatting
   - `formatting` ![no]
   - `rangeFormatting` ![no]

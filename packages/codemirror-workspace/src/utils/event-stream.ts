@@ -38,7 +38,7 @@ export const map = <T, U>(transform: (x: T) => U) => (
   return (cb) => stream((x) => cb(transform(x)));
 };
 
-// Peform side effect
+// Perform side effect
 export const tap = <T>(effect: (x: T) => void) => (
   stream: Stream<T>
 ): Stream<T> => {

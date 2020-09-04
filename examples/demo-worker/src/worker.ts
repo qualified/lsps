@@ -1,6 +1,5 @@
-// Simple JSON LSP in Web Worker that provides completion and hover.
-// Note that we don't fully support snippet insertion so placeholders get inserted as is.
-// Currently, includes a schema for `tsconfig.json`.
+// Simple JSON LS in Web Worker that provides completion and hover.
+// Includes a schema for `tsconfig.json`.
 import {
   createProtocolConnection,
   BrowserMessageReader,
