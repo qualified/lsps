@@ -1,7 +1,7 @@
 import type { Editor, Position, TextMarker } from "codemirror";
 import type { Hover } from "vscode-languageserver-protocol";
 
-import { addTooltip } from "../utils/tooltip";
+import { addTooltip } from "../ui/tooltip";
 import { cmRange, hoverContentsToString } from "../utils/conversions";
 
 const states = new WeakMap<Editor, LspHoverState>();

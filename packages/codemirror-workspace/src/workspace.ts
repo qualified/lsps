@@ -39,7 +39,7 @@ import {
 } from "./utils/event-stream";
 import { fromEditorEvent, onEditorEvent } from "./events";
 import { lspPosition, lspChange } from "./utils/conversions";
-import { showContextMenu } from "./utils/context-menu";
+import { showContextMenu } from "./ui/context-menu";
 
 /**
  * Describes text document's language association.

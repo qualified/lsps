@@ -2,7 +2,7 @@ import type { Editor, Position } from "codemirror";
 import type { SignatureHelp } from "vscode-languageserver-protocol";
 
 import { documentationToString } from "../utils/conversions";
-import { addTooltip } from "../utils/tooltip";
+import { addTooltip } from "../ui/tooltip";
 
 const states = new WeakMap<Editor, LspSignatureHelpState>();
 
