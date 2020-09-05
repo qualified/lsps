@@ -26,3 +26,25 @@ export const applyEdits = (cm: Editor, edits: TextEdit[], origin?: string) => {
   cm.setCursor(current.find().to);
   current.clear();
 };
+
+/**
+ * Highlight range of text.
+ * @param cm - Editor to operate on.
+ * @param from - Start of the range to highlight
+ * @param to - End of the range to highlight
+ * @param duration - Clear after duration if given.
+ */
+export const highlightRange = (
+  cm: Editor,
+  from: Position,
+  to: Position,
+  duration: number = 0
+): TextMarker => {
+  const mark = cm.markText(from, to, { className: "cmw-highlight" });
+  if (typeof duration === "number" && duration > 0) {
+    setTimeout(() => {
+      mark.clear();
+    }, duration);
+  }
+  return mark;
+};

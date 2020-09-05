@@ -9,6 +9,7 @@ const states = new WeakMap<Editor, LspHoverState>();
 interface LspHoverState {
   marker?: TextMarker;
   tooltip?: HTMLElement;
+  disabled?: boolean;
 }
 
 /**
@@ -56,4 +57,16 @@ export const removeHoverInfo = (editor: Editor) => {
   if (state.marker) state.marker.clear();
   if (state.tooltip) state.tooltip.remove();
   states.delete(editor);
+};
+
+export const hoverInfoEnabled = (editor: Editor) =>
+  !states.get(editor)?.disabled;
+
+export const disableHoverInfo = (editor: Editor) => {
+  removeHoverInfo(editor);
+  states.set(editor, { disabled: true });
+};
+
+export const enableHoverInfo = (editor: Editor) => {
+  removeHoverInfo(editor);
 };

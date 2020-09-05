@@ -1,5 +1,11 @@
 export { showDiagnostics, removeDiagnostics } from "./diagnostic";
-export { showHoverInfo, removeHoverInfo } from "./hover";
+export {
+  showHoverInfo,
+  removeHoverInfo,
+  hoverInfoEnabled,
+  disableHoverInfo,
+  enableHoverInfo,
+} from "./hover";
 export { showHighlights, removeHighlights } from "./document-highlight";
 export {
   showInvokedCompletions,

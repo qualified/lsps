@@ -1,4 +1,4 @@
-import type { Editor } from "codemirror";
+import type { Editor, Position } from "codemirror";
 import { normalizeKeyMap } from "codemirror";
 import {
   CompletionTriggerKind,
@@ -15,6 +15,9 @@ import {
   removeDiagnostics,
   showHoverInfo,
   removeHoverInfo,
+  hoverInfoEnabled,
+  disableHoverInfo,
+  enableHoverInfo,
   showHighlights,
   removeHighlights,
   showInvokedCompletions,
@@ -34,8 +37,9 @@ import {
   Disposer,
   debouncedBuffer,
 } from "./utils/event-stream";
-import { fromEditorEvent } from "./events";
+import { fromEditorEvent, onEditorEvent } from "./events";
 import { lspPosition, lspChange } from "./utils/conversions";
+import { showContextMenu } from "./utils/context-menu";
 
 /**
  * Describes text document's language association.
@@ -330,6 +334,7 @@ export class Workspace {
     // Show hover information on mouseover
     const mouseoverStream = piped(
       fromDomEvent(editor.getWrapperElement(), "mouseover"),
+      filter(() => hoverInfoEnabled(editor)),
       debounce(100),
       map((ev) => editor.coordsChar({ left: ev.pageX, top: ev.pageY }, "page")),
       // Ignore same position
@@ -370,67 +375,134 @@ export class Workspace {
       })
     );
 
+    disposers.push(
+      onEditorEvent(editor, "cmw:contextMenuOpened", ([cm]) => {
+        disableHoverInfo(cm);
+        hideCompletions(cm);
+        removeSignatureHelp(cm);
+      }),
+      onEditorEvent(editor, "cmw:contextMenuClosed", ([cm]) => {
+        enableHoverInfo(cm);
+      })
+    );
+
+    const gotoDefinition = (cm: Editor, pos: Position) => {
+      conn
+        .getDefinition({
+          textDocument: { uri },
+          position: lspPosition(pos),
+        })
+        .then((location) => {
+          if (location) gotoLocation(cm, uri, location);
+        });
+    };
+    const gotoDeclaration = (cm: Editor, pos: Position) => {
+      conn
+        .getDeclaration({
+          textDocument: { uri },
+          position: lspPosition(pos),
+        })
+        .then((location) => {
+          if (location) gotoLocation(cm, uri, location);
+        });
+    };
+    const gotoTypeDefinition = (cm: Editor, pos: Position) => {
+      conn
+        .getTypeDefinition({
+          textDocument: { uri },
+          position: lspPosition(pos),
+        })
+        .then((location) => {
+          if (location) gotoLocation(cm, uri, location);
+        });
+    };
+    const gotoReferences = (cm: Editor, pos: Position) => {
+      conn
+        .getReferences({
+          textDocument: { uri },
+          position: lspPosition(pos),
+          context: {
+            includeDeclaration: true,
+          },
+        })
+        .then((location) => {
+          if (location) gotoLocation(cm, uri, location);
+        });
+    };
+    const gotoImplementations = (cm: Editor, pos: Position) => {
+      conn
+        .getImplementation({
+          textDocument: { uri },
+          position: lspPosition(pos),
+        })
+        .then((location) => {
+          if (location) gotoLocation(cm, uri, location);
+        });
+    };
+
+    disposers.push(
+      onEditorEvent(editor, "contextmenu", ([cm, e]) => {
+        e.preventDefault();
+        const pos = cm.coordsChar({ left: e.pageX, top: e.pageY }, "page");
+        // TODO Disable items if the server doesn't support it.
+        showContextMenu(cm, e.pageX, e.pageY, [
+          [
+            {
+              label: "Go to Definition",
+              handler: () => {
+                gotoDefinition(cm, pos);
+              },
+            },
+            {
+              label: "Go to Type Definition",
+              handler: () => {
+                gotoTypeDefinition(cm, pos);
+              },
+            },
+            {
+              label: "Go to Implementations",
+              handler: () => {
+                gotoImplementations(cm, pos);
+              },
+            },
+            {
+              label: "Go to References",
+              handler: () => {
+                gotoReferences(cm, pos);
+              },
+            },
+          ],
+          // TODO Handle Copy and Cut because we won't show the browser's context menu.
+          // Paste requires explicit permission.
+          [
+            {
+              label: "Copy",
+            },
+            {
+              label: "Cut",
+            },
+          ],
+        ]);
+      })
+    );
+
     // Add some keymaps for jumping to various locations.
-    // TODO Show a menu when right clicked on symbol
     const keyMap = normalizeKeyMap({
       // TODO Make this configurable
-      // Go to Definition
       "Alt-G D": (cm: Editor) => {
-        conn
-          .getDefinition({
-            textDocument: { uri },
-            position: lspPosition(cm.getCursor()),
-          })
-          .then((location) => {
-            if (location) gotoLocation(cm, uri, location);
-          });
+        gotoDefinition(cm, cm.getCursor());
       },
-      // Go to Declaration
       "Alt-G H": (cm: Editor) => {
-        conn
-          .getDeclaration({
-            textDocument: { uri },
-            position: lspPosition(cm.getCursor()),
-          })
-          .then((location) => {
-            if (location) gotoLocation(cm, uri, location);
-          });
+        gotoDeclaration(cm, cm.getCursor());
       },
-      // Go to TypeDefinition
       "Alt-G T": (cm: Editor) => {
-        conn
-          .getTypeDefinition({
-            textDocument: { uri },
-            position: lspPosition(cm.getCursor()),
-          })
-          .then((location) => {
-            if (location) gotoLocation(cm, uri, location);
-          });
+        gotoTypeDefinition(cm, cm.getCursor());
       },
-      // Go to Implementations
       "Alt-G I": (cm: Editor) => {
-        conn
-          .getImplementation({
-            textDocument: { uri },
-            position: lspPosition(cm.getCursor()),
-          })
-          .then((location) => {
-            if (location) gotoLocation(cm, uri, location);
-          });
+        gotoImplementations(cm, cm.getCursor());
       },
-      // Go to References
       "Alt-G R": (cm: Editor) => {
-        conn
-          .getReferences({
-            textDocument: { uri },
-            position: lspPosition(cm.getCursor()),
-            context: {
-              includeDeclaration: true,
-            },
-          })
-          .then((location) => {
-            if (location) gotoLocation(cm, uri, location);
-          });
+        gotoReferences(cm, cm.getCursor());
       },
     });
     editor.addKeyMap(keyMap);
