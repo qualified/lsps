@@ -99,7 +99,10 @@ const markedStringToString = (
   m: MarkedString,
   render: (x: string) => string
 ) => {
-  if (typeof m === "string") return m;
+  // Remove two backslashes in front of periods and hyphens in plain text.
+  if (typeof m === "string") return m.replace(/\\(?=[-.])/g, "");
+
+  // To Markdown code block
   return render(["```" + m.language, m.value, "```"].join("\n"));
 };
 
