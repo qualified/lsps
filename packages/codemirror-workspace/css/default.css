@@ -114,8 +114,22 @@
 .cmw-completion-item-doc,
 /* Hover Information and Signature Help */
 .cmw-tooltip {
-  background: white;
-  border: 1px solid black;
+  background: #f8f9fa;
+  color: #343a40;
+  border: 1px solid #495057;
+  border-radius: 2px;
+  font-family: sans-serif;
+  font-size: 14px;
+  padding: 0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+/* Markdown */
+.cmw-completion-item-doc pre,
+.cmw-tooltip pre,
+.cmw-completion-item-doc p,
+.cmw-tooltip p {
+  margin: 4px 0;
 }
 
 /* Text Marker styles for Document Highlight */
