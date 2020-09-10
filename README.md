@@ -73,7 +73,7 @@ See [examples/demo](./examples/demo) for a simple demo project with TypeScript +
   - `implementation` ![meh]
 - `references` ![meh]
 - `documentHighlight` ![ok]
-- `documentSymbol` ![no]
+- `documentSymbol` ![ok]
 - `codeAction` ![no]
 - `codeLens` ![no]
 - `documentLink` ![no]
