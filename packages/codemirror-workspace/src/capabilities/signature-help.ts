@@ -3,6 +3,7 @@ import type { SignatureHelp } from "vscode-languageserver-protocol";
 
 import { documentationToString } from "../utils/conversions";
 import { addTooltip } from "../ui/tooltip";
+import { escapeRegExp } from "../utils/regexp";
 
 const states = new WeakMap<Editor, LspSignatureHelpState>();
 
@@ -93,6 +94,3 @@ export const removeSignatureHelp = (editor: Editor) => {
   if (state.tooltip) state.tooltip.remove();
   states.delete(editor);
 };
-
-const escapeRegExp = (s: string): string =>
-  s.replace(/[.*+\-?^${}()|[\]\\]/g, "\\$&");

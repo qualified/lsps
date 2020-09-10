@@ -26,6 +26,7 @@ import {
   showSignatureHelp,
   removeSignatureHelp,
   gotoLocation,
+  showSymbolSelector,
 } from "./capabilities";
 import {
   debounce,
@@ -471,6 +472,18 @@ export class Workspace {
                 gotoReferences(cm, pos);
               },
             },
+            {
+              label: "Go to Symbol...",
+              handler: () => {
+                conn
+                  .getDocumentSymbol({
+                    textDocument: { uri },
+                  })
+                  .then((symbols) => {
+                    if (symbols) showSymbolSelector(cm, uri, symbols);
+                  });
+              },
+            },
           ],
           // TODO Handle Copy and Cut because we won't show the browser's context menu.
           // Paste requires explicit permission.
@@ -641,10 +654,10 @@ export class Workspace {
           documentHighlight: {
             dynamicRegistration: true,
           },
-          // documentSymbol: {
-          //   dynamicRegistration: true,
-          //   hierarchicalDocumentSymbolSupport: false,
-          // },
+          documentSymbol: {
+            dynamicRegistration: true,
+            hierarchicalDocumentSymbolSupport: true,
+          },
           // codeAction: {},
           // codeLens: {},
           // documentLink: {

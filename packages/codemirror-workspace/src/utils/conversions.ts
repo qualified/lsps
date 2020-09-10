@@ -5,6 +5,7 @@ import type {
   DiagnosticSeverity,
   DiagnosticTag,
   CompletionItemKind,
+  SymbolKind,
   TextDocumentContentChangeEvent,
 } from "vscode-languageserver-protocol";
 import { MarkupContent, MarkedString } from "vscode-languageserver-protocol";
@@ -137,4 +138,38 @@ export const completionItemKindToString = (() => {
   ];
 
   return (kind?: CompletionItemKind) => kinds[kind ?? 0] || "unknown";
+})();
+
+export const symbolKindToString = (() => {
+  const kinds = [
+    "",
+    "file",
+    "module",
+    "namespace",
+    "package",
+    "class",
+    "method",
+    "property",
+    "field",
+    "constructor",
+    "enum",
+    "interface",
+    "function",
+    "variable",
+    "constant",
+    "string",
+    "number",
+    "boolean",
+    "array",
+    "object",
+    "key",
+    "null",
+    "enum-member",
+    "struct",
+    "event",
+    "operator",
+    "type-parameter",
+  ];
+
+  return (kind?: SymbolKind): string => kinds[kind ?? 0] || "unknown";
 })();

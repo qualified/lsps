@@ -31,7 +31,7 @@
  * For now, we'll just use letters and some unicode symbols like CodeMirror v6.
  * https://github.com/codemirror/codemirror.next/blob/master/autocomplete/src/theme.ts
  */
-.cmw-completion-icon {
+.cmw-icon {
   font-size: 90%;
   width: 0.8em;
   display: inline-block;
@@ -40,72 +40,86 @@
   opacity: 0.9;
 }
 
-.cmw-completion-icon--function::after,
-.cmw-completion-icon--method::after {
+.cmw-icon--function::after,
+.cmw-icon--method::after {
   /* latin small letter f with hook (U+0192)  */
   content: "\0192";
 }
-.cmw-completion-icon--variable::after {
+.cmw-icon--variable::after {
   /* mathematical italic small x (U+1d465)  */
   content: "\1d465";
 }
-.cmw-completion-icon--field::after {
+.cmw-icon--field::after {
   /* medium small white circle (U+26ac)  */
   content: "\26ac";
 }
-.cmw-completion-icon--module::after {
+.cmw-icon--module::after {
   /* white square (U+25a1)  */
   content: "\25a1";
 }
-.cmw-completion-icon--color::after {
+.cmw-icon--color::after {
   /* horizontal black hexagon (U+2b23)  */
   content: "\2b23";
 }
-.cmw-completion-icon--value::after {
+.cmw-icon--value::after {
   content: "v";
 }
-.cmw-completion-icon--enum::after,
-.cmw-completion-icon--enum-member::after {
+.cmw-icon--enum::after,
+.cmw-icon--enum-member::after {
   /* union (U+222a)  */
   content: "\222a";
 }
-.cmw-completion-icon--interface::after {
+.cmw-icon--interface::after {
   content: "I";
 }
-.cmw-completion-icon--text::after {
+.cmw-icon--text::after {
   content: "abc";
   font-size: 50%;
   vertical-align: middle;
 }
-.cmw-completion-icon--keyword::after {
+.cmw-icon--keyword::after {
   content: "k";
 }
-.cmw-completion-icon--constructor::after,
-.cmw-completion-icon--class::after {
+.cmw-icon--constructor::after,
+.cmw-icon--class::after {
   content: "c";
 }
-.cmw-completion-icon--property::after {
+.cmw-icon--property::after {
   content: "p";
 }
-.cmw-completion-icon--constant::after {
+.cmw-icon--constant::after {
   /* mathematical italic capital c (U+1d436)  */
   content: "\1d436";
 }
-.cmw-completion-icon--type-parameter::after {
+.cmw-icon--type-parameter::after {
   content: "T";
 }
 .cmw-completion-icon--struct::after {
   /* white hexagon (U+2b21)  */
   content: "\2b21";
 }
-.cmw-completion-icon--event::after,
-.cmw-completion-icon--unit::after,
-.cmw-completion-icon--snippet::after,
-.cmw-completion-icon--file::after,
-.cmw-completion-icon--reference::after,
-.cmw-completion-icon--folder::after,
-.cmw-completion-icon--operator::after,
-.cmw-completion-icon--unknown::after {
+.cmw-icon--event::after,
+.cmw-icon--unit::after,
+.cmw-icon--snippet::after,
+.cmw-icon--file::after,
+.cmw-icon--reference::after,
+.cmw-icon--folder::after,
+.cmw-icon--operator::after,
+.cmw-icon--unknown::after {
+  /* dotted circle (U+25cc)  */
+  content: "\25cc";
+}
+
+/* These are from SymbolKind */
+.cmw-icon--namespace::after,
+.cmw-icon--package::after,
+.cmw-icon--string::after,
+.cmw-icon--number::after,
+.cmw-icon--boolean::after,
+.cmw-icon--array::after,
+.cmw-icon--object::after,
+.cmw-icon--key::after,
+.cmw-icon--null::after {
   /* dotted circle (U+25cc)  */
   content: "\25cc";
 }
@@ -205,4 +219,50 @@
   height: 1px;
   background-color: #495057;
   margin: 4px 8px;
+}
+
+/* Goto Symbols */
+.cmw-document-symbols {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: 30ch;
+  z-index: 15;
+}
+.cmw-document-symbols-input {
+  width: 100%;
+  font-family: monospace;
+  margin: auto;
+  box-sizing: border-box;
+  border: 1px solid #495057;
+  background: #f8f9fa;
+  color: #495057;
+}
+.cmw-document-symbols-list {
+  background: #f8f9fa;
+  color: #495057;
+  z-index: 1000;
+  font-family: monospace;
+  font-size: 14px;
+  overflow: auto;
+  box-sizing: border-box;
+  border: 1px solid #495057;
+  border-top: none;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.cmw-document-symbols-list > div {
+  padding: 0 4px;
+}
+.cmw-document-symbols-list > div:hover,
+.cmw-document-symbols-list > div.selected {
+  background: #e9ecef;
+  cursor: pointer;
+}
+.cmw-document-symbols-list .matched {
+  color: #212529;
+  font-weight: semi-bold;
 }

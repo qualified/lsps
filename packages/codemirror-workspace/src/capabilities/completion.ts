@@ -207,8 +207,8 @@ const itemRenderer = (item: CompletionItem) => (el: HTMLElement) => {
   const icon = el.appendChild(document.createElement("div"));
   icon.style.color = color;
   icon.className = [
-    `cmw-completion-icon`,
-    `cmw-completion-icon--${completionItemKindToString(item.kind)}`,
+    `cmw-icon`,
+    `cmw-icon--${completionItemKindToString(item.kind)}`,
   ].join(" ");
   el.appendChild(document.createTextNode(item.label));
 };

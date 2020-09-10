@@ -14,3 +14,4 @@ export {
 } from "./completion";
 export { showSignatureHelp, removeSignatureHelp } from "./signature-help";
 export { gotoLocation } from "./goto";
+export { showSymbolSelector } from "./document-symbols";
