@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "build": "rimraf public/js && webpack",
-    "start-ls-ts": "lsp-ws-proxy --port 9990 -- typescript-language-server --stdio",
-    "start-ls-html": "lsp-ws-proxy --port 9991 -- html-languageserver --stdio",
-    "start-ls-css": "lsp-ws-proxy --port 9992 -- css-languageserver --stdio",
+    "start-ls-ts": "lsp-ws-proxy -l 9990 -- typescript-language-server --stdio",
+    "start-ls-html": "lsp-ws-proxy -l 9991 -- html-languageserver --stdio",
+    "start-ls-css": "lsp-ws-proxy -l 9992 -- css-languageserver --stdio",
     "start": "pnpm build && concurrently \"pnpm start-ls-ts\" \"pnpm start-ls-html\" \"pnpm start-ls-css\" \"serve -l 4000 public\""
   },
   "dependencies": {
