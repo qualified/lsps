@@ -17,7 +17,7 @@ Monorepo of packages related to [LSP][lsp].
 
 Example with [Rust Analyzer](https://github.com/rust-analyzer/rust-analyzer):
 
-![demo-rust-analyzer](./docs/img/demo-rust-analyzer.gif)
+![demo-rust-analyzer](https://user-images.githubusercontent.com/639336/92679057-430eed00-f2dc-11ea-923e-e5c165157a96.gif)
 
 The styling definitely needs work, but the above shows:
 
@@ -30,7 +30,7 @@ The styling definitely needs work, but the above shows:
 
 Simple snippets are supported as well:
 
-![demo-snippet-completion](./docs/img/demo-snippet-completion.gif)
+![demo-snippet-completion](https://user-images.githubusercontent.com/639336/92679093-58841700-f2dc-11ea-8f27-84e64996d8f3.gif)
 
 See [examples/demo-rust](./examples/demo-rust) to run this locally.
 
