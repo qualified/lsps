@@ -548,6 +548,33 @@ export class Workspace {
     });
   }
 
+  /**
+   * Notify the Language Server that the text document was saved.
+   *
+   * If connected to a WebSocket proxy with synchronization enabled,
+   * the contents of the file will be written to disk.
+   * @param uri - The document URI.
+   */
+  saveTextDocument(uri: string) {
+    // TODO Support `willSave` with `reason` and `willSaveWaitUntil`
+    const assoc = this.getLanguageAssociation(uri);
+    if (!assoc) return;
+
+    const serverId = assoc.languageServerIds[0];
+    if (!serverId) return;
+
+    const conn = this.connections[serverId];
+    if (!conn) return;
+
+    const editor = this.editors[uri];
+    if (!editor) return;
+
+    conn.textDocumentSaved({
+      textDocument: { uri, version: this.documentVersions[uri] },
+      text: editor.getValue(),
+    });
+  }
+
   private removeEventHandlers(editor: Editor) {
     const disposers = this.subscriptionDisposers.get(editor);
     if (disposers) {
@@ -595,8 +622,8 @@ export class Workspace {
           synchronization: {
             dynamicRegistration: true,
             willSave: false,
-            didSave: false,
             willSaveWaitUntil: false,
+            didSave: true,
           },
           completion: {
             dynamicRegistration: true,

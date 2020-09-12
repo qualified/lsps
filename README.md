@@ -34,6 +34,8 @@ Simple snippets are supported as well:
 
 See [examples/demo-rust](./examples/demo-rust) to run this locally.
 
+See [examples/demo-save](./examples/demo-save) to run this locally with an ability to save the changes to disk.
+
 See [examples/demo-worker](./examples/demo-worker) for an example with simple JSON Language Server running in Web Worker.
 A live demo is also available at https://qualified.github.io/lsps/.
 
@@ -54,7 +56,7 @@ See [examples/demo](./examples/demo) for a simple demo project with TypeScript +
     - Incremental text change ![ok]
   - `willSave` ![no]
   - `willSaveWaitUntil` ![no]
-  - `didSave` ![no]
+  - `didSave` ![meh]
   - `didClose` ![ok]
 - `completion`
   - `insertText` ![ok]
