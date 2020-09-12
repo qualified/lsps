@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@jest/types": "^26.3.0",
-    "@types/codemirror": "^0.0.97",
+    "@types/codemirror": "^0.0.98",
     "@types/jest": "^26.0.12",
     "codemirror": "^5.56.0",
     "fast-check": "^2.2.1",
