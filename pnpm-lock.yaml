@@ -180,7 +180,7 @@ importers:
       '@types/codemirror': 0.0.97
       '@types/jest': 26.0.12
       codemirror: 5.57.0
-      fast-check: 2.2.1
+      fast-check: 2.3.0
       jest: 26.4.2
       ts-jest: 26.3.0_jest@26.4.2+typescript@4.0.2
       typescript: 4.0.2
@@ -193,7 +193,7 @@ importers:
       '@types/codemirror': ^0.0.97
       '@types/jest': ^26.0.12
       codemirror: ^5.56.0
-      fast-check: ^2.2.1
+      fast-check: ^2.3.0
       jest: ^26.4.2
       ts-jest: ^26.3.0
       typescript: ^4.0.2
@@ -2709,14 +2709,14 @@ packages:
       '0': node >=0.6.0
     resolution:
       integrity: sha1-lpGEQOMEGnpBT4xS48V06zw+HgU=
-  /fast-check/2.2.1:
+  /fast-check/2.3.0:
     dependencies:
       pure-rand: 3.1.0
     dev: true
     engines:
       node: '>=8.0.0'
     resolution:
-      integrity: sha512-FIlY3FnHs3o5XTlOGRcNNqfNC3kn/Zdi6OzrrF73PQVxJYHQr+FMu5oiJvP4KKl9ctHwSrqZISTXytOCRQ5GEg==
+      integrity: sha512-VnU5lzab1vlXj3tUVe4bqWabZhUNyE/DJ+iilpQWW1GLnrp7OZBHccCz7NzZaNv7cEdrp4YgXoguKQjSVREXng==
   /fast-deep-equal/2.0.1:
     dev: true
     resolution:
