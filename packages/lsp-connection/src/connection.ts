@@ -76,6 +76,12 @@ export const createLspConnection = (conn: MessageConnection) => {
   ) => (params: Params<T>): Promise<Result<T> | null> =>
     cond() ? conn.sendRequest(type, params) : Promise.resolve(null);
 
+  const maybeNotify = <T extends ProtocolNotificationType<any, any>>(
+    cond: () => boolean,
+    type: T
+  ) => (params: Params<T>): void =>
+    cond() ? conn.sendNotification(type, params) : undefined;
+
   const notifier = <T extends ProtocolNotificationType<any, any>>(type: T) => (
     params: Params<T>
   ): void => conn.sendNotification(type, params);
@@ -84,6 +90,11 @@ export const createLspConnection = (conn: MessageConnection) => {
     type: T
   ) => (handler: NotificationHandler<Params<T>>): void =>
     conn.onNotification(type, handler);
+
+  const hasTextDocumentDidSave = () => {
+    const c = capabilities.textDocumentSync ?? TextDocumentSyncKind.None;
+    return typeof c === "number" ? c !== TextDocumentSyncKind.None : !!c.save;
+  };
 
   return {
     /** Start listening. */
@@ -154,7 +165,10 @@ export const createLspConnection = (conn: MessageConnection) => {
     /**
      * Notify that the text document got saved in the client.
      */
-    textDocumentSaved: notifier(DidSaveTextDocumentNotification.type),
+    textDocumentSaved: maybeNotify(
+      hasTextDocumentDidSave,
+      DidSaveTextDocumentNotification.type
+    ),
     /**
      * Notify that the client's configuration changed.
      */
