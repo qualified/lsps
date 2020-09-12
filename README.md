@@ -54,8 +54,8 @@ See [examples/demo](./examples/demo) for a simple demo project with TypeScript +
   - `didChange` ![ok]
     - Full text change ![ok]
     - Incremental text change ![ok]
-  - `willSave` ![no]
-  - `willSaveWaitUntil` ![no]
+  - `willSave` ![meh]
+  - `willSaveWaitUntil` ![meh]
   - `didSave` ![meh]
   - `didClose` ![ok]
 - `completion`
