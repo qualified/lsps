@@ -1,0 +1,5 @@
+# `examples/` is already in the Linguist's list, but
+# `examples/*/webpack.config.js` are showing up as JS files.
+# The following line will ensure anything under `examples/` are
+# classified as `documentation`.
+examples/** linguist-documentation
