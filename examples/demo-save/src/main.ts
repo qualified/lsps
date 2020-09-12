@@ -89,6 +89,11 @@ const workspace = new Workspace({
 const documentUri = rootUri + "/src/main.rs";
 workspace.openTextDocument(documentUri, rustEditor);
 
-document.getElementById("save")!.addEventListener("click", () => {
-  workspace.saveTextDocument(documentUri);
+const button = document.getElementById("save")!;
+button.addEventListener("click", async () => {
+  button.textContent = "Saving...";
+  button.setAttribute("disabled", "");
+  await workspace.saveTextDocument(documentUri);
+  button.removeAttribute("disabled");
+  button.textContent = "Save";
 });

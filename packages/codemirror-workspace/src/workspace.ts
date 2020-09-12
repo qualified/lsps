@@ -4,6 +4,7 @@ import {
   CompletionTriggerKind,
   SignatureHelpTriggerKind,
   DiagnosticTag,
+  TextDocumentSaveReason,
 } from "vscode-languageserver-protocol";
 
 import { createMessageConnection as createWebSocketMessageConnection } from "@qualified/vscode-jsonrpc-ws";
@@ -40,7 +41,12 @@ import {
 } from "./utils/event-stream";
 import { fromEditorEvent, onEditorEvent } from "./events";
 import { lspPosition, lspChange } from "./utils/conversions";
+import { applyEdits } from "./utils/editor";
+import { delay } from "./utils/promise";
 import { showContextMenu } from "./ui/context-menu";
+
+// Changes stream emits at most once per 50ms.
+const CHANGES_FRAME = 50;
 
 /**
  * Describes text document's language association.
@@ -180,7 +186,7 @@ export class Workspace {
     const disposers: Disposer[] = [];
     const changeStream = piped(
       fromEditorEvent(editor, "changes"),
-      debouncedBuffer(50),
+      debouncedBuffer(CHANGES_FRAME),
       map((buffered) => {
         const cm = buffered[0][0];
         // Send incremental contentChanges
@@ -555,7 +561,7 @@ export class Workspace {
    * the contents of the file will be written to disk.
    * @param uri - The document URI.
    */
-  saveTextDocument(uri: string) {
+  async saveTextDocument(uri: string) {
     // TODO Support `willSave` with `reason` and `willSaveWaitUntil`
     const assoc = this.getLanguageAssociation(uri);
     if (!assoc) return;
@@ -569,6 +575,19 @@ export class Workspace {
     const editor = this.editors[uri];
     if (!editor) return;
 
+    // TODO Find Language Server supporting these to test
+    conn.textDocumentWillSave({
+      textDocument: { uri },
+      reason: TextDocumentSaveReason.Manual,
+    });
+    const edits = await conn.getEditsBeforeSave({
+      textDocument: { uri },
+      reason: TextDocumentSaveReason.Manual,
+    });
+    if (edits) {
+      applyEdits(editor, edits, "beforeSave");
+      await delay(CHANGES_FRAME * 1.5);
+    }
     conn.textDocumentSaved({
       textDocument: { uri, version: this.documentVersions[uri] },
       text: editor.getValue(),
@@ -621,8 +640,8 @@ export class Workspace {
         textDocument: {
           synchronization: {
             dynamicRegistration: true,
-            willSave: false,
-            willSaveWaitUntil: false,
+            willSave: true,
+            willSaveWaitUntil: true,
             didSave: true,
           },
           completion: {

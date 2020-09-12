@@ -46,6 +46,8 @@ import {
   TypeDefinitionRequest,
   UnregistrationRequest,
   WorkspaceSymbolRequest,
+  WillSaveTextDocumentNotification,
+  WillSaveTextDocumentWaitUntilRequest,
 } from "vscode-languageserver-protocol";
 
 export type LspConnection = ReturnType<typeof createLspConnection>;
@@ -91,6 +93,14 @@ export const createLspConnection = (conn: MessageConnection) => {
   ) => (handler: NotificationHandler<Params<T>>): void =>
     conn.onNotification(type, handler);
 
+  const hasTextDocumentWillSave = () => {
+    const c = capabilities.textDocumentSync ?? TextDocumentSyncKind.None;
+    return typeof c !== "number" && !!c.willSave;
+  };
+  const hasTextDocumentWillSaveWaitUntil = () => {
+    const c = capabilities.textDocumentSync ?? TextDocumentSyncKind.None;
+    return typeof c !== "number" && !!c.willSaveWaitUntil;
+  };
   const hasTextDocumentDidSave = () => {
     const c = capabilities.textDocumentSync ?? TextDocumentSyncKind.None;
     return typeof c === "number" ? c !== TextDocumentSyncKind.None : !!c.save;
@@ -162,6 +172,20 @@ export const createLspConnection = (conn: MessageConnection) => {
      * Notify changes to a text document.
      */
     textDocumentChanged: notifier(DidChangeTextDocumentNotification.type),
+    /**
+     * Notify that the text document will be saved.
+     */
+    textDocumentWillSave: maybeNotify(
+      hasTextDocumentWillSave,
+      WillSaveTextDocumentNotification.type
+    ),
+    /**
+     * Get text edits to apply before saving.
+     */
+    getEditsBeforeSave: maybeReq(
+      hasTextDocumentWillSaveWaitUntil,
+      WillSaveTextDocumentWaitUntilRequest.type
+    ),
     /**
      * Notify that the text document got saved in the client.
      */
