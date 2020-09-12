@@ -136,7 +136,7 @@ importers:
       codemirror: 5.57.0
       marked: 1.1.1
       vscode-json-languageservice: 3.8.3
-      vscode-languageserver-protocol: 3.16.0-next.6
+      vscode-languageserver-protocol: 3.16.0-next.7
     devDependencies:
       '@types/codemirror': 0.0.97
       '@types/marked': 1.1.0
@@ -164,7 +164,7 @@ importers:
       ts-loader: ^8.0.2
       typescript: ^4.0.2
       vscode-json-languageservice: ^3.8.3
-      vscode-languageserver-protocol: 3.16.0-next.6
+      vscode-languageserver-protocol: next
       webpack: ^4.44.1
       webpack-bundle-analyzer: ^3.8.0
       webpack-cli: ^3.3.12
@@ -174,7 +174,7 @@ importers:
       '@qualified/vscode-jsonrpc-ws': 'link:../vscode-jsonrpc-ws'
       '@qualified/vscode-jsonrpc-ww': 'link:../vscode-jsonrpc-ww'
       '@qualified/vscode-snippet-parser': 'link:../vscode-snippet-parser'
-      vscode-languageserver-protocol: 3.16.0-next.6
+      vscode-languageserver-protocol: 3.16.0-next.7
     devDependencies:
       '@jest/types': 26.3.0
       '@types/codemirror': 0.0.97
@@ -197,33 +197,33 @@ importers:
       jest: ^26.4.2
       ts-jest: ^26.3.0
       typescript: ^4.0.2
-      vscode-languageserver-protocol: ^3.16.0-next.6
+      vscode-languageserver-protocol: next
   packages/lsp-connection:
     dependencies:
-      vscode-languageserver-protocol: 3.16.0-next.6
+      vscode-languageserver-protocol: 3.16.0-next.7
     devDependencies:
       typescript: 4.0.2
-      vscode-jsonrpc: 6.0.0-next.4
+      vscode-jsonrpc: 6.0.0-next.5
     specifiers:
       typescript: ^4.0.2
-      vscode-jsonrpc: ^6.0.0-next.4
-      vscode-languageserver-protocol: ^3.16.0-next.6
+      vscode-jsonrpc: next
+      vscode-languageserver-protocol: next
   packages/vscode-jsonrpc-ws:
     dependencies:
-      vscode-jsonrpc: 6.0.0-next.4
+      vscode-jsonrpc: 6.0.0-next.5
     devDependencies:
       typescript: 4.0.2
     specifiers:
       typescript: ^4.0.2
-      vscode-jsonrpc: ^6.0.0-next.4
+      vscode-jsonrpc: next
   packages/vscode-jsonrpc-ww:
     dependencies:
-      vscode-jsonrpc: 6.0.0-next.4
+      vscode-jsonrpc: 6.0.0-next.5
     devDependencies:
       typescript: 4.0.2
     specifiers:
       typescript: ^4.0.2
-      vscode-jsonrpc: ^6.0.0-next.4
+      vscode-jsonrpc: next
   packages/vscode-snippet-parser:
     devDependencies:
       typescript: 4.0.2
@@ -6765,11 +6765,11 @@ packages:
       node: '>=8.0.0 || >=10.0.0'
     resolution:
       integrity: sha512-JvONPptw3GAQGXlVV2utDcHx0BiY34FupW/kI6mZ5x06ER5DdPG/tXWMVHjTNULF5uKPOUUD0SaXg5QaubJL0A==
-  /vscode-jsonrpc/6.0.0-next.4:
+  /vscode-jsonrpc/6.0.0-next.5:
     engines:
       node: '>=8.0.0 || >=10.0.0'
     resolution:
-      integrity: sha512-nIXUeSMKfqvqSG75s1JuUy0UgjE3d0NERjGz7AUGDFXX0/roVUEbaio5VBdus30nty8v0FCf/6MbCSrH5RybcQ==
+      integrity: sha512-IAgsltQPwg/pXOPsdXgbUTCaO9VSKZwirZN5SGtkdYQ/R3VjeC4v00WTVvoNayWMZpoC3O9u0ogqmsKzKhVasQ==
   /vscode-languageserver-protocol-foldingprovider/2.0.1:
     dependencies:
       vscode-languageserver-protocol: 3.15.3
@@ -6784,13 +6784,13 @@ packages:
     dev: false
     resolution:
       integrity: sha512-zrMuwHOAQRhjDSnflWdJG+O2ztMWss8GqUUB8dXLR/FPenwkiBNkMIJJYfSN6sgskvsF0rHAoBowNQfbyZnnvw==
-  /vscode-languageserver-protocol/3.16.0-next.6:
+  /vscode-languageserver-protocol/3.16.0-next.7:
     dependencies:
-      vscode-jsonrpc: 6.0.0-next.4
+      vscode-jsonrpc: 6.0.0-next.5
       vscode-languageserver-types: 3.16.0-next.3
     dev: false
     resolution:
-      integrity: sha512-tW8LMFBBr6WJ33mzYAjiLTu/4tch9nvJ+rBhUNzJ8X1zNR39vj8CV3FsnrxzAqvOB+qBWEOQa0tjupW1mNo2GQ==
+      integrity: sha512-tOjrg+K3RddJ547zpC9/LAgTbzadkPuHlqJFFWIcKjVhiJOh73XyY+Ngcu9wukGaTsuSGjJ0W8rlmwanixa0FQ==
   /vscode-languageserver-textdocument/1.0.1:
     dev: false
     resolution:

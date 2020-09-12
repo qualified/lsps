@@ -20,10 +20,10 @@
     "lib/**/*.d.ts"
   ],
   "dependencies": {
-    "vscode-languageserver-protocol": "^3.16.0-next.6"
+    "vscode-languageserver-protocol": "next"
   },
   "devDependencies": {
     "typescript": "^4.0.2",
-    "vscode-jsonrpc": "^6.0.0-next.4"
+    "vscode-jsonrpc": "next"
   }
 }
