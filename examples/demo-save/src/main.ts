@@ -64,7 +64,8 @@ const rustEditor = CodeMirror($("#rust-editor"), {
   value: sampleRust,
 });
 
-const rootUri = ROOT_URI;
+// Using relative URI. Requires lsp-ws-proxy v0.4.0+.
+const rootUri = "source://";
 const workspace = new Workspace({
   rootUri,
   getLanguageAssociation: (uri: string) => {
@@ -86,7 +87,7 @@ const workspace = new Workspace({
   },
   renderMarkdown: (markdown) => marked(markdown),
 });
-const documentUri = rootUri + "/src/main.rs";
+const documentUri = rootUri + "src/main.rs";
 workspace.openTextDocument(documentUri, rustEditor);
 
 const button = document.getElementById("save")!;

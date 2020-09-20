@@ -1,4 +1,3 @@
-const webpack = require("webpack");
 const path = require("path");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
   .BundleAnalyzerPlugin;
@@ -12,9 +11,6 @@ module.exports = {
     ...(process.env.BUNDLE_ANALYZER === "1"
       ? [new BundleAnalyzerPlugin()]
       : []),
-    new webpack.DefinePlugin({
-      ROOT_URI: JSON.stringify(`file://${__dirname}/workspace`),
-    }),
   ],
   module: {
     rules: [
