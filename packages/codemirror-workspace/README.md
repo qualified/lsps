@@ -11,7 +11,7 @@ import { Workspace } from "@qualified/codemirror-workspace";
 
 const workspace = new Workspace({
   // Project root. Required.
-  rootUri: "file:///workspace",
+  rootUri: "file:///workspace/",
 
   // Provide language associaton (language id and server ids) for URI. Required.
   getLanguageAssociation: (uri: string) => {
@@ -81,7 +81,7 @@ const workspace = new Workspace({
 });
 // Open text document in workspace to enable code intelligence.
 // `cm` is CodeMirror.Editor instance with contents of the file.
-workspace.openTextDocument("file:///workspace/example.js", cm);
+workspace.openTextDocument("example.js", cm);
 ```
 
 ## Prior Art
