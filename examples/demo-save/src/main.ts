@@ -64,10 +64,9 @@ const rustEditor = CodeMirror($("#rust-editor"), {
   value: sampleRust,
 });
 
-// Using relative URI. Requires lsp-ws-proxy v0.4.0+.
-const rootUri = "source://";
 const workspace = new Workspace({
-  rootUri,
+  // Using relative URI. Requires lsp-ws-proxy v0.4.0+.
+  rootUri: "source://",
   getLanguageAssociation: (uri: string) => {
     if (uri.endsWith(".rs")) {
       return {
@@ -87,14 +86,14 @@ const workspace = new Workspace({
   },
   renderMarkdown: (markdown) => marked(markdown),
 });
-const documentUri = rootUri + "src/main.rs";
-workspace.openTextDocument(documentUri, rustEditor);
+const documentPath = "src/main.rs";
+workspace.openTextDocument(documentPath, rustEditor);
 
 const button = document.getElementById("save")!;
 button.addEventListener("click", async () => {
   button.textContent = "Saving...";
   button.setAttribute("disabled", "");
-  await workspace.saveTextDocument(documentUri);
+  await workspace.saveTextDocument(documentPath);
   button.removeAttribute("disabled");
   button.textContent = "Save";
 });

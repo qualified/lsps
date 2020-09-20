@@ -135,7 +135,8 @@ export class Workspace {
     this.connections = Object.create(null);
     this.documentVersions = Object.create(null);
     this.subscriptionDisposers = new WeakMap();
-    this.rootUri = options.rootUri;
+    this.rootUri =
+      options.rootUri + (!options.rootUri.endsWith("/") ? "/" : "");
     this.getConnectionString = options.getConnectionString.bind(void 0);
     this.getLanguageAssociation = options.getLanguageAssociation.bind(void 0);
     this.canHandleMarkdown = typeof options.renderMarkdown === "function";
@@ -154,10 +155,11 @@ export class Workspace {
   /**
    * Open text document in the workspace to notify the Language Server and
    * enable code intelligence.
-   * @param uri The document URI.
-   * @param editor CodeMirror Editor instance.
+   * @param path - The file path relative to the project root.
+   * @param editor - CodeMirror Editor instance.
    */
-  async openTextDocument(uri: string, editor: Editor) {
+  async openTextDocument(path: string, editor: Editor) {
+    const uri = this.getDocumentUri(path);
     const assoc = this.getLanguageAssociation(uri);
     if (!assoc) return;
     // TODO Allow connecting to multiple language servers
@@ -535,9 +537,10 @@ export class Workspace {
   /**
    * Close text document in the workspace to notify the Language Server and
    * remove everything added by the workspace.
-   * @param uri The document URI.
+   * @param path - The file path relative to the project root.
    */
-  async closeTextDocument(uri: string) {
+  async closeTextDocument(path: string) {
+    const uri = this.getDocumentUri(path);
     const assoc = this.getLanguageAssociation(uri);
     if (!assoc) return;
     const serverId = assoc.languageServerIds[0];
@@ -559,9 +562,10 @@ export class Workspace {
    *
    * If connected to a WebSocket proxy with synchronization enabled,
    * the contents of the file will be written to disk.
-   * @param uri - The document URI.
+   * @param path - The file path relative to the project root.
    */
-  async saveTextDocument(uri: string) {
+  async saveTextDocument(path: string) {
+    const uri = this.getDocumentUri(path);
     // TODO Support `willSave` with `reason` and `willSaveWaitUntil`
     const assoc = this.getLanguageAssociation(uri);
     if (!assoc) return;
@@ -747,6 +751,10 @@ export class Workspace {
     });
 
     return conn;
+  }
+
+  private getDocumentUri(path: string) {
+    return this.rootUri + path.replace(/^\/+/, "");
   }
 }
 

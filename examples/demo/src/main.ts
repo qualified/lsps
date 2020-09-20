@@ -89,9 +89,8 @@ const cssEditor = CodeMirror($("#css-editor"), {
   value: sampleCss,
 });
 
-const rootUri = ROOT_URI;
 const workspace = new Workspace({
-  rootUri,
+  rootUri: ROOT_URI,
   getLanguageAssociation: (uri: string) => {
     // javascript, javascriptreact, typescript, typescriptreact
     if (/\.(?:[jt]sx?)$/.test(uri)) {
@@ -136,11 +135,11 @@ const workspace = new Workspace({
   renderMarkdown: (markdown) => marked(markdown),
 });
 
-workspace.openTextDocument(rootUri + "/add.ts", tsEditorAdd).then(() => {
+workspace.openTextDocument("add.ts", tsEditorAdd).then(() => {
   // This is necessary to ensure that workspace doesn't try to make more than one connection per file type.
   // Workspace might provide convenience method to open multiple files safely in the future.
-  workspace.openTextDocument(rootUri + "/source.ts", tsEditorSource);
+  workspace.openTextDocument("source.ts", tsEditorSource);
 });
 // No need to wait if using different language servers.
-workspace.openTextDocument(rootUri + "/project.html", htmlEditor);
-workspace.openTextDocument(rootUri + "/style.css", cssEditor);
+workspace.openTextDocument("project.html", htmlEditor);
+workspace.openTextDocument("style.css", cssEditor);

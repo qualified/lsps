@@ -13,7 +13,7 @@ module.exports = {
       ? [new BundleAnalyzerPlugin()]
       : []),
     new webpack.DefinePlugin({
-      ROOT_URI: JSON.stringify(`file://${__dirname}/workspace`),
+      ROOT_URI: JSON.stringify(`file://${__dirname}/workspace/`),
     }),
   ],
   module: {

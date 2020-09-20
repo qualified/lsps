@@ -82,7 +82,7 @@ const jsonEditor = CodeMirror($("#editor"), {
 
 const JSON_WORKER = "json-worker";
 const workspace = new Workspace({
-  rootUri: "inmemory://workspace",
+  rootUri: "inmemory://workspace/",
   getLanguageAssociation: (uri: string) => {
     if (uri.endsWith(".json")) {
       return { languageId: "json", languageServerIds: [JSON_WORKER] };
@@ -101,4 +101,4 @@ const workspace = new Workspace({
   renderMarkdown: (markdown) => marked(markdown),
 });
 
-workspace.openTextDocument("inmemory://workspace/tsconfig.json", jsonEditor);
+workspace.openTextDocument("tsconfig.json", jsonEditor);
