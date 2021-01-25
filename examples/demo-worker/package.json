@@ -12,7 +12,7 @@
     "codemirror": "^5.56.0",
     "marked": "^1.1.1",
     "vscode-json-languageservice": "^3.8.3",
-    "vscode-languageserver-protocol": "next"
+    "vscode-languageserver-protocol": "^3.16.0"
   },
   "devDependencies": {
     "@types/codemirror": "0.0.98",

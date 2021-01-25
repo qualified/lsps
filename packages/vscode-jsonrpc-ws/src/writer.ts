@@ -28,6 +28,8 @@ export const createMessageWriter = (wsocket: WebSocket): MessageWriter => {
       }
     },
 
+    end() {},
+
     dispose() {
       errorEmitter.dispose();
       closeEmitter.dispose();

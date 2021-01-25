@@ -28,6 +28,8 @@ export const createMessageWriter = (worker: Worker): MessageWriter => {
       }
     },
 
+    end() {},
+
     dispose() {
       worker.removeEventListener("error", errorHandler);
       errorEmitter.dispose();

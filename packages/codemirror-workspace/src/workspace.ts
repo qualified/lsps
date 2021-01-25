@@ -593,7 +593,7 @@ export class Workspace {
       await delay(CHANGES_FRAME * 1.5);
     }
     conn.textDocumentSaved({
-      textDocument: { uri, version: this.documentVersions[uri] },
+      textDocument: { uri },
       text: editor.getValue(),
     });
   }
@@ -727,6 +727,7 @@ export class Workspace {
               valueSet: [DiagnosticTag.Unnecessary, DiagnosticTag.Deprecated],
             },
           },
+          moniker: {},
         },
         workspace: {
           didChangeConfiguration: {

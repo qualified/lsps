@@ -29,11 +29,11 @@
     "codemirror": "^5.x"
   },
   "dependencies": {
-    "@qualified/lsp-connection": "^0.1.0",
-    "@qualified/vscode-jsonrpc-ws": "^0.1.0",
-    "@qualified/vscode-jsonrpc-ww": "^0.1.0",
+    "@qualified/lsp-connection": "^0.2.0",
+    "@qualified/vscode-jsonrpc-ws": "^0.2.0",
+    "@qualified/vscode-jsonrpc-ww": "^0.2.0",
     "@qualified/vscode-snippet-parser": "^0.1.0",
-    "vscode-languageserver-protocol": "next"
+    "vscode-languageserver-protocol": "^3.16.0"
   },
   "devDependencies": {
     "@jest/types": "^26.3.0",
