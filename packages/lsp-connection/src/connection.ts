@@ -90,8 +90,9 @@ export const createLspConnection = (conn: MessageConnection) => {
 
   const onNotification = <T extends ProtocolNotificationType<any, any>>(
     type: T
-  ) => (handler: NotificationHandler<Params<T>>): void =>
+  ) => (handler: NotificationHandler<Params<T>>): void => {
     conn.onNotification(type, handler);
+  };
 
   const hasTextDocumentWillSave = () => {
     const c = capabilities.textDocumentSync ?? TextDocumentSyncKind.None;

@@ -7,7 +7,7 @@
     "languageserver",
     "vscode-jsonrpc"
   ],
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "MIT",
   "homepage": "https://github.com/qualified/lsps#readme",
   "repository": "https://github.com/qualified/lsps",
@@ -20,10 +20,10 @@
     "lib/**/*.d.ts"
   ],
   "dependencies": {
-    "vscode-languageserver-protocol": "next"
+    "vscode-languageserver-protocol": "^3.16.0"
   },
   "devDependencies": {
     "typescript": "^4.0.2",
-    "vscode-jsonrpc": "next"
+    "vscode-jsonrpc": "^6.0.0"
   }
 }

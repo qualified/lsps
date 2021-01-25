@@ -12,7 +12,7 @@ importers:
       typescript: ^4.0.2
   examples/demo:
     dependencies:
-      '@qualified/codemirror-workspace': 'link:../../packages/codemirror-workspace'
+      '@qualified/codemirror-workspace': link:../../packages/codemirror-workspace
       codemirror: 5.57.0
       marked: 1.1.1
       typescript-language-server: 0.4.0
@@ -30,7 +30,7 @@ importers:
       style-loader: 1.2.1_webpack@4.44.1
       ts-loader: 8.0.3_typescript@4.0.2
       typescript: 4.0.2
-      webpack: 4.44.1_7d74d9f6ceb0e540c1e44d9709220c58
+      webpack: 4.44.1_webpack-cli@3.3.12
       webpack-bundle-analyzer: 3.8.0
       webpack-cli: 3.3.12_webpack@4.44.1
     specifiers:
@@ -56,7 +56,7 @@ importers:
       webpack-cli: ^3.3.12
   examples/demo-rust:
     dependencies:
-      '@qualified/codemirror-workspace': 'link:../../packages/codemirror-workspace'
+      '@qualified/codemirror-workspace': link:../../packages/codemirror-workspace
       codemirror: 5.57.0
       marked: 1.1.1
     devDependencies:
@@ -71,7 +71,7 @@ importers:
       style-loader: 1.2.1_webpack@4.44.1
       ts-loader: 8.0.3_typescript@4.0.2
       typescript: 4.0.2
-      webpack: 4.44.1_7d74d9f6ceb0e540c1e44d9709220c58
+      webpack: 4.44.1_webpack-cli@3.3.12
       webpack-bundle-analyzer: 3.8.0
       webpack-cli: 3.3.12_webpack@4.44.1
     specifiers:
@@ -94,7 +94,7 @@ importers:
       webpack-cli: ^3.3.12
   examples/demo-save:
     dependencies:
-      '@qualified/codemirror-workspace': 'link:../../packages/codemirror-workspace'
+      '@qualified/codemirror-workspace': link:../../packages/codemirror-workspace
       codemirror: 5.57.0
       marked: 1.1.1
     devDependencies:
@@ -109,7 +109,7 @@ importers:
       style-loader: 1.2.1_webpack@4.44.1
       ts-loader: 8.0.3_typescript@4.0.2
       typescript: 4.0.2
-      webpack: 4.44.1_7d74d9f6ceb0e540c1e44d9709220c58
+      webpack: 4.44.1_webpack-cli@3.3.12
       webpack-bundle-analyzer: 3.8.0
       webpack-cli: 3.3.12_webpack@4.44.1
     specifiers:
@@ -132,11 +132,11 @@ importers:
       webpack-cli: ^3.3.12
   examples/demo-worker:
     dependencies:
-      '@qualified/codemirror-workspace': 'link:../../packages/codemirror-workspace'
+      '@qualified/codemirror-workspace': link:../../packages/codemirror-workspace
       codemirror: 5.57.0
       marked: 1.1.1
       vscode-json-languageservice: 3.8.3
-      vscode-languageserver-protocol: 3.16.0-next.7
+      vscode-languageserver-protocol: 3.16.0
     devDependencies:
       '@types/codemirror': 0.0.98
       '@types/marked': 1.1.0
@@ -147,7 +147,7 @@ importers:
       style-loader: 1.2.1_webpack@4.44.1
       ts-loader: 8.0.3_typescript@4.0.2
       typescript: 4.0.2
-      webpack: 4.44.1_7d74d9f6ceb0e540c1e44d9709220c58
+      webpack: 4.44.1_webpack-cli@3.3.12
       webpack-bundle-analyzer: 3.8.0
       webpack-cli: 3.3.12_webpack@4.44.1
     specifiers:
@@ -164,17 +164,17 @@ importers:
       ts-loader: ^8.0.3
       typescript: ^4.0.2
       vscode-json-languageservice: ^3.8.3
-      vscode-languageserver-protocol: next
+      vscode-languageserver-protocol: ^3.16.0
       webpack: ^4.44.1
       webpack-bundle-analyzer: ^3.8.0
       webpack-cli: ^3.3.12
   packages/codemirror-workspace:
     dependencies:
-      '@qualified/lsp-connection': 'link:../lsp-connection'
-      '@qualified/vscode-jsonrpc-ws': 'link:../vscode-jsonrpc-ws'
-      '@qualified/vscode-jsonrpc-ww': 'link:../vscode-jsonrpc-ww'
-      '@qualified/vscode-snippet-parser': 'link:../vscode-snippet-parser'
-      vscode-languageserver-protocol: 3.16.0-next.7
+      '@qualified/lsp-connection': link:../lsp-connection
+      '@qualified/vscode-jsonrpc-ws': link:../vscode-jsonrpc-ws
+      '@qualified/vscode-jsonrpc-ww': link:../vscode-jsonrpc-ww
+      '@qualified/vscode-snippet-parser': link:../vscode-snippet-parser
+      vscode-languageserver-protocol: 3.16.0
     devDependencies:
       '@jest/types': 26.3.0
       '@types/codemirror': 0.0.98
@@ -186,9 +186,9 @@ importers:
       typescript: 4.0.2
     specifiers:
       '@jest/types': ^26.3.0
-      '@qualified/lsp-connection': ^0.1.0
-      '@qualified/vscode-jsonrpc-ws': ^0.1.0
-      '@qualified/vscode-jsonrpc-ww': ^0.1.0
+      '@qualified/lsp-connection': ^0.2.0
+      '@qualified/vscode-jsonrpc-ws': ^0.2.0
+      '@qualified/vscode-jsonrpc-ww': ^0.2.0
       '@qualified/vscode-snippet-parser': ^0.1.0
       '@types/codemirror': ^0.0.98
       '@types/jest': ^26.0.13
@@ -197,39 +197,39 @@ importers:
       jest: ^26.4.2
       ts-jest: ^26.3.0
       typescript: ^4.0.2
-      vscode-languageserver-protocol: next
+      vscode-languageserver-protocol: ^3.16.0
   packages/lsp-connection:
     dependencies:
-      vscode-languageserver-protocol: 3.16.0-next.7
+      vscode-languageserver-protocol: 3.16.0
     devDependencies:
       typescript: 4.0.2
-      vscode-jsonrpc: 6.0.0-next.5
+      vscode-jsonrpc: 6.0.0
     specifiers:
       typescript: ^4.0.2
-      vscode-jsonrpc: next
-      vscode-languageserver-protocol: next
+      vscode-jsonrpc: ^6.0.0
+      vscode-languageserver-protocol: ^3.16.0
   packages/vscode-jsonrpc-ws:
     dependencies:
-      vscode-jsonrpc: 6.0.0-next.5
+      vscode-jsonrpc: 6.0.0
     devDependencies:
       typescript: 4.0.2
     specifiers:
       typescript: ^4.0.2
-      vscode-jsonrpc: next
+      vscode-jsonrpc: ^6.0.0
   packages/vscode-jsonrpc-ww:
     dependencies:
-      vscode-jsonrpc: 6.0.0-next.5
+      vscode-jsonrpc: 6.0.0
     devDependencies:
       typescript: 4.0.2
     specifiers:
       typescript: ^4.0.2
-      vscode-jsonrpc: next
+      vscode-jsonrpc: ^6.0.0
   packages/vscode-snippet-parser:
     devDependencies:
       typescript: 4.0.2
     specifiers:
       typescript: ^4.0.2
-lockfileVersion: 5.1
+lockfileVersion: 5.2
 packages:
   /@babel/code-frame/7.10.4:
     dependencies:
@@ -556,7 +556,7 @@ packages:
       jest-haste-map: 26.3.0
       jest-message-util: 26.3.0
       jest-regex-util: 26.0.0
-      jest-resolve: 26.4.0_jest-resolve@26.4.0
+      jest-resolve: 26.4.0
       jest-resolve-dependencies: 26.4.2
       jest-runner: 26.4.2
       jest-runtime: 26.4.2
@@ -626,7 +626,7 @@ packages:
       istanbul-lib-source-maps: 4.0.0
       istanbul-reports: 3.0.2
       jest-haste-map: 26.3.0
-      jest-resolve: 26.4.0_jest-resolve@26.4.0
+      jest-resolve: 26.4.0
       jest-util: 26.3.0
       jest-worker: 26.3.0
       slash: 3.0.0
@@ -2153,7 +2153,7 @@ packages:
       postcss-value-parser: 4.1.0
       schema-utils: 2.7.1
       semver: 7.3.2
-      webpack: 4.44.1_7d74d9f6ceb0e540c1e44d9709220c58
+      webpack: 4.44.1_webpack-cli@3.3.12
     dev: true
     engines:
       node: '>= 10.13.0'
@@ -3714,7 +3714,7 @@ packages:
       jest-get-type: 26.3.0
       jest-jasmine2: 26.4.2
       jest-regex-util: 26.0.0
-      jest-resolve: 26.4.0_jest-resolve@26.4.0
+      jest-resolve: 26.4.0
       jest-util: 26.3.0
       jest-validate: 26.4.2
       micromatch: 4.0.2
@@ -3898,7 +3898,7 @@ packages:
       integrity: sha512-PeaRrg8Dc6mnS35gOo/CbZovoDPKAeB1FICZiuagAgGvbWdNNyjQjkOaGUa/3N3JtpQ/Mh9P4A2D4Fv51NnP8Q==
   /jest-pnp-resolver/1.2.2_jest-resolve@26.4.0:
     dependencies:
-      jest-resolve: 26.4.0_jest-resolve@26.4.0
+      jest-resolve: 26.4.0
     dev: true
     engines:
       node: '>=6'
@@ -3925,7 +3925,7 @@ packages:
       node: '>= 10.14.2'
     resolution:
       integrity: sha512-ADHaOwqEcVc71uTfySzSowA/RdxUpCxhxa2FNLiin9vWLB1uLPad3we+JSSROq5+SrL9iYPdZZF8bdKM7XABTQ==
-  /jest-resolve/26.4.0_jest-resolve@26.4.0:
+  /jest-resolve/26.4.0:
     dependencies:
       '@jest/types': 26.3.0
       chalk: 4.1.0
@@ -3938,8 +3938,6 @@ packages:
     dev: true
     engines:
       node: '>= 10.14.2'
-    peerDependencies:
-      jest-resolve: '*'
     resolution:
       integrity: sha512-bn/JoZTEXRSlEx3+SfgZcJAVuTMOksYq9xe9O6s4Ekg84aKBObEaVXKOEilULRqviSLAYJldnoWV9c07kwtiCg==
   /jest-runner/26.4.2:
@@ -3958,7 +3956,7 @@ packages:
       jest-haste-map: 26.3.0
       jest-leak-detector: 26.4.2
       jest-message-util: 26.3.0
-      jest-resolve: 26.4.0_jest-resolve@26.4.0
+      jest-resolve: 26.4.0
       jest-runtime: 26.4.2
       jest-util: 26.3.0
       jest-worker: 26.3.0
@@ -3990,7 +3988,7 @@ packages:
       jest-message-util: 26.3.0
       jest-mock: 26.3.0
       jest-regex-util: 26.0.0
-      jest-resolve: 26.4.0_jest-resolve@26.4.0
+      jest-resolve: 26.4.0
       jest-snapshot: 26.4.2
       jest-util: 26.3.0
       jest-validate: 26.4.2
@@ -4025,7 +4023,7 @@ packages:
       jest-haste-map: 26.3.0
       jest-matcher-utils: 26.4.2
       jest-message-util: 26.3.0
-      jest-resolve: 26.4.0_jest-resolve@26.4.0
+      jest-resolve: 26.4.0
       natural-compare: 1.4.0
       pretty-format: 26.4.2
       semver: 7.3.2
@@ -5349,7 +5347,7 @@ packages:
     dependencies:
       loader-utils: 2.0.0
       schema-utils: 2.7.0
-      webpack: 4.44.1_7d74d9f6ceb0e540c1e44d9709220c58
+      webpack: 4.44.1_webpack-cli@3.3.12
     dev: true
     engines:
       node: '>= 10.13.0'
@@ -5501,7 +5499,7 @@ packages:
       request-promise-core: 1.1.4_request@2.88.2
       stealthy-require: 1.1.1
       tough-cookie: 2.5.0
-    deprecated: 'request-promise-native has been deprecated because it extends the now deprecated request package, see https://github.com/request/request/issues/3142'
+    deprecated: request-promise-native has been deprecated because it extends the now deprecated request package, see https://github.com/request/request/issues/3142
     dev: true
     engines:
       node: '>=0.12.0'
@@ -5531,7 +5529,7 @@ packages:
       tough-cookie: 2.5.0
       tunnel-agent: 0.6.0
       uuid: 3.4.0
-    deprecated: 'request has been deprecated, see https://github.com/request/request/issues/3142'
+    deprecated: request has been deprecated, see https://github.com/request/request/issues/3142
     dev: true
     engines:
       node: '>= 6'
@@ -5591,7 +5589,7 @@ packages:
     resolution:
       integrity: sha512-qYg9KP24dD5qka9J47d0aVky0N+b4fTU89LN9iDnjB5waksiC49rvMB0PrUJQGoTmH50XPiqOvAjDfaijGxYZw==
   /resolve-url/0.2.1:
-    deprecated: 'https://github.com/lydell/resolve-url#deprecated'
+    deprecated: https://github.com/lydell/resolve-url#deprecated
     dev: true
     resolution:
       integrity: sha1-LGN/53yJOv0qZj/iGqkIAGjiBSo=
@@ -6187,7 +6185,7 @@ packages:
     dependencies:
       loader-utils: 2.0.0
       schema-utils: 2.7.0
-      webpack: 4.44.1_7d74d9f6ceb0e540c1e44d9709220c58
+      webpack: 4.44.1_webpack-cli@3.3.12
     dev: true
     engines:
       node: '>= 8.9.0'
@@ -6279,7 +6277,7 @@ packages:
       serialize-javascript: 4.0.0
       source-map: 0.6.1
       terser: 4.8.0
-      webpack: 4.44.1_7d74d9f6ceb0e540c1e44d9709220c58
+      webpack: 4.44.1_webpack-cli@3.3.12
       webpack-sources: 1.4.3
       worker-farm: 1.7.0
     dev: true
@@ -6633,7 +6631,7 @@ packages:
     resolution:
       integrity: sha512-B0yRTzYdUCCn9n+F4+Gh4yIDtMQcaJsmYBDsTSG8g/OejKBodLQ2IHfN3bM7jUsRXndopT7OIXWdYqc1fjmV6g==
   /urix/0.1.0:
-    deprecated: 'Please see https://github.com/lydell/urix#deprecated'
+    deprecated: Please see https://github.com/lydell/urix#deprecated
     dev: true
     resolution:
       integrity: sha1-2pN/emLiH+wf0Y1Js1wpNQZ6bHI=
@@ -6778,11 +6776,11 @@ packages:
       node: '>=8.0.0 || >=10.0.0'
     resolution:
       integrity: sha512-JvONPptw3GAQGXlVV2utDcHx0BiY34FupW/kI6mZ5x06ER5DdPG/tXWMVHjTNULF5uKPOUUD0SaXg5QaubJL0A==
-  /vscode-jsonrpc/6.0.0-next.5:
+  /vscode-jsonrpc/6.0.0:
     engines:
       node: '>=8.0.0 || >=10.0.0'
     resolution:
-      integrity: sha512-IAgsltQPwg/pXOPsdXgbUTCaO9VSKZwirZN5SGtkdYQ/R3VjeC4v00WTVvoNayWMZpoC3O9u0ogqmsKzKhVasQ==
+      integrity: sha512-wnJA4BnEjOSyFMvjZdpiOwhSq9uDoK8e/kpRJDTaMYzwlkrhG1fwDIZI94CLsLzlCK5cIbMMtFlJlfR57Lavmg==
   /vscode-languageserver-protocol-foldingprovider/2.0.1:
     dependencies:
       vscode-languageserver-protocol: 3.15.3
@@ -6797,13 +6795,13 @@ packages:
     dev: false
     resolution:
       integrity: sha512-zrMuwHOAQRhjDSnflWdJG+O2ztMWss8GqUUB8dXLR/FPenwkiBNkMIJJYfSN6sgskvsF0rHAoBowNQfbyZnnvw==
-  /vscode-languageserver-protocol/3.16.0-next.7:
+  /vscode-languageserver-protocol/3.16.0:
     dependencies:
-      vscode-jsonrpc: 6.0.0-next.5
-      vscode-languageserver-types: 3.16.0-next.3
+      vscode-jsonrpc: 6.0.0
+      vscode-languageserver-types: 3.16.0
     dev: false
     resolution:
-      integrity: sha512-tOjrg+K3RddJ547zpC9/LAgTbzadkPuHlqJFFWIcKjVhiJOh73XyY+Ngcu9wukGaTsuSGjJ0W8rlmwanixa0FQ==
+      integrity: sha512-sdeUoAawceQdgIfTI+sdcwkiK2KU+2cbEYA0agzM2uqaUy2UpnnGHtWTHVEtS0ES4zHU0eMFRGN+oQgDxlD66A==
   /vscode-languageserver-textdocument/1.0.1:
     dev: false
     resolution:
@@ -6812,10 +6810,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-+a9MPUQrNGRrGU630OGbYVQ+11iOIovjCkqxajPa9w57Sd5ruK8WQNsslzpa0x/QJqC8kRc2DUxWjIFwoNm4ZQ==
-  /vscode-languageserver-types/3.16.0-next.3:
+  /vscode-languageserver-types/3.16.0:
     dev: false
     resolution:
-      integrity: sha512-s/z5ZqSe7VpoXJ6JQcvwRiPPA3nG0nAcJ/HH03zoU6QaFfnkcgPK+HshC3WKPPnC2G08xA0iRB6h7kmyBB5Adg==
+      integrity: sha512-k8luDIWJWyenLc5ToFQQMaSrqCHiLwyKPHKPQZ5zz21vM+vIVUSvsRpcbiECH4WR88K2XZqc4ScRcZ7nk/jbeA==
   /vscode-languageserver/4.4.2:
     dependencies:
       vscode-languageserver-protocol: 3.15.3
@@ -6936,7 +6934,7 @@ packages:
       loader-utils: 1.4.0
       supports-color: 6.1.0
       v8-compile-cache: 2.1.1
-      webpack: 4.44.1_7d74d9f6ceb0e540c1e44d9709220c58
+      webpack: 4.44.1_webpack-cli@3.3.12
       yargs: 13.3.2
     dev: true
     engines:
@@ -6953,7 +6951,7 @@ packages:
     dev: true
     resolution:
       integrity: sha512-lgTS3Xhv1lCOKo7SA5TjKXMjpSM4sBjNV5+q2bqesbSPs5FjGmU6jjtBSkX9b4qW87vDIsCIlUPOEhbZrMdjeQ==
-  /webpack/4.44.1_7d74d9f6ceb0e540c1e44d9709220c58:
+  /webpack/4.44.1_webpack-cli@3.3.12:
     dependencies:
       '@webassemblyjs/ast': 1.9.0
       '@webassemblyjs/helper-module-context': 1.9.0
@@ -6984,7 +6982,6 @@ packages:
       node: '>=6.11.5'
     hasBin: true
     peerDependencies:
-      webpack: '*'
       webpack-cli: '*'
       webpack-command: '*'
     peerDependenciesMeta:
