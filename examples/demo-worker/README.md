@@ -10,7 +10,7 @@ Live demo is also available at https://qualified.github.io/lsps/.
 Install [`pnpm`] if you don't have it installed:
 
 ```
-npm i -g pnpm@5
+npm i -g pnpm@6
 ```
 
 In project root:
