@@ -8,7 +8,7 @@ Demo for `textDocument/didSave` writing to disk.
 Install [`pnpm`] if you don't have it installed:
 
 ```
-npm i -g pnpm@5
+npm i -g pnpm@6
 ```
 
 Install [`lsp-ws-proxy`] (v0.4.0+) by downloading a binary from [releases][proxy-releases] and moving it in `PATH`.
