@@ -18,12 +18,12 @@ export const applyEdits = (cm: Editor, edits: TextEdit[], origin?: string) => {
   cm.operation(() => {
     for (let i = 0; i < edits.length; ++i) {
       const mark = marks[i];
-      const range = mark.find();
+      const range = mark.find()!;
       cm.replaceRange(edits[i].newText, range.from, range.to, origin);
       mark.clear();
     }
   });
-  cm.setCursor(current.find().to);
+  cm.setCursor(current.find()!.to);
   current.clear();
 };
 

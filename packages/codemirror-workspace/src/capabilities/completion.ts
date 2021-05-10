@@ -142,6 +142,7 @@ const withItemTooltip = (hints: Hints): Hints => {
       tooltip = null;
     }
   });
+  // @ts-ignore: @types/codemirror has (cur: Hint, node: Element)
   CodeMirror.on(hints, "select", (cur: HintWithData, node: HTMLElement) => {
     tooltip?.remove();
     const data = cur.data;

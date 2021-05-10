@@ -6,7 +6,7 @@
   "bugs": "https://github.com/qualified/lsps/issues",
   "scripts": {
     "test": "pnpm multi test",
-    "prepare": "pnpm build && pnpm build:esm",
+    "prepare": "husky install && pnpm build && pnpm build:esm",
     "build": "tsc --build packages",
     "clean": "tsc --build --clean packages",
     "watch": "tsc --build --watch packages",
@@ -15,14 +15,9 @@
     "watch:esm": "tsc --build --watch packages/tsconfig-esm.json"
   },
   "devDependencies": {
-    "husky": "^4.3.0",
+    "husky": "^6.0.0",
     "prettier": "^2.1.1",
     "pretty-quick": "^3.0.2",
     "typescript": "^4.0.2"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged"
-    }
   }
 }
