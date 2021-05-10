@@ -1,4 +1,4 @@
-import type { Editor, TextMarker, Position } from "codemirror";
+import type { Editor, TextMarker, Position, MarkerRange } from "codemirror";
 import type { TextEdit } from "vscode-languageserver-protocol";
 import { normalizeKeyMap } from "codemirror";
 import {
@@ -38,7 +38,7 @@ export const insertSnippet = (
   cm.replaceRange(snippet.toString(), from, to, "complete");
 
   // Add markers to tabstops so we can keep track of them after insertions.
-  const markers = new Map<Placeholder, TextMarker>();
+  const markers = new Map<Placeholder, TextMarker<MarkerRange>>();
   const offset = cm.indexFromPos(from);
   for (const placeholder of snippet.placeholders) {
     markers.set(
@@ -81,7 +81,7 @@ export const insertSnippet = (
     const placeholder = placeholders[0];
     const isFinal = placeholder.isFinalTabstop;
     const selections = placeholders.map((p) => {
-      const { from, to } = markers.get(p)!.find();
+      const { from, to } = markers.get(p)!.find()!;
       return { anchor: from, head: to };
     });
     // If the group is for final tabstop, we make the last one primary.
@@ -102,9 +102,9 @@ export const insertSnippet = (
     cm.off("mousedown", onMousedown);
 
     const ps = tabstopGroups[tabstopGroups.length - 1];
-    const p = ps[ps.length - 1];
-    const m = markers.get(p)!;
-    cm.setCursor(m.find().to);
+    const placeholder = ps[ps.length - 1];
+    const marker = markers.get(placeholder)!.find()!;
+    cm.setCursor(marker.to);
     for (const m of markers.values()) m.clear();
     markers.clear();
     if (finalMarker) finalMarker.clear();

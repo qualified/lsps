@@ -177,7 +177,7 @@ importers:
       vscode-languageserver-protocol: 3.16.0
     devDependencies:
       '@jest/types': 26.3.0
-      '@types/codemirror': 0.0.98
+      '@types/codemirror': 5.60.0
       '@types/jest': 26.0.13
       codemirror: 5.57.0
       fast-check: 2.3.0
@@ -190,7 +190,7 @@ importers:
       '@qualified/vscode-jsonrpc-ws': ^0.2.0
       '@qualified/vscode-jsonrpc-ww': ^0.2.0
       '@qualified/vscode-snippet-parser': ^0.1.0
-      '@types/codemirror': ^0.0.98
+      '@types/codemirror': ^5.0.0
       '@types/jest': ^26.0.13
       codemirror: ^5.56.0
       fast-check: ^2.3.0
@@ -770,6 +770,12 @@ packages:
     dev: true
     resolution:
       integrity: sha512-cbty5LPayy2vNSeuUdjNA9tggG+go5vAxmnLDRWpiZI5a+RDBi9dlozy4/jW/7P/gletbBWbQREEa7A81YxstA==
+  /@types/codemirror/5.60.0:
+    dependencies:
+      '@types/tern': 0.23.3
+    dev: true
+    resolution:
+      integrity: sha512-xgzXZyCzedLRNC67/Nn8rpBtTFnAsX2C+Q/LGoH6zgcpF/LqdNHJMHEOhqT1bwUcSp6kQdOIuKzRbeW9DYhEhg==
   /@types/color-name/1.1.1:
     dev: true
     resolution:
