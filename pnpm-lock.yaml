@@ -19,7 +19,7 @@ importers:
       vscode-css-languageserver-bin: 1.4.0
       vscode-html-languageserver-bin: 1.4.0
     devDependencies:
-      '@types/codemirror': 0.0.98
+      '@types/codemirror': 5.60.0
       '@types/marked': 1.1.0
       '@types/webpack': 4.41.22
       concurrently: 5.3.0
@@ -35,7 +35,7 @@ importers:
       webpack-cli: 3.3.12_webpack@4.44.1
     specifiers:
       '@qualified/codemirror-workspace': ^0.1.0
-      '@types/codemirror': 0.0.98
+      '@types/codemirror': ^5.0.0
       '@types/marked': ^1.1.0
       '@types/webpack': ^4.41.22
       codemirror: ^5.56.0
@@ -60,7 +60,7 @@ importers:
       codemirror: 5.57.0
       marked: 1.1.1
     devDependencies:
-      '@types/codemirror': 0.0.98
+      '@types/codemirror': 5.60.0
       '@types/marked': 1.1.0
       '@types/webpack': 4.41.22
       concurrently: 5.3.0
@@ -76,7 +76,7 @@ importers:
       webpack-cli: 3.3.12_webpack@4.44.1
     specifiers:
       '@qualified/codemirror-workspace': ^0.1.0
-      '@types/codemirror': 0.0.98
+      '@types/codemirror': ^5.0.0
       '@types/marked': ^1.1.0
       '@types/webpack': ^4.41.22
       codemirror: ^5.56.0
@@ -98,7 +98,7 @@ importers:
       codemirror: 5.57.0
       marked: 1.1.1
     devDependencies:
-      '@types/codemirror': 0.0.98
+      '@types/codemirror': 5.60.0
       '@types/marked': 1.1.0
       '@types/webpack': 4.41.22
       concurrently: 5.3.0
@@ -114,7 +114,7 @@ importers:
       webpack-cli: 3.3.12_webpack@4.44.1
     specifiers:
       '@qualified/codemirror-workspace': ^0.1.0
-      '@types/codemirror': 0.0.98
+      '@types/codemirror': ^5.0.0
       '@types/marked': ^1.1.0
       '@types/webpack': ^4.41.22
       codemirror: ^5.56.0
@@ -138,7 +138,7 @@ importers:
       vscode-json-languageservice: 3.8.3
       vscode-languageserver-protocol: 3.16.0
     devDependencies:
-      '@types/codemirror': 0.0.98
+      '@types/codemirror': 5.60.0
       '@types/marked': 1.1.0
       concurrently: 5.3.0
       css-loader: 4.3.0_webpack@4.44.1
@@ -152,7 +152,7 @@ importers:
       webpack-cli: 3.3.12_webpack@4.44.1
     specifiers:
       '@qualified/codemirror-workspace': ^0.1.0
-      '@types/codemirror': 0.0.98
+      '@types/codemirror': ^5.0.0
       '@types/marked': ^1.1.0
       codemirror: ^5.56.0
       concurrently: ^5.3.0
@@ -764,12 +764,6 @@ packages:
     dev: true
     resolution:
       integrity: sha512-i+zS7t6/s9cdQvbqKDARrcbrPvtJGlbYsMkazo03nTAK3RX9FNrLllXys22uiTGJapPOTZTQ35nHh4ISph4SLQ==
-  /@types/codemirror/0.0.98:
-    dependencies:
-      '@types/tern': 0.23.3
-    dev: true
-    resolution:
-      integrity: sha512-cbty5LPayy2vNSeuUdjNA9tggG+go5vAxmnLDRWpiZI5a+RDBi9dlozy4/jW/7P/gletbBWbQREEa7A81YxstA==
   /@types/codemirror/5.60.0:
     dependencies:
       '@types/tern': 0.23.3
