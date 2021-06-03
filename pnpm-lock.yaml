@@ -18,12 +18,12 @@ importers:
     specifiers:
       '@qualified/codemirror-workspace': ^0.1.0
       '@types/codemirror': ^5.0.0
-      '@types/marked': ^1.1.0
+      '@types/marked': ^2.0.3
       '@types/webpack': ^4.41.22
       codemirror: ^5.56.0
       concurrently: ^5.3.0
       css-loader: ^4.3.0
-      marked: ^1.1.1
+      marked: ^2.0.7
       raw-loader: ^4.0.1
       rimraf: ^3.0.2
       serve: ^11.3.2
@@ -39,13 +39,13 @@ importers:
     dependencies:
       '@qualified/codemirror-workspace': link:../../packages/codemirror-workspace
       codemirror: 5.57.0
-      marked: 1.1.1
+      marked: 2.0.7
       typescript-language-server: 0.4.0
       vscode-css-languageserver-bin: 1.4.0
       vscode-html-languageserver-bin: 1.4.0
     devDependencies:
       '@types/codemirror': 5.60.0
-      '@types/marked': 1.1.0
+      '@types/marked': 2.0.3
       '@types/webpack': 4.41.22
       concurrently: 5.3.0
       css-loader: 4.3.0_webpack@4.44.1
@@ -63,12 +63,12 @@ importers:
     specifiers:
       '@qualified/codemirror-workspace': ^0.1.0
       '@types/codemirror': ^5.0.0
-      '@types/marked': ^1.1.0
+      '@types/marked': ^2.0.3
       '@types/webpack': ^4.41.22
       codemirror: ^5.56.0
       concurrently: ^5.3.0
       css-loader: ^4.3.0
-      marked: ^1.1.1
+      marked: ^2.0.7
       raw-loader: ^4.0.1
       rimraf: ^3.0.2
       serve: ^11.3.2
@@ -81,10 +81,10 @@ importers:
     dependencies:
       '@qualified/codemirror-workspace': link:../../packages/codemirror-workspace
       codemirror: 5.57.0
-      marked: 1.1.1
+      marked: 2.0.7
     devDependencies:
       '@types/codemirror': 5.60.0
-      '@types/marked': 1.1.0
+      '@types/marked': 2.0.3
       '@types/webpack': 4.41.22
       concurrently: 5.3.0
       css-loader: 4.3.0_webpack@4.44.1
@@ -102,12 +102,12 @@ importers:
     specifiers:
       '@qualified/codemirror-workspace': ^0.1.0
       '@types/codemirror': ^5.0.0
-      '@types/marked': ^1.1.0
+      '@types/marked': ^2.0.3
       '@types/webpack': ^4.41.22
       codemirror: ^5.56.0
       concurrently: ^5.3.0
       css-loader: ^4.3.0
-      marked: ^1.1.1
+      marked: ^2.0.7
       raw-loader: ^4.0.1
       rimraf: ^3.0.2
       serve: ^11.3.2
@@ -120,10 +120,10 @@ importers:
     dependencies:
       '@qualified/codemirror-workspace': link:../../packages/codemirror-workspace
       codemirror: 5.57.0
-      marked: 1.1.1
+      marked: 2.0.7
     devDependencies:
       '@types/codemirror': 5.60.0
-      '@types/marked': 1.1.0
+      '@types/marked': 2.0.3
       '@types/webpack': 4.41.22
       concurrently: 5.3.0
       css-loader: 4.3.0_webpack@4.44.1
@@ -141,11 +141,11 @@ importers:
     specifiers:
       '@qualified/codemirror-workspace': ^0.1.0
       '@types/codemirror': ^5.0.0
-      '@types/marked': ^1.1.0
+      '@types/marked': ^2.0.3
       codemirror: ^5.56.0
       concurrently: ^5.3.0
       css-loader: ^4.3.0
-      marked: ^1.1.1
+      marked: ^2.0.7
       rimraf: ^3.0.2
       serve: ^11.3.2
       style-loader: ^1.2.1
@@ -159,12 +159,12 @@ importers:
     dependencies:
       '@qualified/codemirror-workspace': link:../../packages/codemirror-workspace
       codemirror: 5.57.0
-      marked: 1.1.1
+      marked: 2.0.7
       vscode-json-languageservice: 3.8.3
       vscode-languageserver-protocol: 3.16.0
     devDependencies:
       '@types/codemirror': 5.60.0
-      '@types/marked': 1.1.0
+      '@types/marked': 2.0.3
       concurrently: 5.3.0
       css-loader: 4.3.0_webpack@4.44.1
       rimraf: 3.0.2
@@ -833,8 +833,8 @@ packages:
     resolution: {integrity: sha512-3c+yGKvVP5Y9TYBEibGNR+kLtijnj7mYrXRg+WpFb2X9xm04g/DXYkfg4hmzJQosc9snFNUPkbYIhu+KAm6jJw==}
     dev: true
 
-  /@types/marked/1.1.0:
-    resolution: {integrity: sha512-j8XXj6/l9kFvCwMyVqozznqpd/nk80krrW+QiIJN60Uu9gX5Pvn4/qPJ2YngQrR3QREPwmrE1f9/EWKVTFzoEw==}
+  /@types/marked/2.0.3:
+    resolution: {integrity: sha512-lbhSN1rht/tQ+dSWxawCzGgTfxe9DB31iLgiT1ZVT5lshpam/nyOA1m3tKHRoNPctB2ukSL22JZI5Fr+WI/zYg==}
     dev: true
 
   /@types/minimatch/3.0.3:
@@ -4097,8 +4097,8 @@ packages:
       object-visit: 1.0.1
     dev: true
 
-  /marked/1.1.1:
-    resolution: {integrity: sha512-mJzT8D2yPxoPh7h0UXkB+dBj4FykPJ2OIfxAWeIHrvoHDkFxukV/29QxoFQoPM6RLEwhIFdJpmKBlqVM3s2ZIw==}
+  /marked/2.0.7:
+    resolution: {integrity: sha512-BJXxkuIfJchcXOJWTT2DOL+yFWifFv2yGYOUzvXg8Qz610QKw+sHCvTMYwA+qWGhlA2uivBezChZ/pBy1tWdkQ==}
     engines: {node: '>= 8.16.2'}
     hasBin: true
     dev: false
