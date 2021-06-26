@@ -7,3 +7,4 @@ examples/*/public/
 examples/*/workspace/
 packages/vscode-snippet-parser/src/charCode.ts
 packages/vscode-snippet-parser/src/snippetParser.ts
+.github/workflows/*.yml

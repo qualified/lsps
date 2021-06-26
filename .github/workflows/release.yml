@@ -1,0 +1,58 @@
+name: Release
+on:
+  push:
+    branches:
+      - main
+jobs:
+  merged-pr:
+    runs-on: ubuntu-latest
+    outputs:
+      pr: ${{ steps.get-pr-info.outputs.result }}
+    steps:
+      - name: Get merged PR
+        id: get-pr-info
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const res = await github.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sort: 'updated',
+              direction: 'desc',
+              state: 'closed',
+              per_page: 100,
+            });
+            const pull = res.data.find(p => p.merge_commit_sha === context.sha);
+            if (!pull) {
+              console.log("No PR");
+              return {};
+            }
+
+            console.log(`Found #${pull.number} ${pull.title}`);
+            return {
+              title: pull.title,
+              body: pull.body,
+              number: pull.number,
+            };
+
+  release:
+    needs: merged-pr
+    if: "${{ fromJSON(needs.merged-pr.outputs.pr).title == 'chore: update versions' }}"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 12.x
+          registry-url: https://registry.npmjs.org
+      - run: npm i -g pnpm@6
+      - uses: actions/cache@v2
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+      - run: pnpm install
+      - run: pnpm publish -r
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NODE_AUTH_TOKEN}}         
