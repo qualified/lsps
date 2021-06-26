@@ -2,6 +2,11 @@
 
 Monorepo of packages related to [LSP][lsp].
 
+[![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+[![CI](https://github.com/qualified/lsps/workflows/CI/badge.svg)](https://github.com/qualified/lsps/actions?query=workflow%3ACI)
+[![License MIT](https://img.shields.io/github/license/qualified/lsps)](./LICENSE.md)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat)](https://github.com/prettier/prettier)
+
 ## Packages
 
 - [`@qualified/vscode-jsonrpc-ws`]
@@ -109,10 +114,10 @@ See [examples/demo](./examples/demo) for a simple demo project with TypeScript +
 
 [lsp]: https://microsoft.github.io/language-server-protocol/
 [`lsp-ws-proxy`]: https://github.com/qualified/lsp-ws-proxy
-[`@qualified/vscode-jsonrpc-ws`]: ./packages/vscode-jsonrpc-ws
-[`@qualified/vscode-jsonrpc-ww`]: ./packages/vscode-jsonrpc-ww
-[`@qualified/lsp-connection`]: ./packages/lsp-connection
-[`@qualified/codemirror-workspace`]: ./packages/codemirror-workspace
+[`@qualified/vscode-jsonrpc-ws`]: https://www.npmjs.com/package/@qualified/vscode-jsonrpc-ws
+[`@qualified/vscode-jsonrpc-ww`]: https://www.npmjs.com/package/@qualified/vscode-jsonrpc-ww
+[`@qualified/lsp-connection`]: https://www.npmjs.com/package/@qualified/lsp-connection
+[`@qualified/codemirror-workspace`]: https://www.npmjs.com/package/@qualified/codemirror-workspace
 [ok]: ./docs/img/ok.svg
 [meh]: ./docs/img/meh.svg
 [no]: ./docs/img/no.svg
