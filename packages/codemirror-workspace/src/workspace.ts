@@ -110,6 +110,8 @@ export class Workspace {
   // Map of `documentUri` to open editors in the workspace.
   // Used to find the editor to apply actions on event.
   private editors: { [uri: string]: Editor };
+  // Keep track of `connect` calls for each `serverId`.
+  private connectPromises: { [id: string]: Promise<LspConnection | null> };
   // Map of Language Server ID to connection.
   private connections: { [id: string]: LspConnection };
   // Map of `documentUri` to document versions.
@@ -132,6 +134,7 @@ export class Workspace {
    */
   constructor(options: WorkspaceOptions) {
     this.editors = Object.create(null);
+    this.connectPromises = Object.create(null);
     this.connections = Object.create(null);
     this.documentVersions = Object.create(null);
     this.subscriptionDisposers = new WeakMap();
@@ -165,7 +168,11 @@ export class Workspace {
     // TODO Allow connecting to multiple language servers
     const serverId = assoc.languageServerIds[0];
     if (!serverId) return;
-    const conn = await this.connect(serverId);
+
+    const promise =
+      this.connectPromises[serverId] ||
+      (this.connectPromises[serverId] = this.connect(serverId));
+    const conn = await promise;
     if (!conn) return;
 
     this.editors[uri] = editor;
@@ -619,12 +626,12 @@ export class Workspace {
    *
    * @param serverId - ID of the language server.
    */
-  private async connect(serverId: string): Promise<LspConnection | undefined> {
+  private async connect(serverId: string): Promise<LspConnection | null> {
     const existing = this.connections[serverId];
-    if (existing) return existing;
+    if (existing || existing === null) return existing;
 
     const connectionString = await this.getConnectionString(serverId);
-    if (!connectionString) return;
+    if (!connectionString) return null;
 
     // If we got some string that doesn't start with Web Socket protocol, assume
     // it's the worker's location.
@@ -635,6 +642,7 @@ export class Workspace {
     this.connections[serverId] = conn;
     conn.onClose(() => {
       delete this.connections[serverId];
+      delete this.connectPromises[serverId];
     });
 
     conn.listen();
