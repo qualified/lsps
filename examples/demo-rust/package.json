@@ -1,5 +1,5 @@
 {
-  "name": "@qualified/codemirror-workspace-rust-demo",
+  "name": "@qualified/codemirror-workspace-demo-rust",
   "version": "0.1.0",
   "private": true,
   "scripts": {
