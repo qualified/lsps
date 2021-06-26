@@ -27,7 +27,7 @@ jobs:
       - name: create versions
         uses: changesets/action@master
         with:
-          version: pnpm ci:version
+          version: pnpx changeset version
           commit: "chore: update versions"
           title: "chore: update versions"
         env:
