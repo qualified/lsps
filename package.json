@@ -5,6 +5,7 @@
   "repository": "https://github.com/qualified/lsps",
   "bugs": "https://github.com/qualified/lsps/issues",
   "scripts": {
+    "changeset-version": "changeset version && pnpm install --frozen-lockfile=false",
     "test": "pnpm multi test",
     "prepare": "husky install && pnpm build && pnpm build:esm",
     "build": "tsc --build packages",
