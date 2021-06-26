@@ -135,11 +135,7 @@ const workspace = new Workspace({
   renderMarkdown: (markdown) => marked(markdown),
 });
 
-workspace.openTextDocument("add.ts", tsEditorAdd).then(() => {
-  // This is necessary to ensure that workspace doesn't try to make more than one connection per file type.
-  // Workspace might provide convenience method to open multiple files safely in the future.
-  workspace.openTextDocument("source.ts", tsEditorSource);
-});
-// No need to wait if using different language servers.
+workspace.openTextDocument("add.ts", tsEditorAdd);
+workspace.openTextDocument("source.ts", tsEditorSource);
 workspace.openTextDocument("project.html", htmlEditor);
 workspace.openTextDocument("style.css", cssEditor);
