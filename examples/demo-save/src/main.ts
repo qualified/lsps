@@ -15,7 +15,7 @@ import marked from "marked";
 import { Workspace } from "@qualified/codemirror-workspace";
 import "@qualified/codemirror-workspace/css/default.css";
 
-import sampleRust from "!!raw-loader!../workspace/src/main.rs";
+import sampleRust from "!!raw-loader!../workspace/src/lib.rs";
 
 const highlight = (code: string, language: string) => {
   const mode =
@@ -86,7 +86,7 @@ const workspace = new Workspace({
   },
   renderMarkdown: (markdown) => marked(markdown),
 });
-const documentPath = "src/main.rs";
+const documentPath = "src/lib.rs";
 workspace.openTextDocument(documentPath, rustEditor);
 
 const button = document.getElementById("save")!;
