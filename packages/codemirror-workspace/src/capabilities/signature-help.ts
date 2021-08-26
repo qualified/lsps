@@ -20,6 +20,7 @@ interface LspSignatureHelpState {
  * @param editor
  * @param help
  * @param pos - Cursor position.
+ * @param renderMarkdown
  */
 export const showSignatureHelp = (
   editor: Editor,

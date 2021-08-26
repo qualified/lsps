@@ -8,6 +8,9 @@ export interface EditorEventMap {
   contextmenu: [cm: Editor, event: MouseEvent];
   "cmw:contextMenuOpened": [cm: Editor];
   "cmw:contextMenuClosed": [cm: Editor];
+  blur: [cm: Editor];
+  viewportChange: [cm: Editor, from: Number, to: Number];
+  refresh: [cm: Editor];
 }
 
 export interface EditorEventTarget<K extends keyof EditorEventMap> {
