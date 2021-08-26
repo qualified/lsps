@@ -7,10 +7,10 @@
   "scripts": {
     "changeset-version": "changeset version && pnpm install --frozen-lockfile=false",
     "test": "pnpm multi test",
-    "prepare": "husky install && pnpm build && pnpm build:esm",
-    "build": "tsc --build packages",
-    "clean": "tsc --build --clean packages",
-    "watch": "tsc --build --watch packages",
+    "prepare": "husky install && pnpm build:cjs && pnpm build:esm",
+    "build:cjs": "tsc --build packages",
+    "clean:cjs": "tsc --build --clean packages",
+    "watch:cjs": "tsc --build --watch packages",
     "build:esm": "tsc --build packages/tsconfig-esm.json",
     "clean:esm": "tsc --build --clean packages/tsconfig-esm.json",
     "watch:esm": "tsc --build --watch packages/tsconfig-esm.json"
