@@ -17,6 +17,7 @@ interface LspHoverState {
  * @param editor
  * @param pos Position of the event
  * @param hover
+ * @param renderMarkdown
  */
 export const showHoverInfo = (
   editor: Editor,

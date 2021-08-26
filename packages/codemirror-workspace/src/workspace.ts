@@ -43,7 +43,7 @@ import { fromEditorEvent, onEditorEvent } from "./events";
 import { lspPosition, lspChange } from "./utils/conversions";
 import { applyEdits } from "./utils/editor";
 import { delay } from "./utils/promise";
-import { showContextMenu } from "./ui/context-menu";
+import { removeContextMenu, showContextMenu } from "./ui/context-menu";
 
 // Changes stream emits at most once per 50ms.
 const CHANGES_FRAME = 50;
@@ -391,6 +391,18 @@ export class Workspace {
       })
     );
 
+    const hideAll = ([cm]: [Editor, ...any]) => {
+      removeHoverInfo(cm);
+      removeSignatureHelp(cm);
+      hideCompletions(cm);
+      removeContextMenu(cm);
+    };
+
+    const hideTooltips = ([cm]: [Editor, ...any]) => {
+      removeHoverInfo(cm);
+      removeSignatureHelp(cm);
+    };
+
     disposers.push(
       onEditorEvent(editor, "cmw:contextMenuOpened", ([cm]) => {
         disableHoverInfo(cm);
@@ -399,7 +411,15 @@ export class Workspace {
       }),
       onEditorEvent(editor, "cmw:contextMenuClosed", ([cm]) => {
         enableHoverInfo(cm);
-      })
+      }),
+
+      // if the editor loses focus, or gets completely reset, hide all overlays, because they are no longer valid
+      onEditorEvent(editor, "blur", hideAll),
+      onEditorEvent(editor, "refresh", hideAll),
+
+      // if we type something, or modify the viewport, hide any tooltips, because they no longer line up correctly
+      onEditorEvent(editor, "changes", hideTooltips),
+      onEditorEvent(editor, "viewportChange", hideTooltips)
     );
 
     const gotoDefinition = (cm: Editor, pos: Position) => {
