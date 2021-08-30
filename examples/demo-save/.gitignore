@@ -3,3 +3,4 @@ lib/
 public/js/
 workspace/target/
 workspace/Cargo.lock
+workspace/src/adder.rs

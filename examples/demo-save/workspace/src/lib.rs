@@ -2,6 +2,9 @@ use rand::Rng;
 use std::cmp::Ordering;
 use std::io;
 
+// Try adding and removing this module with a button below.
+mod adder;
+
 pub fn start() {
     println!("Guess the number!");
     let secret_number = rand::thread_rng().gen_range(1, 100);

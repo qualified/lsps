@@ -40,3 +40,9 @@ See [Adding a changeset](https://github.com/atlassian/changesets/blob/main/docs/
 [Prettier](https://prettier.io/) is used to ensure consistent style.
 
 `pre-commit` hook to format staged changes is installed automatically when you run `pnpm install`, so you don't need to do anything. However, it's recommended to [configure your editor](https://prettier.io/docs/en/editors.html) to format on save, and forget about formatting.
+
+## Troubleshooting
+
+### TypeScript is failing to build after changing types in workspace packages
+
+Run `pnpm install` in project root.

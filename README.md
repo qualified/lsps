@@ -100,7 +100,7 @@ See [examples/demo](./examples/demo) for a simple demo project with TypeScript +
 - `applyEdit` ![no]
 - `workspaceEdit` ![no]
 - `didChangeConfiguration` ![no]
-- `didChangeWatchedFiles` ![no]
+- `didChangeWatchedFiles` ![meh]
 - `symbol` ![no]
 - `executeCommand` ![no]
 
