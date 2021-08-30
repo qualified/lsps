@@ -391,16 +391,12 @@ export class Workspace {
       })
     );
 
-    const hideAll = ([cm]: [Editor, ...any]) => {
-      removeHoverInfo(cm);
-      removeSignatureHelp(cm);
-      hideCompletions(cm);
-      removeContextMenu(cm);
+    const hideAllPopups = ([cm]: [Editor, ...any]) => {
+      this.hideAllPopups(cm);
     };
 
     const hideTooltips = ([cm]: [Editor, ...any]) => {
-      removeHoverInfo(cm);
-      removeSignatureHelp(cm);
+      this.hideTooltips(cm);
     };
 
     disposers.push(
@@ -414,8 +410,8 @@ export class Workspace {
       }),
 
       // if the editor loses focus, or gets completely reset, hide all overlays, because they are no longer valid
-      onEditorEvent(editor, "blur", hideAll),
-      onEditorEvent(editor, "refresh", hideAll),
+      onEditorEvent(editor, "blur", hideAllPopups),
+      onEditorEvent(editor, "refresh", hideAllPopups),
 
       // if we type something, or modify the viewport, hide any tooltips, because they no longer line up correctly
       onEditorEvent(editor, "changes", hideTooltips),
@@ -559,6 +555,25 @@ export class Workspace {
     });
 
     this.subscriptionDisposers.set(editor, disposers);
+  }
+
+  hideAllPopups(cm?: Editor) {
+    if (cm) {
+      this.hideTooltips(cm);
+      hideCompletions(cm);
+      removeContextMenu(cm);
+    } else {
+      Object.values(this.editors).forEach((cm) => this.hideAllPopups(cm));
+    }
+  }
+
+  hideTooltips(cm?: Editor) {
+    if (cm) {
+      removeHoverInfo(cm);
+      removeSignatureHelp(cm);
+    } else {
+      Object.values(this.editors).forEach((cm) => this.hideTooltips(cm));
+    }
   }
 
   /**
