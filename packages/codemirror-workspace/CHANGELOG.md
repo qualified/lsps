@@ -1,5 +1,14 @@
 # @qualified/codemirror-workspace
 
+## 0.2.2
+
+### Patch Changes
+
+- a07eeef: Exposes workspace functions to clear popups on an individual editor or all editors
+- eda79c2: Add `notifyFilesChanged(changes)` to send `workspace/didChangeWatchedFiles` notification.
+- Updated dependencies [964de87]
+  - @qualified/lsp-connection@0.2.1
+
 ## 0.2.1
 
 ### Patch Changes

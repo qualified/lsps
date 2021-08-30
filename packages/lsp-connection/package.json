@@ -7,7 +7,7 @@
     "languageserver",
     "vscode-jsonrpc"
   ],
-  "version": "0.2.0",
+  "version": "0.2.1",
   "license": "MIT",
   "homepage": "https://github.com/qualified/lsps#readme",
   "repository": "https://github.com/qualified/lsps",

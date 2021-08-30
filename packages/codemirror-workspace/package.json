@@ -8,7 +8,7 @@
     "languageserver",
     "languageclient"
   ],
-  "version": "0.2.1",
+  "version": "0.2.2",
   "license": "MIT",
   "homepage": "https://github.com/qualified/lsps#readme",
   "repository": "https://github.com/qualified/lsps",
@@ -29,7 +29,7 @@
     "codemirror": "^5.x"
   },
   "dependencies": {
-    "@qualified/lsp-connection": "workspace:0.2.0",
+    "@qualified/lsp-connection": "workspace:0.2.1",
     "@qualified/vscode-jsonrpc-ws": "workspace:0.2.0",
     "@qualified/vscode-jsonrpc-ww": "workspace:0.2.0",
     "@qualified/vscode-snippet-parser": "workspace:0.1.0",
