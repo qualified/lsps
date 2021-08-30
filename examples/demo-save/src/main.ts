@@ -97,3 +97,54 @@ button.addEventListener("click", async () => {
   button.removeAttribute("disabled");
   button.textContent = "Save";
 });
+
+const addButton = document.getElementById("add")!;
+addButton.addEventListener("click", async () => {
+  const text = addButton.textContent;
+  addButton.textContent = "Adding...";
+  addButton.setAttribute("disabled", "");
+  const res = await fetch("http://localhost:9999/files", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      operations: [
+        {
+          op: "write",
+          path: "src/adder.rs",
+          contents: "pub fn add(a: i32, b: i32) -> i32 { todo!(); }",
+        },
+      ],
+    }),
+  });
+  const json = await res.json();
+  await workspace.notifyFilesChanged(json.changes);
+  addButton.removeAttribute("disabled");
+  addButton.textContent = text;
+});
+
+const removeButton = document.getElementById("remove")!;
+removeButton.addEventListener("click", async () => {
+  const text = removeButton.textContent;
+  removeButton.textContent = "Removing...";
+  removeButton.setAttribute("disabled", "");
+  const res = await fetch("http://localhost:9999/files", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      operations: [
+        {
+          op: "remove",
+          path: "src/adder.rs",
+        },
+      ],
+    }),
+  });
+  const json = await res.json();
+  await workspace.notifyFilesChanged(json.changes);
+  removeButton.removeAttribute("disabled");
+  removeButton.textContent = text;
+});

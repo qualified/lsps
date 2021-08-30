@@ -5,6 +5,7 @@ import {
   SignatureHelpTriggerKind,
   DiagnosticTag,
   TextDocumentSaveReason,
+  FileEvent,
 } from "vscode-languageserver-protocol";
 
 import { createMessageConnection as createWebSocketMessageConnection } from "@qualified/vscode-jsonrpc-ws";
@@ -169,10 +170,7 @@ export class Workspace {
     const serverId = assoc.languageServerIds[0];
     if (!serverId) return;
 
-    const promise =
-      this.connectPromises[serverId] ||
-      (this.connectPromises[serverId] = this.connect(serverId));
-    const conn = await promise;
+    const conn = await this.getConnection(serverId);
     if (!conn) return;
 
     this.editors[uri] = editor;
@@ -640,6 +638,38 @@ export class Workspace {
     });
   }
 
+  /**
+   * Send `workspace/didChangeWatchedFiles` notification.
+   *
+   * Note that `FileEvent` must have a valid `uri` starting with `rootUri`.
+   * @param changes
+   */
+  async notifyFilesChanged(changes: FileEvent[]) {
+    // Group `changes` by language server.
+    const groups: { [k: string]: FileEvent[] } = {};
+    for (const change of changes) {
+      const assoc = this.getLanguageAssociation(change.uri);
+      if (!assoc) continue;
+      const serverId = assoc.languageServerIds[0];
+      if (!serverId) continue;
+
+      if (!groups[serverId]) groups[serverId] = [];
+      groups[serverId].push(change);
+    }
+
+    for (const [serverId, changes] of Object.entries(groups)) {
+      const conn = await this.getConnection(serverId);
+      if (conn) conn.watchedFilesChanged({ changes });
+    }
+  }
+
+  private async getConnection(serverId: string) {
+    return (
+      this.connectPromises[serverId] ||
+      (this.connectPromises[serverId] = this.connect(serverId))
+    );
+  }
+
   private removeEventHandlers(editor: Editor) {
     const disposers = this.subscriptionDisposers.get(editor);
     if (disposers) {
@@ -775,6 +805,9 @@ export class Workspace {
         workspace: {
           didChangeConfiguration: {
             dynamicRegistration: true,
+          },
+          didChangeWatchedFiles: {
+            dynamicRegistration: false,
           },
         },
       },

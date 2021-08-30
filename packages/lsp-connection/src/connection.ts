@@ -20,6 +20,7 @@ import {
   DefinitionRequest,
   DidChangeConfigurationNotification,
   DidChangeTextDocumentNotification,
+  DidChangeWatchedFilesNotification,
   DidCloseTextDocumentNotification,
   DidOpenTextDocumentNotification,
   DidSaveTextDocumentNotification,
@@ -45,9 +46,9 @@ import {
   TextDocumentSyncKind,
   TypeDefinitionRequest,
   UnregistrationRequest,
-  WorkspaceSymbolRequest,
   WillSaveTextDocumentNotification,
   WillSaveTextDocumentWaitUntilRequest,
+  WorkspaceSymbolRequest,
 } from "vscode-languageserver-protocol";
 
 export type LspConnection = ReturnType<typeof createLspConnection>;
@@ -198,6 +199,10 @@ export const createLspConnection = (conn: MessageConnection) => {
      * Notify that the client's configuration changed.
      */
     configurationChanged: notifier(DidChangeConfigurationNotification.type),
+    /**
+     * Notify that the client detected changes to files.
+     */
+    watchedFilesChanged: notifier(DidChangeWatchedFilesNotification.type),
 
     /** If supported, request completion at a given text document position. */
     getCompletion: maybeReq(
