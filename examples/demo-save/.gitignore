@@ -1,4 +1,4 @@
-bin/rust-analyzer
+bin/
 lib/
 public/js/
 workspace/target/
