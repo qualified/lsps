@@ -9,7 +9,7 @@ export interface EditorEventMap {
   "cmw:contextMenuOpened": [cm: Editor];
   "cmw:contextMenuClosed": [cm: Editor];
   blur: [cm: Editor];
-  viewportChange: [cm: Editor, from: Number, to: Number];
+  viewportChange: [cm: Editor, from: number, to: number];
   refresh: [cm: Editor];
 }
 
