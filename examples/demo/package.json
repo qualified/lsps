@@ -10,7 +10,7 @@
     "start": "pnpm build && concurrently \"pnpm start-ls-ts\" \"pnpm start-ls-html\" \"pnpm start-ls-css\" \"serve -l 4000 public\""
   },
   "dependencies": {
-    "@qualified/codemirror-workspace": "^0.2.0",
+    "@qualified/codemirror-workspace": "workspace:0.2.1",
     "codemirror": "^5.56.0",
     "marked": "^2.0.7",
     "typescript-language-server": "^0.4.0",

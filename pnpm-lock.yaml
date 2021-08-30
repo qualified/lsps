@@ -18,7 +18,7 @@ importers:
 
   examples/demo:
     specifiers:
-      '@qualified/codemirror-workspace': ^0.2.0
+      '@qualified/codemirror-workspace': workspace:0.2.1
       '@types/codemirror': ^5.0.0
       '@types/marked': ^2.0.3
       '@types/webpack': ^4.41.22
@@ -63,7 +63,7 @@ importers:
 
   examples/demo-rust:
     specifiers:
-      '@qualified/codemirror-workspace': ^0.2.0
+      '@qualified/codemirror-workspace': workspace:0.2.1
       '@types/codemirror': ^5.0.0
       '@types/marked': ^2.0.3
       '@types/webpack': ^4.41.22
@@ -102,7 +102,7 @@ importers:
 
   examples/demo-save:
     specifiers:
-      '@qualified/codemirror-workspace': ^0.2.0
+      '@qualified/codemirror-workspace': workspace:0.2.1
       '@types/codemirror': ^5.0.0
       '@types/marked': ^2.0.3
       '@types/webpack': ^4.41.22
@@ -141,7 +141,7 @@ importers:
 
   examples/demo-worker:
     specifiers:
-      '@qualified/codemirror-workspace': ^0.2.0
+      '@qualified/codemirror-workspace': workspace:0.2.1
       '@types/codemirror': ^5.0.0
       '@types/marked': ^2.0.3
       codemirror: ^5.56.0
@@ -181,10 +181,10 @@ importers:
   packages/codemirror-workspace:
     specifiers:
       '@jest/types': ^27.0.0
-      '@qualified/lsp-connection': ^0.2.0
-      '@qualified/vscode-jsonrpc-ws': ^0.2.0
-      '@qualified/vscode-jsonrpc-ww': ^0.2.0
-      '@qualified/vscode-snippet-parser': ^0.1.0
+      '@qualified/lsp-connection': workspace:0.2.0
+      '@qualified/vscode-jsonrpc-ws': workspace:0.2.0
+      '@qualified/vscode-jsonrpc-ww': workspace:0.2.0
+      '@qualified/vscode-snippet-parser': workspace:0.1.0
       '@types/codemirror': ^5.0.0
       '@types/jest': ^27.0.0
       codemirror: ^5.56.0
