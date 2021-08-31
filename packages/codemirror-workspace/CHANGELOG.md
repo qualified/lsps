@@ -1,5 +1,12 @@
 # @qualified/codemirror-workspace
 
+## 0.2.3
+
+### Patch Changes
+
+- 85c28ba: Notify all changes to all active Language Servers
+- 49f6c6e: Fix a type using `Number` object
+
 ## 0.2.2
 
 ### Patch Changes
