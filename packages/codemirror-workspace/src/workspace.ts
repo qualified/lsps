@@ -639,27 +639,14 @@ export class Workspace {
   }
 
   /**
-   * Send `workspace/didChangeWatchedFiles` notification.
+   * Send `workspace/didChangeWatchedFiles` notification to all active Language Servers.
    *
    * Note that `FileEvent` must have a valid `uri` starting with `rootUri`.
    * @param changes
    */
   async notifyFilesChanged(changes: FileEvent[]) {
-    // Group `changes` by language server.
-    const groups: { [k: string]: FileEvent[] } = {};
-    for (const change of changes) {
-      const assoc = this.getLanguageAssociation(change.uri);
-      if (!assoc) continue;
-      const serverId = assoc.languageServerIds[0];
-      if (!serverId) continue;
-
-      if (!groups[serverId]) groups[serverId] = [];
-      groups[serverId].push(change);
-    }
-
-    for (const [serverId, changes] of Object.entries(groups)) {
-      const conn = await this.getConnection(serverId);
-      if (conn) conn.watchedFilesChanged({ changes });
+    for (const conn of Object.values(this.connections)) {
+      conn.watchedFilesChanged({ changes });
     }
   }
 
