@@ -1,4 +1,4 @@
-import type { Editor, Position } from "codemirror";
+import type { Editor } from "codemirror";
 import { normalizeKeyMap } from "codemirror";
 import {
   CompletionTriggerKind,
@@ -191,6 +191,37 @@ export class Workspace {
   // TODO Clean up. Workspace should signal custom events for providers to react
   private addEventHandlers(uri: string, editor: Editor, conn: LspConnection) {
     const disposers: Disposer[] = [];
+
+    // TODO: expose as a function on Workspace, which could
+    const showCompletion = (
+      cm: Editor,
+      pos = cm.getCursor(),
+      token = cm.getTokenAt(pos)
+    ) => {
+      removeSignatureHelp(cm);
+      conn
+        .getCompletion({
+          textDocument: { uri },
+          position: lspPosition(pos),
+          // Completion triggered by typing an identifier or manual invocation.
+          context: { triggerKind: CompletionTriggerKind.Invoked },
+        })
+        .then((items) => {
+          if (!items) return;
+          // CompletionList to CompletionItem[]
+          if (!Array.isArray(items)) items = items.items;
+          showInvokedCompletions(
+            cm,
+            items,
+            [
+              { line: pos.line, ch: token.start },
+              { line: pos.line, ch: token.end },
+            ],
+            this.renderMarkdown
+          );
+        });
+    };
+
     const changeStream = piped(
       fromEditorEvent(editor, "changes"),
       debouncedBuffer(CHANGES_FRAME),
@@ -230,30 +261,7 @@ export class Workspace {
         const token = cm.getTokenAt(pos);
         if (token.type && /\b(?:variable|property|type)\b/.test(token.type)) {
           // TODO Show both completion and signature help
-          removeSignatureHelp(cm);
-          // TODO Make minimum characters configurable
-          // if (token.string.length < 3) return;
-          conn
-            .getCompletion({
-              textDocument: { uri },
-              position: lspPosition(pos),
-              // Completion triggered by typing an identifier or manual invocation.
-              context: { triggerKind: CompletionTriggerKind.Invoked },
-            })
-            .then((items) => {
-              if (!items) return;
-              // CompletionList to CompletionItem[]
-              if (!Array.isArray(items)) items = items.items;
-              showInvokedCompletions(
-                cm,
-                items,
-                [
-                  { line: pos.line, ch: token.start },
-                  { line: pos.line, ch: token.end },
-                ],
-                this.renderMarkdown
-              );
-            });
+          showCompletion(cm, pos, token);
           return;
         }
 
@@ -416,7 +424,7 @@ export class Workspace {
       onEditorEvent(editor, "viewportChange", hideTooltips)
     );
 
-    const gotoDefinition = (cm: Editor, pos: Position) => {
+    const gotoDefinition = (cm: Editor, pos = cm.getCursor()) => {
       conn
         .getDefinition({
           textDocument: { uri },
@@ -426,7 +434,7 @@ export class Workspace {
           if (location) gotoLocation(cm, uri, location);
         });
     };
-    const gotoDeclaration = (cm: Editor, pos: Position) => {
+    const gotoDeclaration = (cm: Editor, pos = cm.getCursor()) => {
       conn
         .getDeclaration({
           textDocument: { uri },
@@ -436,7 +444,7 @@ export class Workspace {
           if (location) gotoLocation(cm, uri, location);
         });
     };
-    const gotoTypeDefinition = (cm: Editor, pos: Position) => {
+    const gotoTypeDefinition = (cm: Editor, pos = cm.getCursor()) => {
       conn
         .getTypeDefinition({
           textDocument: { uri },
@@ -446,7 +454,7 @@ export class Workspace {
           if (location) gotoLocation(cm, uri, location);
         });
     };
-    const gotoReferences = (cm: Editor, pos: Position) => {
+    const gotoReferences = (cm: Editor, pos = cm.getCursor()) => {
       conn
         .getReferences({
           textDocument: { uri },
@@ -459,7 +467,7 @@ export class Workspace {
           if (location) gotoLocation(cm, uri, location);
         });
     };
-    const gotoImplementations = (cm: Editor, pos: Position) => {
+    const gotoImplementations = (cm: Editor, pos = cm.getCursor()) => {
       conn
         .getImplementation({
           textDocument: { uri },
@@ -531,20 +539,23 @@ export class Workspace {
     // Add some keymaps for jumping to various locations.
     const keyMap = normalizeKeyMap({
       // TODO Make this configurable
+      "Ctrl-Space": (cm: Editor) => {
+        showCompletion(cm);
+      },
       "Alt-G D": (cm: Editor) => {
-        gotoDefinition(cm, cm.getCursor());
+        gotoDefinition(cm);
       },
       "Alt-G H": (cm: Editor) => {
-        gotoDeclaration(cm, cm.getCursor());
+        gotoDeclaration(cm);
       },
       "Alt-G T": (cm: Editor) => {
-        gotoTypeDefinition(cm, cm.getCursor());
+        gotoTypeDefinition(cm);
       },
       "Alt-G I": (cm: Editor) => {
-        gotoImplementations(cm, cm.getCursor());
+        gotoImplementations(cm);
       },
       "Alt-G R": (cm: Editor) => {
-        gotoReferences(cm, cm.getCursor());
+        gotoReferences(cm);
       },
     });
     editor.addKeyMap(keyMap);
