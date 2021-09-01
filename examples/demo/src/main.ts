@@ -105,14 +105,14 @@ const workspace = new Workspace({
     if (styles !== null) {
       return {
         languageId: styles[1],
-        languageServerIds: ["css-language-server"],
+        languageServerIds: ["css-languageserver"],
       };
     }
 
     if (uri.endsWith(".html")) {
       return {
         languageId: "html",
-        languageServerIds: ["html-language-server"],
+        languageServerIds: ["html-languageserver"],
       };
     }
 
@@ -120,16 +120,7 @@ const workspace = new Workspace({
     return null;
   },
   getConnectionString: async (id: string) => {
-    switch (id) {
-      case "typescript-language-server":
-        return "ws://localhost:9990";
-      case "html-language-server":
-        return "ws://localhost:9991";
-      case "css-language-server":
-        return "ws://localhost:9992";
-      default:
-        return "";
-    }
+    return id ? `ws://localhost:9990?name=${id}` : "";
   },
   // Support Markdown documentation
   renderMarkdown: (markdown) => marked(markdown),
