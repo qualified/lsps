@@ -4,11 +4,13 @@ import type { SignatureHelp } from "vscode-languageserver-protocol";
 import { documentationToString } from "../utils/conversions";
 import { addTooltip } from "../ui/tooltip";
 import { escapeRegExp } from "../utils/regexp";
+import { MouseLeaveAllListener } from "../events";
 
 const states = new WeakMap<Editor, LspSignatureHelpState>();
 
 interface LspSignatureHelpState {
   tooltip?: HTMLElement;
+  mouseLeaveAllListener?: MouseLeaveAllListener;
   // For retriggering
   // activeHelp?: SignatureHelp;
 }
@@ -18,12 +20,14 @@ interface LspSignatureHelpState {
 /**
  * Show signature help.
  * @param editor
+ * @param mouseLeaveAllListener
  * @param help
  * @param pos - Cursor position.
  * @param renderMarkdown
  */
 export const showSignatureHelp = (
   editor: Editor,
+  mouseLeaveAllListener: MouseLeaveAllListener,
   help: SignatureHelp,
   pos: Position,
   renderMarkdown: (x: string) => string = (x) => x
@@ -86,12 +90,16 @@ export const showSignatureHelp = (
 
   const coords = editor.charCoords(pos, "page");
   state.tooltip = addTooltip(sig, coords.left, coords.top);
+  state.mouseLeaveAllListener = mouseLeaveAllListener;
+  mouseLeaveAllListener.addElement(state.tooltip);
   states.set(editor, state);
 };
 
 export const removeSignatureHelp = (editor: Editor) => {
   const state = states.get(editor);
   if (!state) return;
+  if (state.mouseLeaveAllListener && state.tooltip)
+    state.mouseLeaveAllListener.removeElement(state.tooltip);
   if (state.tooltip) state.tooltip.remove();
   states.delete(editor);
 };
