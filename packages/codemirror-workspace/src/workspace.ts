@@ -2,10 +2,10 @@ import type { Editor } from "codemirror";
 import { normalizeKeyMap } from "codemirror";
 import {
   CompletionTriggerKind,
-  SignatureHelpTriggerKind,
   DiagnosticTag,
-  TextDocumentSaveReason,
   FileEvent,
+  SignatureHelpTriggerKind,
+  TextDocumentSaveReason,
 } from "vscode-languageserver-protocol";
 
 import { createMessageConnection as createWebSocketMessageConnection } from "@qualified/vscode-jsonrpc-ws";
@@ -13,35 +13,39 @@ import { createMessageConnection as createWorkerMessageConnection } from "@quali
 import { createLspConnection, LspConnection } from "@qualified/lsp-connection";
 
 import {
-  showDiagnostics,
-  removeDiagnostics,
-  showHoverInfo,
-  removeHoverInfo,
-  hoverInfoEnabled,
   disableHoverInfo,
   enableHoverInfo,
-  showHighlights,
-  removeHighlights,
-  showInvokedCompletions,
-  showTriggeredCompletions,
-  hideCompletions,
-  showSignatureHelp,
-  removeSignatureHelp,
   gotoLocation,
+  hideCompletions,
+  hoverInfoEnabled,
+  removeDiagnostics,
+  removeHighlights,
+  removeHoverInfo,
+  removeSignatureHelp,
+  showDiagnostics,
+  showHighlights,
+  showHoverInfo,
+  showInvokedCompletions,
+  showSignatureHelp,
   showSymbolSelector,
+  showTriggeredCompletions,
 } from "./capabilities";
 import {
   debounce,
+  debouncedBuffer,
+  Disposer,
   filter,
   fromDomEvent,
   map,
   piped,
   skipDuplicates,
-  Disposer,
-  debouncedBuffer,
 } from "./utils/event-stream";
-import { fromEditorEvent, onEditorEvent } from "./events";
-import { lspPosition, lspChange } from "./utils/conversions";
+import {
+  fromEditorEvent,
+  MouseLeaveAllListener,
+  onEditorEvent,
+} from "./events";
+import { lspChange, lspPosition } from "./utils/conversions";
 import { applyEdits } from "./utils/editor";
 import { delay } from "./utils/promise";
 import { removeContextMenu, showContextMenu } from "./ui/context-menu";
@@ -192,6 +196,15 @@ export class Workspace {
   private addEventHandlers(uri: string, editor: Editor, conn: LspConnection) {
     const disposers: Disposer[] = [];
 
+    // create a listener to track whether the mouse is over the editor and/or any of it's tooltips
+    const mouseLeaveAllListener = new MouseLeaveAllListener(() => {
+      this.hideTooltips(editor);
+    });
+    mouseLeaveAllListener.addElement(editor.getWrapperElement());
+    disposers.push(() => {
+      mouseLeaveAllListener.dispose();
+    });
+
     // TODO: expose as a function on Workspace, which could
     const showCompletion = (
       cm: Editor,
@@ -314,7 +327,13 @@ export class Workspace {
             })
             .then((help) => {
               if (!help || help.signatures.length === 0) return;
-              showSignatureHelp(cm, help, pos, this.renderMarkdown);
+              showSignatureHelp(
+                cm,
+                mouseLeaveAllListener,
+                help,
+                pos,
+                this.renderMarkdown
+              );
             });
 
           return;
@@ -391,7 +410,13 @@ export class Workspace {
           .then((hover) => {
             if (hover) {
               removeSignatureHelp(editor);
-              showHoverInfo(editor, pos, hover, this.renderMarkdown);
+              showHoverInfo(
+                editor,
+                mouseLeaveAllListener,
+                pos,
+                hover,
+                this.renderMarkdown
+              );
             }
           });
       })
