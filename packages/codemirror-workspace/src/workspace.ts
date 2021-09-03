@@ -68,6 +68,23 @@ export interface LanguageAssociation {
   languageServerIds: string[];
 }
 
+/** Configs to use for each server. */
+export interface LanguageServerConfigs {
+  [serverId: string]: LanguageServerConfig;
+}
+
+// TODO? Replace `languageAssociations` with some methods in config?
+/**
+ * Server's `initializationOptions` and client `settings`.
+ */
+export interface LanguageServerConfig {
+  // TODO? Provide typed values for commonly used servers?
+  /** Custom initialization options for the server. */
+  initOptions?: any;
+  /** Client settings for the server. */
+  settings?: any;
+}
+
 /**
  * Options for Workspace.
  */
@@ -76,6 +93,10 @@ export interface WorkspaceOptions {
    * The URI of the project root.
    */
   rootUri: string;
+  /**
+   * Optional configs for Language Servers.
+   */
+  configs?: LanguageServerConfigs;
   /**
    * Provide Language Server connection string.
    *
@@ -132,6 +153,7 @@ export class Workspace {
   private canHandleMarkdown: boolean;
   // The URI of the project root.
   private rootUri: string;
+  private configs: LanguageServerConfigs;
 
   /**
    * Create new workspace.
@@ -143,6 +165,7 @@ export class Workspace {
     this.connections = Object.create(null);
     this.documentVersions = Object.create(null);
     this.subscriptionDisposers = new WeakMap();
+    this.configs = options.configs || {};
     this.rootUri =
       options.rootUri + (!options.rootUri.endsWith("/") ? "/" : "");
     this.getConnectionString = options.getConnectionString.bind(void 0);
@@ -735,6 +758,7 @@ export class Workspace {
 
     conn.listen();
 
+    const config = this.configs[serverId];
     await conn.initialize({
       capabilities: {
         textDocument: {
@@ -835,14 +859,15 @@ export class Workspace {
         },
       },
       // clientInfo: { name: "codemirror-workspace" },
-      initializationOptions: null,
+      initializationOptions: config?.initOptions ?? null,
       processId: null,
       rootUri: this.rootUri,
       workspaceFolders: null,
     });
     conn.initialized();
-    // TODO Allow configuring Language Server
-    // conn.configurationChanged({ settings: {} });
+
+    const settings = config?.settings;
+    if (settings) conn.configurationChanged({ settings });
 
     // Add event handlers to pass payload to matching open editors.
     conn.onDiagnostics(({ uri, diagnostics }) => {
