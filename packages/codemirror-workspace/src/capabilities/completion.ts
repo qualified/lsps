@@ -232,24 +232,24 @@ const filteredItems = (
     .slice(0, maxItems);
 };
 
-// Similarity score between strings based on the length of the longest common subsequence.
-const lcsScore = (item: string, typed: string): number => {
-  if (item.length === 0 || typed.length === 0) return 0;
-  // Prefer shorter item if it includes typed word. Boost if it starts with it.
-  if (item.includes(typed)) {
-    return typed.length + 1 / item.length + (item.startsWith(typed) ? 1 : 0);
-  }
+const PREFIX_BONUS = 0.5;
 
-  const lcs =
-    item.length < typed.length
-      ? lcsLength(typed, item)
-      : lcsLength(item, typed);
-  // Boost if the first character matches.
-  if (item[0].toLowerCase() === typed[0].toLowerCase()) {
-    // Another boost if matching case.
-    return lcs + 1 + (item[0] === typed[0] ? 1 : 0);
-  }
-  return lcs;
+// Similarity score between strings based on the length of the longest common subsequence.
+const lcsScore = (fst: string, snd: string): number => {
+  const m = fst.length;
+  const n = snd.length;
+  const k = Math.min(m, n);
+  if (k === 0) return 0;
+
+  // Length of the common prefix to boost with
+  let prefix = 0;
+  while (fst[prefix] === snd[prefix] && ++prefix < k);
+
+  // Normalize the score based on the input lengths
+  const scale = (m + n) / (2 * m * n);
+  const llcs =
+    k === prefix ? k : m < n ? lcsLength(snd, fst) : lcsLength(fst, snd);
+  return scale * llcs ** 2 + prefix * PREFIX_BONUS;
 };
 
 // Returns LCS length.
