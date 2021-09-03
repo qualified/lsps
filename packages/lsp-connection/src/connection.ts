@@ -2,6 +2,7 @@ import type {
   Message,
   MessageConnection,
   NotificationHandler,
+  CancellationToken,
 } from "vscode-jsonrpc";
 import type {
   InitializeParams,
@@ -76,8 +77,11 @@ export const createLspConnection = (conn: MessageConnection) => {
   const maybeReq = <T extends ProtocolRequestType<any, any, any, any, any>>(
     cond: () => boolean,
     type: T
-  ) => (params: Params<T>): Promise<Result<T> | null> =>
-    cond() ? conn.sendRequest(type, params) : Promise.resolve(null);
+  ) => (
+    params: Params<T>,
+    token?: CancellationToken
+  ): Promise<Result<T> | null> =>
+    cond() ? conn.sendRequest(type, params, token) : Promise.resolve(null);
 
   const maybeNotify = <T extends ProtocolNotificationType<any, any>>(
     cond: () => boolean,
