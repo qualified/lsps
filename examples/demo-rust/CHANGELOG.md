@@ -1,5 +1,15 @@
 # @qualified/codemirror-workspace-demo-rust
 
+## 0.1.4
+
+### Patch Changes
+
+- Updated dependencies [7d4041f]
+- Updated dependencies [d49363e]
+- Updated dependencies [b59e01b]
+- Updated dependencies [716f79b]
+  - @qualified/codemirror-workspace@0.2.4
+
 ## 0.1.3
 
 ### Patch Changes
