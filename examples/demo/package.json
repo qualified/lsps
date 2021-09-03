@@ -11,7 +11,7 @@
     "@qualified/codemirror-workspace": "workspace:0.2.3",
     "codemirror": "^5.56.0",
     "marked": "^2.0.7",
-    "typescript-language-server": "^0.4.0",
+    "typescript-language-server": "^0.6.2",
     "vscode-css-languageserver-bin": "^1.4.0",
     "vscode-html-languageserver-bin": "^1.4.0"
   },
