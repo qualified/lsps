@@ -1,5 +1,16 @@
 # @qualified/codemirror-workspace
 
+## 0.2.4
+
+### Patch Changes
+
+- 7d4041f: Adds manual autocompletion shortcut
+- d49363e: Improves tooltip experience by closing when mouse leaves editor
+- b59e01b: Support `initializationOptions` and `settings`
+- 716f79b: Improve completion item scoring
+- Updated dependencies [66d3881]
+  - @qualified/lsp-connection@0.2.2
+
 ## 0.2.3
 
 ### Patch Changes
