@@ -32,11 +32,13 @@ export const showSignatureHelp = (
   pos: Position,
   renderMarkdown: (x: string) => string = (x) => x
 ) => {
-  if (help.activeSignature === null) return;
+  // `activeSignature` should be `number | null`, but can be `undefined` (JSON is missing the field).
+  if (help.activeSignature == null) return;
+  const info = help.signatures[help.activeSignature];
+  if (!info) return;
 
   const state = states.get(editor) || {};
 
-  const info = help.signatures[help.activeSignature];
   const sig = document.createElement("div");
   const label = document.createElement("div");
   let hasParameterDoc = false;
