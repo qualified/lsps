@@ -1,6 +1,6 @@
 {
   "name": "@qualified/codemirror-workspace-demo",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "private": true,
   "scripts": {
     "build": "rimraf public/js && webpack",
@@ -8,7 +8,7 @@
     "start": "pnpm build && concurrently \"pnpm start-proxy\" \"serve -l 4000 public\""
   },
   "dependencies": {
-    "@qualified/codemirror-workspace": "workspace:0.2.4",
+    "@qualified/codemirror-workspace": "workspace:0.2.5",
     "codemirror": "^5.56.0",
     "marked": "^2.0.7",
     "typescript-language-server": "^0.6.2",

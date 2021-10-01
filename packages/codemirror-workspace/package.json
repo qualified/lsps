@@ -8,7 +8,7 @@
     "languageserver",
     "languageclient"
   ],
-  "version": "0.2.4",
+  "version": "0.2.5",
   "license": "MIT",
   "homepage": "https://github.com/qualified/lsps#readme",
   "repository": "https://github.com/qualified/lsps",
