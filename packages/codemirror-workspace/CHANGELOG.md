@@ -1,5 +1,11 @@
 # @qualified/codemirror-workspace
 
+## 0.2.5
+
+### Patch Changes
+
+- 0e3d385: Fix `showSignatureHelp` crashing with undefined `activeSignature`
+
 ## 0.2.4
 
 ### Patch Changes
