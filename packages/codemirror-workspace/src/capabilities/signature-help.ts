@@ -33,7 +33,8 @@ export const showSignatureHelp = (
   renderMarkdown: (x: string) => string = (x) => x
 ) => {
   // `activeSignature` should be `number | null`, but can be `undefined` (JSON is missing the field).
-  if (help.activeSignature == null) return;
+  // If `activeSignature` is not set, show the first one.
+  help.activeSignature ??= 0;
   const info = help.signatures[help.activeSignature];
   if (!info) return;
 
