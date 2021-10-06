@@ -1,5 +1,12 @@
 # @qualified/codemirror-workspace
 
+## 0.2.6
+
+### Patch Changes
+
+- a11d358: Fix signature help not triggered when used with closebrackets addon
+- b86fe38: Show first signature help when `activeSignature` is not set
+
 ## 0.2.5
 
 ### Patch Changes
