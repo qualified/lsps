@@ -292,7 +292,7 @@ export class Workspace {
       })
     );
     disposers.push(
-      changeStream(([cm, change]) => {
+      changeStream(([cm, _change]) => {
         const pos = cm.getCursor();
         const token = cm.getTokenAt(pos);
         if (token.type && /\b(?:variable|property|type)\b/.test(token.type)) {
@@ -301,65 +301,65 @@ export class Workspace {
           return;
         }
 
-        // List of characters to trigger completion other than identifiers.
-        const completionTriggers = conn.completionTriggers;
-        const triggerCharacter = change.text[change.text.length - 1];
-        if (completionTriggers.includes(triggerCharacter)) {
-          // TODO Show both completion and signature help
-          removeSignatureHelp(cm);
-          conn
-            .getCompletion({
-              textDocument: { uri },
-              position: lspPosition(pos),
-              // Triggered by a trigger character specified by the `triggerCharacters`.
-              context: {
-                triggerKind: CompletionTriggerKind.TriggerCharacter,
-                triggerCharacter,
-              },
-            })
-            .then((items) => {
-              if (!items) return;
-              // CompletionList to CompletionItem[]
-              if (!Array.isArray(items)) items = items.items;
-              showTriggeredCompletions(cm, items, pos, this.renderMarkdown);
-            });
-          return;
-        }
+        if (pos.ch > 0) {
+          // List of characters to trigger completion other than identifiers.
+          const completionTriggers = conn.completionTriggers;
+          const triggerCharacter = cm.getLine(pos.line)[pos.ch - 1];
+          if (completionTriggers.includes(triggerCharacter)) {
+            // TODO Show both completion and signature help
+            removeSignatureHelp(cm);
+            conn
+              .getCompletion({
+                textDocument: { uri },
+                position: lspPosition(pos),
+                // Triggered by a trigger character specified by the `triggerCharacters`.
+                context: {
+                  triggerKind: CompletionTriggerKind.TriggerCharacter,
+                  triggerCharacter,
+                },
+              })
+              .then((items) => {
+                if (!items) return;
+                // CompletionList to CompletionItem[]
+                if (!Array.isArray(items)) items = items.items;
+                showTriggeredCompletions(cm, items, pos, this.renderMarkdown);
+              });
+            return;
+          }
 
-        const signatureHelpTriggers = conn.signatureHelpTriggers;
-        const signatureHelpRetriggers = conn.signatureHelpRetriggers;
-        if (
-          signatureHelpTriggers.includes(triggerCharacter) ||
-          signatureHelpRetriggers.includes(triggerCharacter)
-        ) {
-          // TODO Show both completion and signature help
-          hideCompletions(cm);
-          removeSignatureHelp(cm);
-          // const getActiveSignatureHelp = getActiveSignatureHelp(cm);
-          conn
-            .getSignatureHelp({
-              textDocument: { uri },
-              position: lspPosition(pos),
-              context: {
-                triggerKind: SignatureHelpTriggerKind.TriggerCharacter,
-                triggerCharacter,
-                // TODO Look into this
-                isRetrigger: false,
-                // activeSignatureHelp,
-              },
-            })
-            .then((help) => {
-              if (!help || help.signatures.length === 0) return;
-              showSignatureHelp(
-                cm,
-                mouseLeaveAllListener,
-                help,
-                pos,
-                this.renderMarkdown
-              );
-            });
+          if (
+            conn.signatureHelpTriggers.includes(triggerCharacter) ||
+            conn.signatureHelpRetriggers.includes(triggerCharacter)
+          ) {
+            // TODO Show both completion and signature help
+            hideCompletions(cm);
+            removeSignatureHelp(cm);
+            // const getActiveSignatureHelp = getActiveSignatureHelp(cm);
+            conn
+              .getSignatureHelp({
+                textDocument: { uri },
+                position: lspPosition(pos),
+                context: {
+                  triggerKind: SignatureHelpTriggerKind.TriggerCharacter,
+                  triggerCharacter,
+                  // TODO Look into this
+                  isRetrigger: false,
+                  // activeSignatureHelp,
+                },
+              })
+              .then((help) => {
+                if (!help || help.signatures.length === 0) return;
+                showSignatureHelp(
+                  cm,
+                  mouseLeaveAllListener,
+                  help,
+                  pos,
+                  this.renderMarkdown
+                );
+              });
 
-          return;
+            return;
+          }
         }
 
         hideCompletions(cm);
@@ -368,30 +368,40 @@ export class Workspace {
     );
 
     // Highlights identifiers matching the word under cursor
+    // Note that `cursorActivity` is also emitted when content changes.
     const cursorActivityStream = piped(
       fromEditorEvent(editor, "cursorActivity"),
       debounce(100),
-      map(([cm]) => [cm, cm.getCursor()] as const),
-      filter(([cm, pos]) => {
-        const token = cm.getTokenAt(pos);
-        if (token.type === "variable" || token.type === "property") {
-          return true;
-        }
-        removeHighlights(cm);
-        return false;
-      })
+      map(([cm]) => [cm, cm.getCursor()] as const)
     );
     disposers.push(
       cursorActivityStream(([cm, pos]) => {
-        conn
-          .getDocumentHighlight({
-            textDocument: { uri },
-            position: lspPosition(pos),
-          })
-          .then((highlights) => {
-            removeHighlights(cm);
-            if (highlights) showHighlights(cm, highlights);
-          });
+        const token = cm.getTokenAt(pos);
+        if (token.type === "variable" || token.type === "property") {
+          conn
+            .getDocumentHighlight({
+              textDocument: { uri },
+              position: lspPosition(pos),
+            })
+            .then((highlights) => {
+              removeHighlights(cm);
+              if (highlights) showHighlights(cm, highlights);
+            });
+        } else {
+          removeHighlights(cm);
+
+          if (pos.ch > 0) {
+            const triggerCharacter = cm.getLine(pos.line)[pos.ch - 1];
+            if (
+              !conn.signatureHelpTriggers.includes(triggerCharacter) &&
+              !conn.signatureHelpRetriggers.includes(triggerCharacter)
+            ) {
+              removeSignatureHelp(cm);
+            }
+          } else {
+            removeSignatureHelp(cm);
+          }
+        }
       })
     );
 
