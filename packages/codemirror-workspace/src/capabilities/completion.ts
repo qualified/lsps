@@ -1,11 +1,16 @@
 /// <reference types="codemirror/addon/hint/show-hint" />
 
 import type { Editor, Position, Hint, Hints } from "codemirror";
-import type { CompletionItem } from "vscode-languageserver-protocol";
+import type {
+  CompletionItem,
+  CompletionList,
+  CancellationToken,
+} from "vscode-languageserver-protocol";
 import {
   CompletionItemKind,
   TextEdit,
   InsertTextFormat,
+  CancellationTokenSource,
 } from "vscode-languageserver-protocol";
 import CodeMirror from "codemirror";
 
@@ -15,204 +20,303 @@ import {
   completionItemKindToString,
 } from "../utils/conversions";
 import { applyEdits } from "../utils/editor";
+import { escapeHtml } from "../utils/string";
 import { insertSnippet } from "./snippet";
 
 /**
- * Show completion triggered by typing an identifier or manual invocation.
- * @param editor
- * @param items - Completion items from the server.
- * @param tokenRange - Range describing the span of the typed identifier.
+ * Show completion popup.
+ * @param opts
  */
-export const showInvokedCompletions = (
-  editor: Editor,
-  items: CompletionItem[],
-  [tokenFrom, tokenTo]: [Position, Position],
-  renderMarkdown: (x: string) => string = (x) => x
-) => {
-  if (items.length === 0) return;
-
-  const typed = editor.getRange(tokenFrom, tokenTo);
-  const filtered = filteredItems(items, typed, 30);
-  showCompletionItems(editor, filtered, tokenFrom, tokenTo, renderMarkdown);
-};
-
-/**
- * Show completions triggered by a trigger character specified by the `triggerCharacters`.
- * Completion items are inserted differently from when it's invoked.
- * @param editor - The editor.
- * @param items - Completion items from the server.
- * @param pos - Current cursor position where the item will be inserted after.
- */
-export const showTriggeredCompletions = (
-  editor: Editor,
-  items: CompletionItem[],
-  pos: Position,
-  renderMarkdown: (x: string) => string = (x) => x
-) => {
-  if (items.length === 0) return;
-
-  showCompletionItems(editor, items, pos, pos, renderMarkdown);
+export const showCompletion = (opts: CompletionContextOptions) => {
+  new CompletionContext(opts).showHint();
 };
 
 /**
  * Hide completion popup.
  * @param editor
  */
-export const hideCompletions = (editor: Editor) => {
-  if (editor.state.completionActive) editor.state.completionActive.close();
+export const hideCompletion = (editor: Editor) => {
+  editor.closeHint();
 };
 
-const showCompletionItems = (
-  editor: Editor,
-  items: CompletionItem[],
-  posFrom: Position,
-  posTo: Position,
-  renderMarkdown: (s: string) => string
-) => {
-  editor.showHint({
-    completeSingle: false,
-    hint: () =>
-      withItemTooltip({
+/**
+ * True if completion is active.
+ * @param editor
+ */
+export const completionIsActive = (editor: Editor) =>
+  !!editor.state?.completionActive;
+
+/**
+ * True if completion is active, and the completion list is complete.
+ * There's no need to make new requests.
+ * @param editor
+ */
+export const completionIsComplete = (editor: Editor) =>
+  !!editor.state?.completionActive?.options?.updateOnCursorActivity;
+
+export type CompletionContextOptions = {
+  editor: Editor;
+  list: CompletionList;
+  invoked: boolean;
+  renderMarkdown: (x: string) => string;
+  getDetails: (
+    item: CompletionItem,
+    token?: CancellationToken
+  ) => Promise<CompletionItem>;
+};
+
+// Manages completion state.
+// - Avoid querying the server when the list is complete
+// - Cache `completionItem/resolve`
+class CompletionContext {
+  private editor: Editor;
+  private list: CompletionList;
+  private updates: number;
+  private invoked: boolean;
+  private renderMarkdown: (x: string) => string;
+  private getDetails: (
+    item: CompletionItem,
+    token?: CancellationToken
+  ) => Promise<CompletionItem>;
+  private tooltip: HTMLElement | null = null;
+  private detailsCache: WeakMap<CompletionItem, CachedDetails> = new WeakMap();
+  private pendingRequest: CancellationTokenSource | null = null;
+
+  constructor({
+    editor,
+    invoked,
+    list,
+    renderMarkdown,
+    getDetails,
+  }: CompletionContextOptions) {
+    this.editor = editor;
+    this.list = list;
+    this.invoked = invoked;
+    this.updates = 0;
+    this.renderMarkdown = renderMarkdown;
+    this.getDetails = getDetails;
+  }
+
+  showHint() {
+    this.editor.showHint({
+      completeSingle: false,
+      updateOnCursorActivity: !this.list.isIncomplete,
+      // Called once at first, then for each `cursorActivity` if the list is complete (no need to requery)
+      hint: () => this.update(),
+    });
+  }
+
+  private update() {
+    const { from: posFrom, to: posTo, items } = this.getState();
+    const list = items.map((item) => {
+      const displayText = item.label;
+      let text = item.insertText || item.label;
+      let from = posFrom;
+      let to = posTo;
+      if (item.textEdit) {
+        const edit = item.textEdit;
+        [from, to] = cmRange(TextEdit.is(edit) ? edit.range : edit.insert);
+        text = edit.newText;
+      }
+      const isSnippet = item.insertTextFormat === InsertTextFormat.Snippet;
+
+      const hint: HintWithItem = {
+        // Note that `text` field is only set because @types/codemirror wrongly requires it.
+        text: "",
+        displayText,
+        // Called when this completion is picked.
+        hint: (cm: Editor) => {
+          if (isSnippet) {
+            // Insert snippet and start snippet mode.
+            return insertSnippet(cm, text, from, to, item.additionalTextEdits);
+          }
+
+          cm.replaceRange(text, from, to, "complete");
+          if (item.additionalTextEdits) {
+            applyEdits(cm, item.additionalTextEdits, "+complete");
+          }
+          // Scroll to cursor
+          cm.scrollIntoView(null);
+          cm.closeHint();
+        },
+        // Function to create item in menu. Called once in `Widget`'s constructor.
+        // @ts-ignore: using `HintWithItem` instead of `Hint`
+        render: this.renderItem,
+        item,
+      };
+      return hint;
+    });
+    const hints: Hints = {
+      from: posFrom,
+      to: posTo,
+      list,
+    };
+    CodeMirror.on(hints, "close", this.onHintsClose);
+    CodeMirror.on(hints, "update", this.onHintsUpdate);
+    // @ts-ignore: using `HintWithItem` instead of `Hint`
+    CodeMirror.on(hints, "select", this.onHintsSelect);
+    return hints;
+  }
+
+  private getState(): {
+    from: Position;
+    to: Position;
+    items: CompletionItem[];
+  } {
+    const pos = this.editor.getCursor();
+    // Filter by typed text when:
+    // - the completion was invoked (typing identifier or manually invoked)
+    // - the triggered completion was updated by user typing after the trigger character
+    if (this.updates++ > 0 || this.invoked) {
+      const token = this.editor.getTokenAt(pos);
+      const posFrom = { line: pos.line, ch: token.start };
+      const posTo = { line: pos.line, ch: token.end };
+      const typed = this.editor.getRange(posFrom, posTo);
+      return {
         from: posFrom,
         to: posTo,
-        list: items.map((item) => {
-          const displayText = item.label;
-          let text = item.insertText || item.label;
-          let from = posFrom;
-          let to = posTo;
-          if (item.textEdit) {
-            const edit = item.textEdit;
-            [from, to] = cmRange(TextEdit.is(edit) ? edit.range : edit.replace);
-            text = edit.newText;
-          }
-          const isSnippet = item.insertTextFormat === InsertTextFormat.Snippet;
-
-          return {
-            // Note that `text` field is only set because @types/codemirror wrongly requires it.
-            text: "",
-            displayText,
-            hint: (cm: Editor) => {
-              if (isSnippet) {
-                // Insert snippet and start snippet mode.
-                return insertSnippet(
-                  cm,
-                  text,
-                  from,
-                  to,
-                  item.additionalTextEdits
-                );
-              }
-
-              cm.replaceRange(text, from, to, "complete");
-              if (item.additionalTextEdits) {
-                applyEdits(cm, item.additionalTextEdits, "+complete");
-              }
-            },
-            render: itemRenderer(item),
-            data: getItemData(item, renderMarkdown),
-          };
-        }),
-      }),
-  });
-};
-
-interface HintData {
-  kind: string;
-  detail: string;
-  documentation: string;
-}
-
-interface HintWithData extends Hint {
-  data: HintData;
-}
-
-// Returns `hints` with an ability to show details of each completion item on `select`.
-// See https://github.com/codemirror/CodeMirror/blob/6fcc49d5321261b525e50f111f3b28a602f01f71/addon/tern/tern.js#L229
-const withItemTooltip = (hints: Hints): Hints => {
-  let tooltip: HTMLElement | null = null;
-  CodeMirror.on(hints, "close", () => {
-    if (tooltip) {
-      tooltip.remove();
-      tooltip = null;
-    }
-  });
-  CodeMirror.on(hints, "update", () => {
-    if (tooltip) {
-      tooltip.remove();
-      tooltip = null;
-    }
-  });
-  // @ts-ignore: @types/codemirror has (cur: Hint, node: Element)
-  CodeMirror.on(hints, "select", (cur: HintWithData, node: HTMLElement) => {
-    tooltip?.remove();
-    const data = cur.data;
-    if (!data) return;
-
-    let content: string;
-    if (data.detail) {
-      content = data.detail;
-      if (data.documentation) content += "<br>" + data.documentation;
+        items: filteredItems(this.list.items, typed, 50),
+      };
     } else {
-      content = data.documentation;
-    }
-    if (!content) return;
-
-    const x =
-      (node.parentNode! as HTMLElement).getBoundingClientRect().right +
-      window.pageXOffset;
-    const y = node.getBoundingClientRect().top + window.pageYOffset;
-    const el = document.createElement("div");
-    el.innerHTML = content;
-    tooltip = document.createElement("div");
-    tooltip.classList.add("cmw-completion-item-doc");
-    tooltip.style.position = "absolute";
-    tooltip.style.zIndex = "10";
-    tooltip.style.left = `${x}px`;
-    tooltip.style.top = `${y}px`;
-    tooltip.style.fontSize = "12px";
-    tooltip.style.padding = "2px";
-    tooltip.style.maxHeight = "400px";
-    tooltip.style.overflowY = "auto";
-
-    tooltip.appendChild(el);
-    document.body.appendChild(tooltip);
-  });
-  return hints;
-};
-
-const getItemData = (
-  item: CompletionItem,
-  renderMarkdown: (x: string) => string
-): HintData => ({
-  kind: completionItemKindToString(item.kind),
-  detail: item.detail || "",
-  documentation: documentationToString(item.documentation, renderMarkdown),
-});
-
-// Returns a function to render `item` in completion popup.
-const itemRenderer = (item: CompletionItem) => (el: HTMLElement) => {
-  // TODO Use meaningful icons for each kind
-  // TODO Show matching characters in different color?
-  const hue = Math.floor(((item.kind || 0) / 30) * 180 + 180);
-  let color = `hsl(${hue}, 75%, 50%)`;
-  // If completing a color, show the color.
-  // TODO This is just an example and only handles 6 digit hex.
-  if (item.kind === CompletionItemKind.Color) {
-    const doc = documentationToString(item.documentation);
-    if (doc) {
-      const hex = doc.match(/#[\da-f]{6}/i);
-      if (hex) color = hex[0];
+      return {
+        from: pos,
+        to: pos,
+        items: this.list.items,
+      };
     }
   }
 
-  const icon = el.appendChild(document.createElement("div"));
-  icon.style.color = color;
-  icon.className = [
-    `cmw-icon`,
-    `cmw-icon--${completionItemKindToString(item.kind)}`,
-  ].join(" ");
-  el.appendChild(document.createTextNode(item.label));
-};
+  private renderItem = (el: HTMLLIElement, _data: Hints, cur: HintWithItem) => {
+    const item = cur.item;
+    // TODO Use meaningful icons for each kind
+    // TODO Show matching characters in different color?
+    const hue = Math.floor(((item.kind || 0) / 30) * 180 + 180);
+    let color = `hsl(${hue}, 75%, 50%)`;
+    // If completing a color, show the color.
+    // TODO This is just an example and only handles 6 digit hex.
+    if (item.kind === CompletionItemKind.Color) {
+      const doc = documentationToString(item.documentation);
+      if (doc) {
+        const hex = doc.match(/#[\da-f]{6}/i);
+        if (hex) color = hex[0];
+      }
+    }
+
+    const icon = el.appendChild(document.createElement("div"));
+    icon.style.color = color;
+    icon.className = [
+      `cmw-icon`,
+      `cmw-icon--${completionItemKindToString(item.kind)}`,
+    ].join(" ");
+    el.appendChild(document.createTextNode(item.label));
+  };
+
+  private onHintsClose = () => {
+    this.cancelPending();
+    this.removeTooltip();
+  };
+
+  private onHintsUpdate = () => {
+    this.cancelPending();
+    this.removeTooltip();
+  };
+
+  // Show details of each completion item on `select`.
+  // See https://github.com/codemirror/CodeMirror/blob/6fcc49d5321261b525e50f111f3b28a602f01f71/addon/tern/tern.js#L229
+  private onHintsSelect = (selected: HintWithItem, node: HTMLElement) => {
+    this.cancelPending();
+    this.removeTooltip();
+
+    const item = selected.item;
+    const cached = this.detailsCache.get(item);
+    if (cached) {
+      this.addTooltip(node, cached);
+    } else {
+      this.pendingRequest = new CancellationTokenSource();
+      this.getDetails(item, this.pendingRequest.token).then((x) => {
+        this.pendingRequest = null;
+        this.removeTooltip();
+        const cached = this.cacheDetails(Object.assign(item, x));
+        this.detailsCache.set(item, cached);
+        this.addTooltip(node, cached);
+      });
+    }
+  };
+
+  private cacheDetails(item: CompletionItem): CachedDetails {
+    return {
+      kind: item.kind && completionItemKindToString(item.kind),
+      detail: item.detail && escapeHtml(item.detail),
+      documentation:
+        item.documentation &&
+        documentationToString(item.documentation, this.renderMarkdown),
+    };
+  }
+
+  private tooltipContent(cached: CachedDetails): string {
+    let content = "";
+    if (cached.detail) {
+      content += `<code>${cached.detail}</code>`;
+    }
+    if (cached.documentation) {
+      content += `<div>${cached.documentation}</div>`;
+    }
+    return content;
+  }
+
+  private addTooltip(node: HTMLElement, cached: CachedDetails) {
+    // Ensure the `node` is in document
+    if (!node.isConnected) return;
+    const content = this.tooltipContent(cached);
+    if (!content) return;
+
+    const menu = node.parentNode! as HTMLElement;
+    const x = menu.getBoundingClientRect().right + window.pageXOffset;
+    const y = menu.getBoundingClientRect().top + window.pageYOffset;
+    const el = document.createElement("div");
+    el.innerHTML = content;
+    const tooltip = document.createElement("div");
+    tooltip.classList.add("cmw-completion-item-doc");
+    tooltip.style.cssText = `
+    z-index: 10;
+    position: absolute;
+    left: ${x}px;
+    top: ${y}px;
+    font-size: 12px;
+    padding: 2px;
+    max-height: 400px;
+    max-width: 400px;
+    overflow: auto;
+    `;
+    tooltip.appendChild(el);
+    document.body.appendChild(tooltip);
+    this.tooltip = tooltip;
+  }
+
+  private removeTooltip() {
+    if (this.tooltip) {
+      this.tooltip.remove();
+      this.tooltip = null;
+    }
+  }
+
+  private cancelPending() {
+    if (this.pendingRequest) {
+      this.pendingRequest.cancel();
+      this.pendingRequest = null;
+    }
+  }
+}
+
+interface CachedDetails {
+  kind: string | undefined;
+  detail: string | undefined;
+  documentation: string | undefined;
+}
+
+interface HintWithItem extends Hint {
+  item: CompletionItem;
+}
 
 const filteredItems = (
   items: CompletionItem[],

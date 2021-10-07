@@ -146,6 +146,12 @@
   margin: 4px 0;
 }
 
+.cmw-completion-item-doc pre,
+.cmw-tooltip pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
 /* Text Marker styles for Document Highlight */
 .cmw-highlight {
   background-color: rgba(0, 0, 0, 0.1);
