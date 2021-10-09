@@ -1,5 +1,12 @@
 # @qualified/codemirror-workspace
 
+## 0.2.7
+
+### Patch Changes
+
+- bfa03b2: Support `completionItem/resolve` request
+- bfa03b2: Fix completion lists being unnecessarily recomputed
+
 ## 0.2.6
 
 ### Patch Changes
