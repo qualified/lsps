@@ -8,9 +8,10 @@ export {
 } from "./hover";
 export { showHighlights, removeHighlights } from "./document-highlight";
 export {
-  showInvokedCompletions,
-  showTriggeredCompletions,
-  hideCompletions,
+  completionIsActive,
+  completionIsComplete,
+  hideCompletion,
+  showCompletion,
 } from "./completion";
 export { showSignatureHelp, removeSignatureHelp } from "./signature-help";
 export { gotoLocation } from "./goto";

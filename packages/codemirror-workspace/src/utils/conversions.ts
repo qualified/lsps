@@ -4,11 +4,15 @@ import type {
   Range,
   DiagnosticSeverity,
   DiagnosticTag,
+  CompletionItem,
+  CompletionList,
   CompletionItemKind,
   SymbolKind,
   TextDocumentContentChangeEvent,
 } from "vscode-languageserver-protocol";
 import { MarkupContent, MarkedString } from "vscode-languageserver-protocol";
+
+import { escapeHtml } from "./string";
 
 export const lspPosition = ({ line, ch }: CMPosition): Position => ({
   line,
@@ -68,7 +72,7 @@ export const documentationToString = (
   renderMarkdown: (x: string) => string = (x) => x
 ) => {
   if (!doc) return "";
-  if (typeof doc === "string") return doc;
+  if (typeof doc === "string") return escapeHtml(doc);
   return markupContentToString(doc, renderMarkdown);
 };
 
@@ -94,7 +98,9 @@ const markupContentToString = (
   content: MarkupContent,
   renderMarkdown: (x: string) => string
 ): string =>
-  content.kind === "markdown" ? renderMarkdown(content.value) : content.value;
+  content.kind === "markdown"
+    ? renderMarkdown(content.value)
+    : escapeHtml(content.value);
 
 const markedStringToString = (
   m: MarkedString,
@@ -173,3 +179,12 @@ export const symbolKindToString = (() => {
 
   return (kind?: SymbolKind): string => kinds[kind ?? 0] || "unknown";
 })();
+
+// > If a `CompletionItem[]` is provided it is interpreted to be complete.
+// > So it is the same as `{ isIncomplete: false, items }`
+export const completionItemsToList = (
+  items: CompletionItem[]
+): CompletionList => ({
+  items,
+  isIncomplete: false,
+});

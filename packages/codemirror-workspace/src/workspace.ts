@@ -1,6 +1,7 @@
 import type { Editor } from "codemirror";
 import { normalizeKeyMap } from "codemirror";
 import {
+  CompletionContext,
   CompletionTriggerKind,
   DiagnosticTag,
   FileEvent,
@@ -13,22 +14,23 @@ import { createMessageConnection as createWorkerMessageConnection } from "@quali
 import { createLspConnection, LspConnection } from "@qualified/lsp-connection";
 
 import {
+  completionIsActive,
+  completionIsComplete,
   disableHoverInfo,
   enableHoverInfo,
   gotoLocation,
-  hideCompletions,
+  hideCompletion,
   hoverInfoEnabled,
   removeDiagnostics,
   removeHighlights,
   removeHoverInfo,
   removeSignatureHelp,
+  showCompletion,
   showDiagnostics,
   showHighlights,
   showHoverInfo,
-  showInvokedCompletions,
   showSignatureHelp,
   showSymbolSelector,
-  showTriggeredCompletions,
 } from "./capabilities";
 import {
   debounce,
@@ -45,7 +47,11 @@ import {
   MouseLeaveAllListener,
   onEditorEvent,
 } from "./events";
-import { lspChange, lspPosition } from "./utils/conversions";
+import {
+  completionItemsToList,
+  lspChange,
+  lspPosition,
+} from "./utils/conversions";
 import { applyEdits } from "./utils/editor";
 import { delay } from "./utils/promise";
 import { removeContextMenu, showContextMenu } from "./ui/context-menu";
@@ -228,33 +234,38 @@ export class Workspace {
       mouseLeaveAllListener.dispose();
     });
 
-    // TODO: expose as a function on Workspace, which could
-    const showCompletion = (
+    const requestCompletion = (
       cm: Editor,
       pos = cm.getCursor(),
-      token = cm.getTokenAt(pos)
+      context: CompletionContext = {
+        triggerKind: CompletionTriggerKind.Invoked,
+      }
     ) => {
       removeSignatureHelp(cm);
       conn
         .getCompletion({
           textDocument: { uri },
           position: lspPosition(pos),
-          // Completion triggered by typing an identifier or manual invocation.
-          context: { triggerKind: CompletionTriggerKind.Invoked },
+          context,
         })
-        .then((items) => {
-          if (!items) return;
-          // CompletionList to CompletionItem[]
-          if (!Array.isArray(items)) items = items.items;
-          showInvokedCompletions(
-            cm,
-            items,
-            [
-              { line: pos.line, ch: token.start },
-              { line: pos.line, ch: token.end },
-            ],
-            this.renderMarkdown
-          );
+        .then((list) => {
+          if (!list) return;
+          if (Array.isArray(list)) {
+            list = completionItemsToList(list);
+          }
+          if (list.items.length === 0) return;
+
+          showCompletion({
+            list,
+            editor: cm,
+            invoked:
+              context.triggerKind !== CompletionTriggerKind.TriggerCharacter,
+            renderMarkdown: this.renderMarkdown,
+            getDetails: (item, cancel) =>
+              conn
+                .getCompletionItemDetails(item, cancel)
+                .then((x) => x || item),
+          });
         });
     };
 
@@ -284,20 +295,37 @@ export class Workspace {
           change.origin === "+delete" ||
           change.text.every((s) => s.length === 0)
         ) {
-          hideCompletions(cm);
+          hideCompletion(cm);
           removeSignatureHelp(cm);
           return false;
         }
+
+        // Text completed
+        if (change.origin === "complete" || change.origin === "+complete") {
+          hideCompletion(cm);
+          return false;
+        }
+
+        if (completionIsComplete(cm)) {
+          // Do nothing, completion is active with a complete list.
+          // The popup is updated on `curorActivity` event.
+          return false;
+        }
+
         return true;
       })
     );
     disposers.push(
+      // Trigger completion or signature help or hide them
       changeStream(([cm, _change]) => {
         const pos = cm.getCursor();
         const token = cm.getTokenAt(pos);
         if (token.type && /\b(?:variable|property|type)\b/.test(token.type)) {
-          // TODO Show both completion and signature help
-          showCompletion(cm, pos, token);
+          requestCompletion(cm, pos, {
+            triggerKind: completionIsActive(cm)
+              ? CompletionTriggerKind.TriggerForIncompleteCompletions
+              : CompletionTriggerKind.Invoked,
+          });
           return;
         }
 
@@ -306,24 +334,10 @@ export class Workspace {
           const completionTriggers = conn.completionTriggers;
           const triggerCharacter = cm.getLine(pos.line)[pos.ch - 1];
           if (completionTriggers.includes(triggerCharacter)) {
-            // TODO Show both completion and signature help
-            removeSignatureHelp(cm);
-            conn
-              .getCompletion({
-                textDocument: { uri },
-                position: lspPosition(pos),
-                // Triggered by a trigger character specified by the `triggerCharacters`.
-                context: {
-                  triggerKind: CompletionTriggerKind.TriggerCharacter,
-                  triggerCharacter,
-                },
-              })
-              .then((items) => {
-                if (!items) return;
-                // CompletionList to CompletionItem[]
-                if (!Array.isArray(items)) items = items.items;
-                showTriggeredCompletions(cm, items, pos, this.renderMarkdown);
-              });
+            requestCompletion(cm, pos, {
+              triggerKind: CompletionTriggerKind.TriggerCharacter,
+              triggerCharacter,
+            });
             return;
           }
 
@@ -331,10 +345,8 @@ export class Workspace {
             conn.signatureHelpTriggers.includes(triggerCharacter) ||
             conn.signatureHelpRetriggers.includes(triggerCharacter)
           ) {
-            // TODO Show both completion and signature help
-            hideCompletions(cm);
+            hideCompletion(cm);
             removeSignatureHelp(cm);
-            // const getActiveSignatureHelp = getActiveSignatureHelp(cm);
             conn
               .getSignatureHelp({
                 textDocument: { uri },
@@ -362,7 +374,7 @@ export class Workspace {
           }
         }
 
-        hideCompletions(cm);
+        hideCompletion(cm);
         removeSignatureHelp(cm);
       })
     );
@@ -466,7 +478,7 @@ export class Workspace {
     disposers.push(
       onEditorEvent(editor, "cmw:contextMenuOpened", ([cm]) => {
         disableHoverInfo(cm);
-        hideCompletions(cm);
+        hideCompletion(cm);
         removeSignatureHelp(cm);
       }),
       onEditorEvent(editor, "cmw:contextMenuClosed", ([cm]) => {
@@ -598,7 +610,7 @@ export class Workspace {
     const keyMap = normalizeKeyMap({
       // TODO Make this configurable
       "Ctrl-Space": (cm: Editor) => {
-        showCompletion(cm);
+        requestCompletion(cm);
       },
       "Alt-G D": (cm: Editor) => {
         gotoDefinition(cm);
@@ -627,7 +639,7 @@ export class Workspace {
   hideAllPopups(cm?: Editor) {
     if (cm) {
       this.hideTooltips(cm);
-      hideCompletions(cm);
+      hideCompletion(cm);
       removeContextMenu(cm);
     } else {
       Object.values(this.editors).forEach((cm) => this.hideAllPopups(cm));
@@ -737,7 +749,7 @@ export class Workspace {
     removeDiagnostics(editor);
     removeHoverInfo(editor);
     removeHighlights(editor);
-    hideCompletions(editor);
+    hideCompletion(editor);
     removeSignatureHelp(editor);
   }
 
@@ -790,6 +802,7 @@ export class Workspace {
                 : ["plaintext"],
               deprecatedSupport: true,
               preselectSupport: true,
+              resolveSupport: { properties: ["documentation", "detail"] },
             },
             contextSupport: true,
           },
