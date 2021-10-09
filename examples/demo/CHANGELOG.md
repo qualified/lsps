@@ -1,5 +1,13 @@
 # @qualified/codemirror-workspace-demo
 
+## 0.1.7
+
+### Patch Changes
+
+- Updated dependencies [bfa03b2]
+- Updated dependencies [bfa03b2]
+  - @qualified/codemirror-workspace@0.2.7
+
 ## 0.1.6
 
 ### Patch Changes
