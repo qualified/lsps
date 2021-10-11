@@ -109,29 +109,39 @@ class CompletionContext {
   private update() {
     const { from: posFrom, to: posTo, items } = this.getState();
     const list = items.map((item) => {
-      const displayText = item.label;
-      let text = item.insertText || item.label;
-      let from = posFrom;
-      let to = posTo;
-      if (item.textEdit) {
-        const edit = item.textEdit;
-        [from, to] = cmRange(TextEdit.is(edit) ? edit.range : edit.insert);
-        text = edit.newText;
-      }
-      const isSnippet = item.insertTextFormat === InsertTextFormat.Snippet;
-
       const hint: HintWithItem = {
         // Note that `text` field is only set because @types/codemirror wrongly requires it.
         text: "",
-        displayText,
+        displayText: item.label,
         // Called when this completion is picked.
         hint: (cm: Editor) => {
-          if (isSnippet) {
+          let text = item.insertText || item.label;
+          let from = posFrom;
+          let to = posTo;
+          if (item.textEdit) {
+            // Need to adjust the content for the typed characters because the
+            // range in `textEdit` can be the range when the completion was requested.
+            // Replace the range so it matches the original content before completing.
+            const edit = item.textEdit;
+            const range = cmRange(
+              TextEdit.is(edit) ? edit.range : edit.replace
+            );
+            this.editor.replaceRange(
+              this.editor.getRange(range[0], range[1]),
+              from,
+              to,
+              "complete"
+            );
+            [from, to] = range;
+            text = edit.newText;
+          }
+
+          if (item.insertTextFormat === InsertTextFormat.Snippet) {
             // Insert snippet and start snippet mode.
             return insertSnippet(cm, text, from, to, item.additionalTextEdits);
           }
 
-          cm.replaceRange(text, from, to, "complete");
+          cm.replaceRange(text, from, to, "+complete");
           if (item.additionalTextEdits) {
             applyEdits(cm, item.additionalTextEdits, "+complete");
           }
