@@ -332,8 +332,8 @@ export class Workspace {
     );
     disposers.push(
       cursorActivityStream(([cm, pos]) => {
-        const token = cm.getTokenAt(pos);
-        if (token.type === "variable" || token.type === "property") {
+        const type = cm.getTokenTypeAt(pos);
+        if (type && /\b(?:variable|property)\b/.test(type)) {
           conn
             .getDocumentHighlight({
               textDocument: { uri },
