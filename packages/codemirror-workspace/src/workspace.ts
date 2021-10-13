@@ -1,8 +1,6 @@
 import type { Editor } from "codemirror";
 import { normalizeKeyMap } from "codemirror";
 import {
-  CompletionContext,
-  CompletionTriggerKind,
   DiagnosticTag,
   FileEvent,
   SignatureHelpTriggerKind,
@@ -14,18 +12,15 @@ import { createMessageConnection as createWorkerMessageConnection } from "@quali
 import { createLspConnection, LspConnection } from "@qualified/lsp-connection";
 
 import {
-  completionIsActive,
-  completionIsComplete,
+  CompletionHandler,
   disableHoverInfo,
   enableHoverInfo,
   gotoLocation,
-  hideCompletion,
   hoverInfoEnabled,
   removeDiagnostics,
   removeHighlights,
   removeHoverInfo,
   removeSignatureHelp,
-  showCompletion,
   showDiagnostics,
   showHighlights,
   showHoverInfo,
@@ -47,11 +42,7 @@ import {
   MouseLeaveAllListener,
   onEditorEvent,
 } from "./events";
-import {
-  completionItemsToList,
-  lspChange,
-  lspPosition,
-} from "./utils/conversions";
+import { lspChange, lspPosition } from "./utils/conversions";
 import { applyEdits } from "./utils/editor";
 import { delay } from "./utils/promise";
 import { removeContextMenu, showContextMenu } from "./ui/context-menu";
@@ -160,6 +151,7 @@ export class Workspace {
   // The URI of the project root.
   private rootUri: string;
   private configs: LanguageServerConfigs;
+  private completionHandlers: WeakMap<Editor, CompletionHandler>;
 
   /**
    * Create new workspace.
@@ -171,6 +163,7 @@ export class Workspace {
     this.connections = Object.create(null);
     this.documentVersions = Object.create(null);
     this.subscriptionDisposers = new WeakMap();
+    this.completionHandlers = new WeakMap();
     this.configs = options.configs || {};
     this.rootUri =
       options.rootUri + (!options.rootUri.endsWith("/") ? "/" : "");
@@ -223,6 +216,13 @@ export class Workspace {
 
   // TODO Clean up. Workspace should signal custom events for providers to react
   private addEventHandlers(uri: string, editor: Editor, conn: LspConnection) {
+    const completion = new CompletionHandler({
+      uri,
+      editor,
+      conn,
+      renderMarkdown: this.renderMarkdown,
+    });
+    this.completionHandlers.set(editor, completion);
     const disposers: Disposer[] = [];
 
     // create a listener to track whether the mouse is over the editor and/or any of it's tooltips
@@ -234,39 +234,9 @@ export class Workspace {
       mouseLeaveAllListener.dispose();
     });
 
-    const requestCompletion = (
-      cm: Editor,
-      pos = cm.getCursor(),
-      context: CompletionContext = {
-        triggerKind: CompletionTriggerKind.Invoked,
-      }
-    ) => {
+    const requestCompletion = (cm: Editor) => {
       removeSignatureHelp(cm);
-      conn
-        .getCompletion({
-          textDocument: { uri },
-          position: lspPosition(pos),
-          context,
-        })
-        .then((list) => {
-          if (!list) return;
-          if (Array.isArray(list)) {
-            list = completionItemsToList(list);
-          }
-          if (list.items.length === 0) return;
-
-          showCompletion({
-            list,
-            editor: cm,
-            invoked:
-              context.triggerKind !== CompletionTriggerKind.TriggerCharacter,
-            renderMarkdown: this.renderMarkdown,
-            getDetails: (item, cancel) =>
-              conn
-                .getCompletionItemDetails(item, cancel)
-                .then((x) => x || item),
-          });
-        });
+      completion.invoke();
     };
 
     const changeStream = piped(
@@ -295,20 +265,13 @@ export class Workspace {
           change.origin === "+delete" ||
           change.text.every((s) => s.length === 0)
         ) {
-          hideCompletion(cm);
+          completion.close();
           removeSignatureHelp(cm);
           return false;
         }
 
         // Text completed
         if (change.origin === "complete" || change.origin === "+complete") {
-          hideCompletion(cm);
-          return false;
-        }
-
-        if (completionIsComplete(cm)) {
-          // Do nothing, completion is active with a complete list.
-          // The popup is updated on `curorActivity` event.
           return false;
         }
 
@@ -318,63 +281,44 @@ export class Workspace {
     disposers.push(
       // Trigger completion or signature help or hide them
       changeStream(([cm, _change]) => {
+        if (completion.onChange()) return;
+
         const pos = cm.getCursor();
-        const token = cm.getTokenAt(pos);
-        if (token.type && /\b(?:variable|property|type)\b/.test(token.type)) {
-          requestCompletion(cm, pos, {
-            triggerKind: completionIsActive(cm)
-              ? CompletionTriggerKind.TriggerForIncompleteCompletions
-              : CompletionTriggerKind.Invoked,
-          });
+        if (pos.ch === 0) return;
+        const triggerCharacter = cm.getLine(pos.line)[pos.ch - 1];
+        if (
+          conn.signatureHelpTriggers.includes(triggerCharacter) ||
+          conn.signatureHelpRetriggers.includes(triggerCharacter)
+        ) {
+          completion.close();
+          removeSignatureHelp(cm);
+          conn
+            .getSignatureHelp({
+              textDocument: { uri },
+              position: lspPosition(pos),
+              context: {
+                triggerKind: SignatureHelpTriggerKind.TriggerCharacter,
+                triggerCharacter,
+                // TODO Look into this
+                isRetrigger: false,
+                // activeSignatureHelp,
+              },
+            })
+            .then((help) => {
+              if (!help || help.signatures.length === 0) return;
+              showSignatureHelp(
+                cm,
+                mouseLeaveAllListener,
+                help,
+                pos,
+                this.renderMarkdown
+              );
+            });
+
           return;
         }
 
-        if (pos.ch > 0) {
-          // List of characters to trigger completion other than identifiers.
-          const completionTriggers = conn.completionTriggers;
-          const triggerCharacter = cm.getLine(pos.line)[pos.ch - 1];
-          if (completionTriggers.includes(triggerCharacter)) {
-            requestCompletion(cm, pos, {
-              triggerKind: CompletionTriggerKind.TriggerCharacter,
-              triggerCharacter,
-            });
-            return;
-          }
-
-          if (
-            conn.signatureHelpTriggers.includes(triggerCharacter) ||
-            conn.signatureHelpRetriggers.includes(triggerCharacter)
-          ) {
-            hideCompletion(cm);
-            removeSignatureHelp(cm);
-            conn
-              .getSignatureHelp({
-                textDocument: { uri },
-                position: lspPosition(pos),
-                context: {
-                  triggerKind: SignatureHelpTriggerKind.TriggerCharacter,
-                  triggerCharacter,
-                  // TODO Look into this
-                  isRetrigger: false,
-                  // activeSignatureHelp,
-                },
-              })
-              .then((help) => {
-                if (!help || help.signatures.length === 0) return;
-                showSignatureHelp(
-                  cm,
-                  mouseLeaveAllListener,
-                  help,
-                  pos,
-                  this.renderMarkdown
-                );
-              });
-
-            return;
-          }
-        }
-
-        hideCompletion(cm);
+        completion.close();
         removeSignatureHelp(cm);
       })
     );
@@ -478,7 +422,7 @@ export class Workspace {
     disposers.push(
       onEditorEvent(editor, "cmw:contextMenuOpened", ([cm]) => {
         disableHoverInfo(cm);
-        hideCompletion(cm);
+        completion.close();
         removeSignatureHelp(cm);
       }),
       onEditorEvent(editor, "cmw:contextMenuClosed", ([cm]) => {
@@ -639,7 +583,8 @@ export class Workspace {
   hideAllPopups(cm?: Editor) {
     if (cm) {
       this.hideTooltips(cm);
-      hideCompletion(cm);
+      const completion = this.completionHandlers.get(cm);
+      if (completion) completion.close();
       removeContextMenu(cm);
     } else {
       Object.values(this.editors).forEach((cm) => this.hideAllPopups(cm));
@@ -749,8 +694,13 @@ export class Workspace {
     removeDiagnostics(editor);
     removeHoverInfo(editor);
     removeHighlights(editor);
-    hideCompletion(editor);
     removeSignatureHelp(editor);
+
+    const completion = this.completionHandlers.get(editor);
+    if (completion) {
+      completion.close();
+      this.completionHandlers.delete(editor);
+    }
   }
 
   /**
@@ -795,7 +745,9 @@ export class Workspace {
             completionItem: {
               snippetSupport: true,
               insertReplaceSupport: true,
-              // TODO Look into this. Commit character accepts the completion and then get inserted.
+              // TODO Commit characters cannot be supported with show-hint addon because by the time the
+              //      commit character is detected, the Widget is updated and selected item is gone.
+              //      Maybe assign it somewhere inside `select` event.
               commitCharactersSupport: false,
               documentationFormat: this.canHandleMarkdown
                 ? ["markdown", "plaintext"]

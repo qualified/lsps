@@ -2,64 +2,199 @@
 
 import type { Editor, Position, Hint, Hints } from "codemirror";
 import type {
+  CompletionContext,
   CompletionItem,
   CompletionList,
   CancellationToken,
 } from "vscode-languageserver-protocol";
 import {
-  CompletionItemKind,
-  TextEdit,
-  InsertTextFormat,
   CancellationTokenSource,
+  CompletionItemKind,
+  CompletionTriggerKind,
+  InsertTextFormat,
+  TextEdit,
 } from "vscode-languageserver-protocol";
 import CodeMirror from "codemirror";
 
+import { LspConnection } from "@qualified/lsp-connection";
+
 import {
   cmRange,
-  documentationToString,
   completionItemKindToString,
+  completionItemsToList,
+  documentationToString,
+  lspPosition,
 } from "../utils/conversions";
 import { applyEdits } from "../utils/editor";
 import { escapeHtml } from "../utils/string";
 import { insertSnippet } from "./snippet";
 
-/**
- * Show completion popup.
- * @param opts
- */
-export const showCompletion = (opts: CompletionContextOptions) => {
-  new CompletionContext(opts).showHint();
+export type CompletionHandlerOptions = {
+  uri: string;
+  editor: Editor;
+  conn: LspConnection;
+  renderMarkdown: (x: string) => string;
 };
 
-/**
- * Hide completion popup.
- * @param editor
- */
-export const hideCompletion = (editor: Editor) => {
-  editor.closeHint();
-};
+export class CompletionHandler {
+  private uri: string;
+  private editor: Editor;
+  private conn: LspConnection;
+  private pendingRequest: CancellationTokenSource | null = null;
+  private renderMarkdown: (x: string) => string;
 
-/**
- * True if completion is active.
- * @param editor
- */
-export const completionIsActive = (editor: Editor) =>
-  !!editor.state?.completionActive;
+  constructor({ uri, editor, conn, renderMarkdown }: CompletionHandlerOptions) {
+    this.uri = uri;
+    this.editor = editor;
+    this.conn = conn;
+    this.renderMarkdown = renderMarkdown;
+  }
 
-/**
- * True if completion is active, and the completion list is complete.
- * There's no need to make new requests.
- * @param editor
- */
-export const completionIsComplete = (editor: Editor) =>
-  !!editor.state?.completionActive?.options?.updateOnCursorActivity;
+  invoke() {
+    this.request({
+      triggerKind: CompletionTriggerKind.Invoked,
+    });
+  }
 
-export type CompletionContextOptions = {
+  private retriggerForIncomplete() {
+    this.request({
+      triggerKind: CompletionTriggerKind.TriggerForIncompleteCompletions,
+    });
+  }
+
+  private triggerWith(triggerCharacter: string) {
+    this.request({
+      triggerKind: CompletionTriggerKind.TriggerCharacter,
+      triggerCharacter,
+    });
+  }
+
+  /**
+   * Attempt to start/resume completion on `change` event.
+   *
+   * @returns true if handled.
+   */
+  onChange(): boolean {
+    const pos = this.editor.getCursor();
+    // Treat as handled
+    if (pos.ch === 0) return true;
+
+    const triggerCharacter = this.editor.getLine(pos.line)[pos.ch - 1];
+    // Note that this must be checked before ignoring further typing for "complete"
+    // completion so a new completion is triggered.
+    if (this.conn.completionTriggers.includes(triggerCharacter)) {
+      this.triggerWith(triggerCharacter);
+      return true;
+    }
+
+    if (this.isComplete()) {
+      // Do nothing, completion is active with a complete list.
+      // The popup is updated on `curorActivity` event.
+      // Treat this as handled.
+      return true;
+    }
+
+    const type = this.editor.getTokenTypeAt(pos);
+    if (type) {
+      if (/\b(?:variable|property|type)\b/.test(type)) {
+        if (this.isActive()) {
+          this.retriggerForIncomplete();
+        } else {
+          this.invoke();
+        }
+        return true;
+      }
+
+      // HTML attribute completion within a string.
+      if (this.isActive() && type === "string") {
+        this.retriggerForIncomplete();
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private request(context: CompletionContext) {
+    this.cancelPending();
+
+    const cts = new CancellationTokenSource();
+    this.pendingRequest = cts;
+    this.conn
+      .getCompletion(
+        {
+          textDocument: { uri: this.uri },
+          position: lspPosition(this.editor.getCursor()),
+          context,
+        },
+        this.pendingRequest.token
+      )
+      .then((list) => {
+        if (this.pendingRequest === cts) {
+          this.pendingRequest = null;
+        } else {
+          // canceled
+          return;
+        }
+
+        if (!list) return;
+        if (Array.isArray(list)) {
+          list = completionItemsToList(list);
+        }
+        if (list.items.length === 0) return;
+
+        new CompletionHint({
+          list,
+          editor: this.editor,
+          invoked:
+            context.triggerKind !== CompletionTriggerKind.TriggerCharacter,
+          renderMarkdown: this.renderMarkdown,
+          resolveItem: (item, cancel) =>
+            this.conn
+              .getCompletionItemDetails(item, cancel)
+              .then((x) => x || item),
+        }).show();
+      });
+  }
+
+  /**
+   * Close completion popup.
+   */
+  close() {
+    this.cancelPending();
+    this.editor.closeHint();
+  }
+
+  /**
+   * True if completion is active.
+   */
+  private isActive() {
+    return !!this.editor.state?.completionActive;
+  }
+
+  /**
+   * True if completion is active, and the completion list is complete.
+   * There's no need to make new requests.
+   */
+  private isComplete() {
+    return !!this.editor.state?.completionActive?.options
+      ?.updateOnCursorActivity;
+  }
+
+  private cancelPending() {
+    if (this.pendingRequest) {
+      this.pendingRequest.cancel();
+      this.pendingRequest = null;
+    }
+  }
+}
+
+export type CompletionHintOptions = {
   editor: Editor;
   list: CompletionList;
   invoked: boolean;
   renderMarkdown: (x: string) => string;
-  getDetails: (
+  resolveItem: (
     item: CompletionItem,
     token?: CancellationToken
   ) => Promise<CompletionItem>;
@@ -68,13 +203,13 @@ export type CompletionContextOptions = {
 // Manages completion state.
 // - Avoid querying the server when the list is complete
 // - Cache `completionItem/resolve`
-class CompletionContext {
+class CompletionHint {
   private editor: Editor;
   private list: CompletionList;
   private updates: number;
   private invoked: boolean;
   private renderMarkdown: (x: string) => string;
-  private getDetails: (
+  private resolveItem: (
     item: CompletionItem,
     token?: CancellationToken
   ) => Promise<CompletionItem>;
@@ -87,17 +222,17 @@ class CompletionContext {
     invoked,
     list,
     renderMarkdown,
-    getDetails,
-  }: CompletionContextOptions) {
+    resolveItem,
+  }: CompletionHintOptions) {
     this.editor = editor;
     this.list = list;
     this.invoked = invoked;
     this.updates = 0;
     this.renderMarkdown = renderMarkdown;
-    this.getDetails = getDetails;
+    this.resolveItem = resolveItem;
   }
 
-  showHint() {
+  show() {
     this.editor.showHint({
       completeSingle: false,
       updateOnCursorActivity: !this.list.isIncomplete,
@@ -116,8 +251,8 @@ class CompletionContext {
         // Called when this completion is picked.
         hint: (cm: Editor) => {
           let text = item.insertText || item.label;
-          let from = posFrom;
-          let to = posTo;
+          let from = { line: posFrom.line, ch: posFrom.ch };
+          let to = { line: posTo.line, ch: posTo.ch };
           if (item.textEdit) {
             // Need to adjust the content for the typed characters because the
             // range in `textEdit` can be the range when the completion was requested.
@@ -126,6 +261,17 @@ class CompletionContext {
             const range = cmRange(
               TextEdit.is(edit) ? edit.range : edit.replace
             );
+            // Adjust the current range based on the item's range to
+            // make sure the current range contains the original range.
+            // This is necessary when the current range was not accurate due to CM limitation.
+            //
+            // The item's range can start before the current range when CM token doesn't match
+            // with the Language Server's (e.g., HTML closing tag completion containing the slash).
+            if (range[0].ch < from.ch) from.ch = range[0].ch;
+            // The item's range can end after the current range for completion within string
+            // where the end of the current range is the cursor position.
+            if (range[1].ch > to.ch) to.ch = range[1].ch;
+
             this.editor.replaceRange(
               this.editor.getRange(range[0], range[1]),
               from,
@@ -179,6 +325,21 @@ class CompletionContext {
     // - the triggered completion was updated by user typing after the trigger character
     if (this.updates++ > 0 || this.invoked) {
       const token = this.editor.getTokenAt(pos);
+      if (token.type === "string") {
+        // HACK Try to find the correct range within a string.
+        // Completion inside a string is possible in HTML for attributes.
+        // Set the start of the range to match the start of a TextEdit.
+        // Set the end of the range to the cursor position.
+        // The end of the range is adjusted again when completing an item.
+        const itemWithTextEdit = this.list.items.find((x) => x.textEdit);
+        if (itemWithTextEdit) {
+          const edit = itemWithTextEdit.textEdit!;
+          const range = cmRange(TextEdit.is(edit) ? edit.range : edit.replace);
+          token.start = range[0].ch;
+          token.end = pos.ch;
+        }
+      }
+
       const posFrom = { line: pos.line, ch: token.start };
       const posTo = { line: pos.line, ch: token.end };
       const typed = this.editor.getRange(posFrom, posTo);
@@ -242,10 +403,17 @@ class CompletionContext {
     if (cached) {
       this.addTooltip(node, cached);
     } else {
-      this.pendingRequest = new CancellationTokenSource();
-      this.getDetails(item, this.pendingRequest.token).then((x) => {
-        this.pendingRequest = null;
+      const cts = new CancellationTokenSource();
+      this.pendingRequest = cts;
+      this.resolveItem(item, this.pendingRequest.token).then((x) => {
         this.removeTooltip();
+        if (this.pendingRequest === cts) {
+          this.pendingRequest = null;
+        } else {
+          // canceled
+          return;
+        }
+
         const cached = this.cacheDetails(Object.assign(item, x));
         this.detailsCache.set(item, cached);
         this.addTooltip(node, cached);
