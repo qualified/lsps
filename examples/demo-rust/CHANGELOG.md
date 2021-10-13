@@ -1,5 +1,16 @@
 # @qualified/codemirror-workspace-demo-rust
 
+## 0.1.8
+
+### Patch Changes
+
+- 4c1b3e9: Update minimum `codemirror` version to 5.59.2. CMW depends on `show-hint` addon's `updateOnCursorActivity` option to prevent unnecessary updates.
+- Updated dependencies [68a2cb6]
+- Updated dependencies [2a66aa7]
+- Updated dependencies [4c1b3e9]
+- Updated dependencies [c83c05a]
+  - @qualified/codemirror-workspace@0.2.8
+
 ## 0.1.7
 
 ### Patch Changes
