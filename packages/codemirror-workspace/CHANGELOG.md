@@ -1,5 +1,21 @@
 # @qualified/codemirror-workspace
 
+## 0.2.8
+
+### Patch Changes
+
+- 68a2cb6: Fix HTML completion
+
+  - Fix closing tag completion keeping extra `/`
+  - Fix attributes completion
+
+- 2a66aa7: Fix completion item with `textEdit` not completed correctly when the completion list is complete and not recomputed on further typing.
+- 4c1b3e9: Update minimum `codemirror` version to 5.59.2. CMW depends on `show-hint` addon's `updateOnCursorActivity` option to prevent unnecessary updates.
+- c83c05a: Encapsulate completion logic in `CompletionHandler`
+
+  - Fix trigger character ignored while "complete" completion is active
+  - Cancel pending requests
+
 ## 0.2.7
 
 ### Patch Changes
