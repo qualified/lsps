@@ -95,13 +95,21 @@ export class CompletionHandler {
     }
 
     const type = this.editor.getTokenTypeAt(pos);
-    if (type && /\b(?:variable|property|type)\b/.test(type)) {
-      if (this.isActive()) {
-        this.retriggerForIncomplete();
-      } else {
-        this.invoke();
+    if (type) {
+      if (/\b(?:variable|property|type)\b/.test(type)) {
+        if (this.isActive()) {
+          this.retriggerForIncomplete();
+        } else {
+          this.invoke();
+        }
+        return true;
       }
-      return true;
+
+      // HTML attribute completion within a string.
+      if (this.isActive() && type === "string") {
+        this.retriggerForIncomplete();
+        return true;
+      }
     }
 
     return false;
@@ -243,8 +251,8 @@ class CompletionHint {
         // Called when this completion is picked.
         hint: (cm: Editor) => {
           let text = item.insertText || item.label;
-          let from = posFrom;
-          let to = posTo;
+          let from = { line: posFrom.line, ch: posFrom.ch };
+          let to = { line: posTo.line, ch: posTo.ch };
           if (item.textEdit) {
             // Need to adjust the content for the typed characters because the
             // range in `textEdit` can be the range when the completion was requested.
@@ -253,6 +261,17 @@ class CompletionHint {
             const range = cmRange(
               TextEdit.is(edit) ? edit.range : edit.replace
             );
+            // Adjust the current range based on the item's range to
+            // make sure the current range contains the original range.
+            // This is necessary when the current range was not accurate due to CM limitation.
+            //
+            // The item's range can start before the current range when CM token doesn't match
+            // with the Language Server's (e.g., HTML closing tag completion containing the slash).
+            if (range[0].ch < from.ch) from.ch = range[0].ch;
+            // The item's range can end after the current range for completion within string
+            // where the end of the current range is the cursor position.
+            if (range[1].ch > to.ch) to.ch = range[1].ch;
+
             this.editor.replaceRange(
               this.editor.getRange(range[0], range[1]),
               from,
@@ -306,6 +325,21 @@ class CompletionHint {
     // - the triggered completion was updated by user typing after the trigger character
     if (this.updates++ > 0 || this.invoked) {
       const token = this.editor.getTokenAt(pos);
+      if (token.type === "string") {
+        // HACK Try to find the correct range within a string.
+        // Completion inside a string is possible in HTML for attributes.
+        // Set the start of the range to match the start of a TextEdit.
+        // Set the end of the range to the cursor position.
+        // The end of the range is adjusted again when completing an item.
+        const itemWithTextEdit = this.list.items.find((x) => x.textEdit);
+        if (itemWithTextEdit) {
+          const edit = itemWithTextEdit.textEdit!;
+          const range = cmRange(TextEdit.is(edit) ? edit.range : edit.replace);
+          token.start = range[0].ch;
+          token.end = pos.ch;
+        }
+      }
+
       const posFrom = { line: pos.line, ch: token.start };
       const posTo = { line: pos.line, ch: token.end };
       const typed = this.editor.getRange(posFrom, posTo);
