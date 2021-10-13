@@ -11,10 +11,10 @@ jobs:
     steps:
       - name: Get merged PR
         id: get-pr-info
-        uses: actions/github-script@v4
+        uses: actions/github-script@v5
         with:
           script: |
-            const res = await github.pulls.list({
+            const res = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
               sort: 'updated',
