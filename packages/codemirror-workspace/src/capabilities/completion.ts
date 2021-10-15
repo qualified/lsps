@@ -327,7 +327,11 @@ class CompletionHint {
       const token = this.editor.getTokenAt(pos);
       if (token.type === "string") {
         // HACK Try to find the correct range within a string.
-        // Completion inside a string is possible in HTML for attributes.
+        // Completion inside a string is possible in:
+        // - HTML for attributes
+        // - import module path completion for JS/TS, etc.
+        //
+        // If there's a completion item with `TextEdit` use that.
         // Set the start of the range to match the start of a TextEdit.
         // Set the end of the range to the cursor position.
         // The end of the range is adjusted again when completing an item.
@@ -337,6 +341,21 @@ class CompletionHint {
           const range = cmRange(TextEdit.is(edit) ? edit.range : edit.replace);
           token.start = range[0].ch;
           token.end = pos.ch;
+        } else {
+          // For simple text insertion, remove quotes from the range.
+          const start = token.string[0];
+          const end = token.string[token.string.length - 1];
+          if (start === '"' || start === "'") {
+            if (start === end) {
+              token.start += 1;
+              token.end -= 1;
+            } else {
+              // If the string doesn't have a matching closing quote,
+              // use the cursor position to end the range.
+              token.start += 1;
+              token.end = pos.ch;
+            }
+          }
         }
       }
 
