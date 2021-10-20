@@ -430,8 +430,11 @@ export class Workspace {
       }),
 
       // if the editor loses focus, or gets completely reset, hide all overlays, because they are no longer valid
-      onEditorEvent(editor, "blur", hideAllPopups),
       onEditorEvent(editor, "refresh", hideAllPopups),
+      // For `blur`, just remove tooltips.
+      // ContextMenu should not be closed on `blur` because that happens when you click the menu.
+      // Completion is closed on `blur` alreaady with the default `closeOnUnfocus: true` option after 100ms without focus.
+      onEditorEvent(editor, "blur", hideTooltips),
 
       // if we type something, or modify the viewport, hide any tooltips, because they no longer line up correctly
       onEditorEvent(editor, "changes", hideTooltips),
