@@ -1,5 +1,13 @@
 # @qualified/codemirror-workspace-demo-save
 
+## 0.1.9
+
+### Patch Changes
+
+- Updated dependencies [5c4bb54]
+- Updated dependencies [0309a75]
+  - @qualified/codemirror-workspace@0.2.9
+
 ## 0.1.8
 
 ### Patch Changes
