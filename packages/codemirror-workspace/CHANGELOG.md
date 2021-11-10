@@ -1,5 +1,12 @@
 # @qualified/codemirror-workspace
 
+## 0.2.9
+
+### Patch Changes
+
+- 5c4bb54: Fix context menu closing before click
+- 0309a75: Fix completion with simple insertion within a string
+
 ## 0.2.8
 
 ### Patch Changes
