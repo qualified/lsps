@@ -5,18 +5,14 @@ export const addTooltip = (
 ) => {
   const tooltip = document.createElement("div");
   tooltip.classList.add("cmw-tooltip");
-  tooltip.style.cssText = [
-    "font-size: 12px;",
-    "padding: 2px;",
-    "z-index: 10;",
-    "position: absolute;",
-    `left: ${x}px;`,
-    `top: ${y}px;`,
-    `max-width: 50ch;`,
-    `max-height: 120px;`,
-    `overflow-y: auto;`,
-  ].join(" ");
+  tooltip.style.cssText = [`left: ${x}px;`, `top: ${y}px;`].join(" ");
   tooltip.appendChild(tooltipContent);
+  const close = document.createElement("div");
+  close.classList.add("cmw-tooltip-close");
+  close.addEventListener("click", () => {
+    tooltip.remove();
+  });
+  tooltip.appendChild(close);
   document.body.appendChild(tooltip);
 
   // Make sure that the tooltip is above the text even when it's multiline.
