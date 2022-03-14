@@ -18,7 +18,7 @@ importers:
 
   examples/demo:
     specifiers:
-      '@qualified/codemirror-workspace': workspace:0.2.9
+      '@qualified/codemirror-workspace': workspace:0.3.0
       '@types/codemirror': ^5.0.0
       '@types/marked': ^2.0.3
       '@types/webpack': ^4.41.22
@@ -63,7 +63,7 @@ importers:
 
   examples/demo-rust:
     specifiers:
-      '@qualified/codemirror-workspace': workspace:0.2.9
+      '@qualified/codemirror-workspace': workspace:0.3.0
       '@types/codemirror': ^5.0.0
       '@types/marked': ^2.0.3
       '@types/webpack': ^4.41.22
@@ -102,7 +102,7 @@ importers:
 
   examples/demo-save:
     specifiers:
-      '@qualified/codemirror-workspace': workspace:0.2.9
+      '@qualified/codemirror-workspace': workspace:0.3.0
       '@types/codemirror': ^5.0.0
       '@types/marked': ^2.0.3
       '@types/webpack': ^4.41.22
@@ -141,7 +141,7 @@ importers:
 
   examples/demo-worker:
     specifiers:
-      '@qualified/codemirror-workspace': workspace:0.2.9
+      '@qualified/codemirror-workspace': workspace:0.3.0
       '@types/codemirror': ^5.0.0
       '@types/marked': ^2.0.3
       codemirror: ^5.59.2
@@ -1974,7 +1974,7 @@ packages:
 
   /chokidar/2.1.8:
     resolution: {integrity: sha512-ZmZUazfOzf0Nve7duiCKD23PFSCs4JPoYyccjUFF3aQkQadqBhfzhjkwBH2mNOG9cTBwhamM37EIsIkZw3nRgg==}
-    deprecated: Chokidar 2 will break on node v14+. Upgrade to chokidar 3 with 15x less dependencies.
+    deprecated: Chokidar 2 does not receive security updates since 2019. Upgrade to chokidar 3 with 15x fewer dependencies
     dependencies:
       anymatch: 2.0.0
       async-each: 1.0.3
