@@ -152,6 +152,7 @@ export class Workspace {
   private rootUri: string;
   private configs: LanguageServerConfigs;
   private completionHandlers: WeakMap<Editor, CompletionHandler>;
+  private popupsEnabled: boolean;
 
   /**
    * Create new workspace.
@@ -172,6 +173,14 @@ export class Workspace {
     this.canHandleMarkdown = typeof options.renderMarkdown === "function";
     const renderMarkdown = options.renderMarkdown || ((x: string) => x);
     this.renderMarkdown = renderMarkdown.bind(void 0);
+    this.popupsEnabled = true;
+  }
+
+  enablePopups(enabled = true) {
+    this.popupsEnabled = enabled;
+    if (!enabled) {
+      this.hideAllPopups();
+    }
   }
 
   /**
@@ -281,7 +290,7 @@ export class Workspace {
     disposers.push(
       // Trigger completion or signature help or hide them
       changeStream(([cm, _change]) => {
-        if (completion.onChange()) return;
+        if (!this.popupsEnabled || completion.onChange()) return;
 
         const pos = cm.getCursor();
         if (pos.ch === 0) return;
@@ -332,7 +341,7 @@ export class Workspace {
     );
     disposers.push(
       cursorActivityStream(([cm, pos]) => {
-        const type = cm.getTokenTypeAt(pos);
+        const type = this.popupsEnabled && cm.getTokenTypeAt(pos);
         if (type && /\b(?:variable|property)\b/.test(type)) {
           conn
             .getDocumentHighlight({
@@ -386,7 +395,8 @@ export class Workspace {
         if (
           token.type === "comment" ||
           token.string.length === 0 ||
-          token.type === null
+          token.type === null ||
+          !this.popupsEnabled
         ) {
           return;
         }

@@ -130,3 +130,12 @@ workspace.openTextDocument("add.ts", tsEditorAdd);
 workspace.openTextDocument("source.ts", tsEditorSource);
 workspace.openTextDocument("project.html", htmlEditor);
 workspace.openTextDocument("style.css", cssEditor);
+
+const enablePopupsButton = document.getElementById("enablePopups")!;
+enablePopupsButton.addEventListener("click", () => {
+  workspace.enablePopups(true);
+});
+const disablePopupsButton = document.getElementById("disablePopups")!;
+disablePopupsButton.addEventListener("click", () => {
+  workspace.enablePopups(false);
+});
