@@ -1,5 +1,12 @@
 # @qualified/codemirror-workspace
 
+## 0.3.0
+
+### Minor Changes
+
+- 50a7f26: Added the ability to disable all popups temporarily
+- 81bb615: Added close button to tooltips
+
 ## 0.2.9
 
 ### Patch Changes

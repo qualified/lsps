@@ -1,5 +1,17 @@
 # @qualified/codemirror-workspace-demo
 
+## 0.2.0
+
+### Minor Changes
+
+- 50a7f26: Added the ability to disable all popups temporarily
+
+### Patch Changes
+
+- Updated dependencies [50a7f26]
+- Updated dependencies [81bb615]
+  - @qualified/codemirror-workspace@0.3.0
+
 ## 0.1.9
 
 ### Patch Changes
