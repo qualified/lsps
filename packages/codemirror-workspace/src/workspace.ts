@@ -11,6 +11,7 @@ import { createMessageConnection as createWebSocketMessageConnection } from "@qu
 import { createMessageConnection as createWorkerMessageConnection } from "@qualified/vscode-jsonrpc-ww";
 import { createLspConnection, LspConnection } from "@qualified/lsp-connection";
 
+import SturdyWebSocket from "./ws";
 import {
   CompletionHandler,
   disableHoverInfo,
@@ -67,7 +68,7 @@ export interface LanguageAssociation {
 
 /** Configs to use for each server. */
 export interface LanguageServerConfigs {
-  [serverId: string]: LanguageServerConfig;
+  [serverId: string]: LanguageServerConfig | undefined;
 }
 
 // TODO? Replace `languageAssociations` with some methods in config?
@@ -123,6 +124,20 @@ export interface WorkspaceOptions {
   // showMessage?: (message: string, level: "error" | "warning" | "info" | "log") => void;
   // Called on logMeessage notification
   // logMessage?: (message: string, level: "error" | "warning" | "info" | "log") => void;
+
+  /**
+   * Optional callback called after a WebSocket connection goes down.
+   */
+  onDisconnected?: (serverId: string) => void;
+  /**
+   * Optional callback called after a WebSocket connection reopens and initialization completes.
+   */
+  onReconnected?: (serverId: string) => Promise<void>;
+  /**
+   * Optional callback called when a connecting to a Language Server failed.
+   * WebSocket connection is retried up to 10 consecutive failures with exponential backoff.
+   */
+  onConnectionFailed?: (serverId: string) => void;
 }
 
 /**
@@ -133,8 +148,9 @@ export class Workspace {
   // Map of `documentUri` to open editors in the workspace.
   // Used to find the editor to apply actions on event.
   private editors: { [uri: string]: Editor };
-  // Keep track of `connect` calls for each `serverId`.
-  private connectPromises: { [id: string]: Promise<LspConnection | null> };
+  // Map of Language Server ID to a promise that resolves with a connection or null.
+  // This is to ensure single connection per server.
+  private connectionPromises: { [id: string]: Promise<LspConnection | null> };
   // Map of Language Server ID to connection.
   private connections: { [id: string]: LspConnection };
   // Map of `documentUri` to document versions.
@@ -153,6 +169,11 @@ export class Workspace {
   private configs: LanguageServerConfigs;
   private completionHandlers: WeakMap<Editor, CompletionHandler>;
   private popupsEnabled: boolean;
+  private onDisconnected: (id: string) => void;
+  private onReconnected: (id: string) => Promise<void>;
+  private onConnectionFailed: (id: string) => void;
+  // Maps from conn to document uris. Used to find editors using the connection.
+  private connectionToUris: WeakMap<LspConnection, Set<string>> = new WeakMap();
 
   /**
    * Create new workspace.
@@ -160,7 +181,7 @@ export class Workspace {
    */
   constructor(options: WorkspaceOptions) {
     this.editors = Object.create(null);
-    this.connectPromises = Object.create(null);
+    this.connectionPromises = Object.create(null);
     this.connections = Object.create(null);
     this.documentVersions = Object.create(null);
     this.subscriptionDisposers = new WeakMap();
@@ -174,6 +195,11 @@ export class Workspace {
     const renderMarkdown = options.renderMarkdown || ((x: string) => x);
     this.renderMarkdown = renderMarkdown.bind(void 0);
     this.popupsEnabled = true;
+    this.onDisconnected = options.onDisconnected?.bind(void 0) || ((_) => {});
+    this.onReconnected =
+      options.onReconnected?.bind(void 0) || ((_) => Promise.resolve());
+    this.onConnectionFailed =
+      options.onConnectionFailed?.bind(void 0) || ((_id) => {});
   }
 
   enablePopups(enabled = true) {
@@ -188,7 +214,17 @@ export class Workspace {
    * Close connections and remove references to editors.
    */
   dispose() {
-    // TODO shutdown and exit all connections
+    for (const editor of Object.values(this.editors)) {
+      this.removeEventHandlers(editor);
+    }
+    this.editors = Object.create(null);
+    this.documentVersions = Object.create(null);
+    for (const conn of Object.values(this.connections)) {
+      conn.dispose();
+      this.connectionToUris.delete(conn);
+    }
+    this.connections = Object.create(null);
+    this.connectionPromises = Object.create(null);
   }
 
   /**
@@ -220,6 +256,7 @@ export class Workspace {
       },
     });
 
+    this.connectionToUris.get(conn)!.add(uri);
     this.addEventHandlers(uri, editor, conn);
   }
 
@@ -624,16 +661,21 @@ export class Workspace {
     if (!assoc) return;
     const serverId = assoc.languageServerIds[0];
     if (!serverId) return;
-    const conn = this.connections[serverId];
+    const conn = await this.getConnection(serverId);
     if (!conn) return;
 
+    this.detachEditor(uri);
+    conn.textDocumentClosed({
+      textDocument: { uri },
+    });
+    this.connectionToUris.get(conn)!.delete(uri);
+  }
+
+  private detachEditor(uri: string) {
     const editor = this.editors[uri];
     delete this.editors[uri];
     delete this.documentVersions[uri];
     this.removeEventHandlers(editor);
-    conn.textDocumentClosed({
-      textDocument: { uri },
-    });
   }
 
   /**
@@ -652,7 +694,7 @@ export class Workspace {
     const serverId = assoc.languageServerIds[0];
     if (!serverId) return;
 
-    const conn = this.connections[serverId];
+    const conn = await this.getConnection(serverId);
     if (!conn) return;
 
     const editor = this.editors[uri];
@@ -689,11 +731,23 @@ export class Workspace {
     }
   }
 
-  private async getConnection(serverId: string) {
-    return (
-      this.connectPromises[serverId] ||
-      (this.connectPromises[serverId] = this.connect(serverId))
-    );
+  private getConnection(serverId: string): Promise<LspConnection | null> {
+    if (!this.connectionPromises[serverId]) {
+      this.connectionPromises[serverId] = (async () => {
+        const connectionString = await this.getConnectionString(serverId);
+        if (!connectionString) return null;
+
+        this.connections[serverId] = await this.openConnection(
+          serverId,
+          connectionString,
+          async (conn, reopen) => {
+            await this.initConnection(conn, this.configs[serverId], reopen);
+          }
+        );
+        return this.connections[serverId];
+      })();
+    }
+    return this.connectionPromises[serverId];
   }
 
   private removeEventHandlers(editor: Editor) {
@@ -716,34 +770,13 @@ export class Workspace {
     }
   }
 
-  /**
-   * Private method to connect to the language server if possible.
-   * If existing connection exists, it'll be shared.
-   *
-   * @param serverId - ID of the language server.
-   */
-  private async connect(serverId: string): Promise<LspConnection | null> {
-    const existing = this.connections[serverId];
-    if (existing || existing === null) return existing;
-
-    const connectionString = await this.getConnectionString(serverId);
-    if (!connectionString) return null;
-
-    // If we got some string that doesn't start with Web Socket protocol, assume
-    // it's the worker's location.
-    const messageConn = /^wss?:\/\//.test(connectionString)
-      ? createWebSocketMessageConnection(new WebSocket(connectionString))
-      : createWorkerMessageConnection(new Worker(connectionString));
-    const conn = await messageConn.then(createLspConnection);
-    this.connections[serverId] = conn;
-    conn.onClose(() => {
-      delete this.connections[serverId];
-      delete this.connectPromises[serverId];
-    });
-
-    conn.listen();
-
-    const config = this.configs[serverId];
+  private async initConnection(
+    conn: LspConnection,
+    config: LanguageServerConfig | undefined,
+    reopen: boolean
+  ): Promise<LspConnection> {
+    if (!reopen) conn.listen();
+    // Initialize request must be sent on reopen as well
     await conn.initialize({
       capabilities: {
         textDocument: {
@@ -858,21 +891,90 @@ export class Workspace {
     if (settings) conn.configurationChanged({ settings });
 
     // Add event handlers to pass payload to matching open editors.
-    conn.onDiagnostics(({ uri, diagnostics }) => {
-      const editor = this.editors[uri];
-      if (editor) showDiagnostics(editor, diagnostics);
-    });
+    if (!reopen) {
+      conn.onDiagnostics(({ uri, diagnostics }) => {
+        const editor = this.editors[uri];
+        if (editor) showDiagnostics(editor, diagnostics);
+      });
+    }
 
     return conn;
   }
 
   private getDocumentUri(path: string) {
-    return this.rootUri + path.replace(/^\/+/, "");
+    return path.startsWith(this.rootUri)
+      ? path
+      : this.rootUri + path.replace(/^\/+/, "");
+  }
+
+  private async openConnection(
+    serverId: string,
+    connectionString: string,
+    initialize: (conn: LspConnection, reopen: boolean) => Promise<void>
+  ): Promise<LspConnection> {
+    // If we got some string that doesn't start with Web Socket protocol, assume
+    // it's the worker's location.
+    if (/^wss?:\/\//.test(connectionString)) {
+      const ws = new SturdyWebSocket(connectionString, {
+        maxReconnectAttempts: 10,
+        debug: true,
+      });
+      const mconn = await createWebSocketMessageConnection(ws);
+      const conn = createLspConnection(mconn);
+      // Keeps track of open editors attached to this connection
+      const toReopen: [uri: string, editor: Editor][] = [];
+      let isDown = false;
+      await initialize(conn, false);
+
+      this.connectionToUris.set(conn, new Set());
+      ws.addEventListener("down", (_closeEvent) => {
+        if (isDown) {
+          // Failed to reopen connection
+          console.debug(`cmw:ws:${serverId} connection is still down`);
+        } else {
+          isDown = true;
+          console.debug(`cmw:ws:${serverId} connection went down`);
+          // Remove event handlers for this connection to prevent sending messages while it's down.
+          // Store them to reattach when it's back up.
+          const uris = this.connectionToUris.get(conn)!;
+          for (const uri of uris) {
+            const editor = this.editors[uri];
+            if (editor) {
+              this.detachEditor(uri);
+              toReopen.push([uri, editor]);
+            }
+          }
+          uris.clear();
+          this.onDisconnected(serverId);
+        }
+      });
+      ws.addEventListener("reopen", () => {
+        isDown = false;
+        console.debug(`cmw:ws:${serverId} connection reopened, reinitializing`);
+        initialize(conn, true).then(async () => {
+          await this.onReconnected(serverId);
+          // Reopen text documents after initialized to reattach event listeners
+          for (const [uri, editor] of toReopen) {
+            this.openTextDocument(uri, editor);
+          }
+          toReopen.length = 0;
+        });
+      });
+      ws.addEventListener("close", (event) => {
+        toReopen.length = 0;
+        if (event && event.code !== 1000) {
+          console.warn(`cmw:ws:${serverId} connection failed`);
+          this.onConnectionFailed(serverId);
+        }
+      });
+      return conn;
+    } else {
+      const mconn = await createWorkerMessageConnection(
+        new Worker(connectionString)
+      );
+      const conn = createLspConnection(mconn);
+      await initialize(conn, false);
+      return conn;
+    }
   }
 }
-
-// Renaming file should be done by:
-// 1. Close
-// 2. Delete
-// 3. Create
-// 4. Open

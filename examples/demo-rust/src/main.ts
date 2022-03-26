@@ -67,6 +67,21 @@ const rustEditor = CodeMirror($("#rust-editor"), {
 const workspace = new Workspace({
   // Using relative URI. Requires lsp-ws-proxy v0.4.0+.
   rootUri: "source://",
+  // To test disconnection, kill the proxy with `pkill lsp-ws-proxy`.
+  onDisconnected: (id) => {
+    console.log(`${id} connection is down, reconnecting...`);
+  },
+  // To test reconnection, restart the server with `pnpm start-ls-rust`
+  onReconnected: async (id) => {
+    // Can be used to sync changes with the server.
+    // const changes = await syncChanges();
+    // workspace.notifyFilesChanged(changes);
+    console.log(`${id} reconnected`);
+  },
+  // The connection failed.
+  onConnectionFailed: (id) => {
+    console.log(`${id} connection failed`);
+  },
   getLanguageAssociation: (uri: string) => {
     if (uri.endsWith(".rs")) {
       return {
