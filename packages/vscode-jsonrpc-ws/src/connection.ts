@@ -20,6 +20,7 @@ export const createMessageConnection = (
         createMessageWriter(webSocket),
         logger
       );
+      conn.onDispose(() => webSocket.close());
       conn.onClose(() => conn.dispose());
       onConnection(conn);
     };
