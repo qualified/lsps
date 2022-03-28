@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "rimraf public/js && webpack",
-    "start-ls-rust": "cd ./workspace && PATH=$(pwd)/../bin:$PATH lsp-ws-proxy -l 9999 --remap -- rust-analyzer",
+    "start-ls-rust": "cd ./workspace && PATH=$(pwd)/../bin:$PATH RUST_LOG=info,lsp_ws_proxy=debug lsp-ws-proxy -l 9999 --remap -- rust-analyzer",
     "start": "pnpm build && concurrently \"pnpm start-ls-rust\" \"serve -l 4000 public\""
   },
   "dependencies": {
