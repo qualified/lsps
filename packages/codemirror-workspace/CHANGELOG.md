@@ -1,5 +1,16 @@
 # @qualified/codemirror-workspace
 
+## 0.4.0
+
+### Minor Changes
+
+- 24a585a: Reconnect WebSocket connection on abnormal closures and implement `dispose()`
+
+### Patch Changes
+
+- Updated dependencies [841f39a]
+  - @qualified/vscode-jsonrpc-ws@0.3.0
+
 ## 0.3.0
 
 ### Minor Changes
