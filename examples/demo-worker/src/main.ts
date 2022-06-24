@@ -1,3 +1,5 @@
+import "./style.css";
+
 import CodeMirror from "codemirror";
 import "codemirror/mode/javascript/javascript";
 import "codemirror/lib/codemirror.css";
@@ -92,7 +94,7 @@ const workspace = new Workspace({
   getConnectionString: async (id: string) => {
     switch (id) {
       case JSON_WORKER:
-        return "js/worker.js";
+        return "worker.js";
       default:
         return "";
     }

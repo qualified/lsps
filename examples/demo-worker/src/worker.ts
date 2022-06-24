@@ -13,7 +13,7 @@ import {
   InitializeRequest,
   InitializeResult,
   TextDocumentSyncKind,
-} from "vscode-languageserver-protocol";
+} from "vscode-languageserver-protocol/browser";
 import { getLanguageService, TextDocument } from "vscode-json-languageservice";
 
 const jsonService = getLanguageService({
@@ -42,7 +42,7 @@ const conn = createProtocolConnection(
 );
 conn.onRequest(
   InitializeRequest.type,
-  (params): InitializeResult => {
+  (_params): InitializeResult => {
     return {
       capabilities: {
         textDocumentSync: TextDocumentSyncKind.Incremental,

@@ -22,7 +22,7 @@ pnpm install
 In this directory:
 
 ```
-pnpm start
+pnpm dev
 ```
 
 [json-ls]: ./src/worker.ts
