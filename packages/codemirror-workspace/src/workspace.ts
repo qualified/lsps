@@ -256,7 +256,7 @@ export class Workspace {
       },
     });
 
-    this.connectionToUris.get(conn)!.add(uri);
+    this.connectionToUris.get(conn)?.add(uri);
     this.addEventHandlers(uri, editor, conn);
   }
 
@@ -668,7 +668,7 @@ export class Workspace {
     conn.textDocumentClosed({
       textDocument: { uri },
     });
-    this.connectionToUris.get(conn)!.delete(uri);
+    this.connectionToUris.get(conn)?.delete(uri);
   }
 
   private detachEditor(uri: string) {
