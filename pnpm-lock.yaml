@@ -20,10 +20,10 @@ importers:
     specifiers:
       '@qualified/codemirror-workspace': workspace:0.4.1
       '@types/codemirror': ^5.0.0
-      '@types/marked': ^2.0.3
+      '@types/marked': ^4.0.3
       codemirror: ^5.59.2
       concurrently: ^5.3.0
-      marked: ^2.0.7
+      marked: ^4.0.17
       typescript: ^4.0.2
       typescript-language-server: ^0.6.2
       vite: ^2.9.9
@@ -32,13 +32,13 @@ importers:
     dependencies:
       '@qualified/codemirror-workspace': link:../../packages/codemirror-workspace
       codemirror: 5.63.3
-      marked: 2.0.7
+      marked: 4.0.17
       typescript-language-server: 0.6.2
       vscode-css-languageserver-bin: 1.4.0
       vscode-html-languageserver-bin: 1.4.0
     devDependencies:
       '@types/codemirror': 5.60.0
-      '@types/marked': 2.0.3
+      '@types/marked': 4.0.3
       concurrently: 5.3.0
       typescript: 4.0.2
       vite: 2.9.12
@@ -47,19 +47,19 @@ importers:
     specifiers:
       '@qualified/codemirror-workspace': workspace:0.4.1
       '@types/codemirror': ^5.0.0
-      '@types/marked': ^2.0.3
+      '@types/marked': ^4.0.3
       codemirror: ^5.59.2
       concurrently: ^5.3.0
-      marked: ^2.0.7
+      marked: ^4.0.17
       typescript: ^4.0.2
       vite: ^2.9.9
     dependencies:
       '@qualified/codemirror-workspace': link:../../packages/codemirror-workspace
       codemirror: 5.63.3
-      marked: 2.0.7
+      marked: 4.0.17
     devDependencies:
       '@types/codemirror': 5.60.0
-      '@types/marked': 2.0.3
+      '@types/marked': 4.0.3
       concurrently: 5.3.0
       typescript: 4.0.2
       vite: 2.9.12
@@ -68,19 +68,19 @@ importers:
     specifiers:
       '@qualified/codemirror-workspace': workspace:0.4.1
       '@types/codemirror': ^5.0.0
-      '@types/marked': ^2.0.3
+      '@types/marked': ^4.0.3
       codemirror: ^5.59.2
       concurrently: ^5.3.0
-      marked: ^2.0.7
+      marked: ^4.0.17
       typescript: ^4.0.2
       vite: ^2.9.9
     dependencies:
       '@qualified/codemirror-workspace': link:../../packages/codemirror-workspace
       codemirror: 5.63.3
-      marked: 2.0.7
+      marked: 4.0.17
     devDependencies:
       '@types/codemirror': 5.60.0
-      '@types/marked': 2.0.3
+      '@types/marked': 4.0.3
       concurrently: 5.3.0
       typescript: 4.0.2
       vite: 2.9.12
@@ -92,9 +92,9 @@ importers:
       '@rollup/plugin-node-resolve': ^13.3.0
       '@rollup/plugin-typescript': ^8.3.3
       '@types/codemirror': ^5.0.0
-      '@types/marked': ^2.0.3
+      '@types/marked': ^4.0.3
       codemirror: ^5.59.2
-      marked: ^2.0.7
+      marked: ^4.0.17
       rollup: ^2.75.7
       typescript: ^4.0.2
       vite: ^2.9.9
@@ -103,7 +103,7 @@ importers:
     dependencies:
       '@qualified/codemirror-workspace': link:../../packages/codemirror-workspace
       codemirror: 5.63.3
-      marked: 2.0.7
+      marked: 4.0.17
       vscode-json-languageservice: 5.0.0
       vscode-languageserver-protocol: 3.16.0
     devDependencies:
@@ -111,7 +111,7 @@ importers:
       '@rollup/plugin-node-resolve': 13.3.0_rollup@2.75.7
       '@rollup/plugin-typescript': 8.3.3_rollup@2.75.7+typescript@4.0.2
       '@types/codemirror': 5.60.0
-      '@types/marked': 2.0.3
+      '@types/marked': 4.0.3
       rollup: 2.75.7
       typescript: 4.0.2
       vite: 2.9.12
@@ -1046,8 +1046,8 @@ packages:
       pretty-format: 27.0.6
     dev: true
 
-  /@types/marked/2.0.3:
-    resolution: {integrity: sha512-lbhSN1rht/tQ+dSWxawCzGgTfxe9DB31iLgiT1ZVT5lshpam/nyOA1m3tKHRoNPctB2ukSL22JZI5Fr+WI/zYg==}
+  /@types/marked/4.0.3:
+    resolution: {integrity: sha512-HnMWQkLJEf/PnxZIfbm0yGJRRZYYMhb++O9M36UCTA9z53uPvVoSlAwJr3XOpDEryb7Hwl1qAx/MV6YIW1RXxg==}
     dev: true
 
   /@types/minimatch/3.0.3:
@@ -3228,9 +3228,9 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /marked/2.0.7:
-    resolution: {integrity: sha512-BJXxkuIfJchcXOJWTT2DOL+yFWifFv2yGYOUzvXg8Qz610QKw+sHCvTMYwA+qWGhlA2uivBezChZ/pBy1tWdkQ==}
-    engines: {node: '>= 8.16.2'}
+  /marked/4.0.17:
+    resolution: {integrity: sha512-Wfk0ATOK5iPxM4ptrORkFemqroz0ZDxp5MWfYA7H/F+wO17NRWV5Ypxi6p3g2Xmw2bKeiYOl6oVnLHKxBA0VhA==}
+    engines: {node: '>= 12'}
     hasBin: true
     dev: false
 
