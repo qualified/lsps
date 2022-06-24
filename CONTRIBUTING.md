@@ -4,8 +4,8 @@
 
 You need the following tools installed:
 
-- [Node v12.x+](https://nodejs.org/en/)
-  - If you use [nvm](https://github.com/nvm-sh/nvm), you can run `nvm use`.
+- [Node v16.x+](https://nodejs.org/en/)
+  - Recommended to use [fnm](https://github.com/Schniz/fnm) to manage Node versions
 - [PNPM v6](https://pnpm.io/)
 
 Build all packages in this repository:
