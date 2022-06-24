@@ -48,20 +48,11 @@ importers:
       '@qualified/codemirror-workspace': workspace:0.4.1
       '@types/codemirror': ^5.0.0
       '@types/marked': ^2.0.3
-      '@types/webpack': ^4.41.22
       codemirror: ^5.59.2
       concurrently: ^5.3.0
-      css-loader: ^4.3.0
       marked: ^2.0.7
-      raw-loader: ^4.0.1
-      rimraf: ^3.0.2
-      serve: ^11.3.2
-      style-loader: ^1.2.1
-      ts-loader: ^8.0.3
       typescript: ^4.0.2
-      webpack: ^4.44.1
-      webpack-bundle-analyzer: ^3.8.0
-      webpack-cli: ^3.3.12
+      vite: ^2.9.9
     dependencies:
       '@qualified/codemirror-workspace': link:../../packages/codemirror-workspace
       codemirror: 5.63.3
@@ -69,18 +60,9 @@ importers:
     devDependencies:
       '@types/codemirror': 5.60.0
       '@types/marked': 2.0.3
-      '@types/webpack': 4.41.22
       concurrently: 5.3.0
-      css-loader: 4.3.0_webpack@4.44.1
-      raw-loader: 4.0.1_webpack@4.44.1
-      rimraf: 3.0.2
-      serve: 11.3.2
-      style-loader: 1.2.1_webpack@4.44.1
-      ts-loader: 8.0.3_typescript@4.0.2
       typescript: 4.0.2
-      webpack: 4.44.1_webpack-cli@3.3.12
-      webpack-bundle-analyzer: 3.8.0
-      webpack-cli: 3.3.12_webpack@4.44.1
+      vite: 2.9.12
 
   examples/demo-save:
     specifiers:
@@ -4006,6 +3988,7 @@ packages:
   /is-extglob/2.1.1:
     resolution: {integrity: sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ==}
     engines: {node: '>=0.10.0'}
+    requiresBuild: true
 
   /is-fullwidth-code-point/2.0.0:
     resolution: {integrity: sha1-o7MKXE8ZkYMWeqq5O+764937ZU8=}
