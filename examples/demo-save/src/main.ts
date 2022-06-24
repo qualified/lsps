@@ -12,7 +12,7 @@ import "codemirror/addon/edit/closebrackets";
 import "codemirror/addon/runmode/runmode";
 // import "codemirror/keymap/vim";
 
-import marked from "marked";
+import { marked } from "marked";
 
 import { Workspace } from "@qualified/codemirror-workspace";
 import "@qualified/codemirror-workspace/css/default.css";
