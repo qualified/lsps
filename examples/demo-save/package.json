@@ -3,9 +3,10 @@
   "version": "0.1.12",
   "private": true,
   "scripts": {
-    "build": "rimraf public/js && webpack",
-    "start-ls-rust": "cd ./workspace && PATH=$(pwd)/../bin:$PATH lsp-ws-proxy -l 9999 --remap --sync -- rust-analyzer",
-    "start": "pnpm build && concurrently \"pnpm start-ls-rust\" \"serve -l 4000 public\""
+    "dev": "concurrently \"pnpm start-ls-rust\" \"vite\"",
+    "build": "tsc && vite build",
+    "preview": "concurrently \"pnpm start-ls-rust\" \"vite preview\"",
+    "start-ls-rust": "cd ./workspace && PATH=$(pwd)/../bin:$PATH lsp-ws-proxy -l 9999 --remap --sync -- rust-analyzer"
   },
   "dependencies": {
     "@qualified/codemirror-workspace": "workspace:0.4.1",
@@ -15,17 +16,8 @@
   "devDependencies": {
     "@types/codemirror": "^5.0.0",
     "@types/marked": "^2.0.3",
-    "@types/webpack": "^4.41.22",
     "concurrently": "^5.3.0",
-    "css-loader": "^4.3.0",
-    "raw-loader": "^4.0.1",
-    "rimraf": "^3.0.2",
-    "serve": "^11.3.2",
-    "style-loader": "^1.2.1",
-    "ts-loader": "^8.0.3",
     "typescript": "^4.0.2",
-    "webpack": "^4.44.1",
-    "webpack-bundle-analyzer": "^3.8.0",
-    "webpack-cli": "^3.3.12"
+    "vite": "^2.9.9"
   }
 }

@@ -1,12 +1,20 @@
 {
-  "extends": "../../packages/tsconfig-base.json",
   "compilerOptions": {
-    "lib": ["es2020", "dom", "webworker", "scripthost"],
-    "composite": true,
-    "rootDir": "src",
-    "outDir": "public/js",
-    "tsBuildInfoFile": ".tmp/tsconfig.tsbuildinfo"
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": ["ESNext", "DOM"],
+    "moduleResolution": "Node",
+    "strict": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "skipLibCheck": true
   },
-  "include": ["src/**/*"],
-  "references": [{ "path": "../../packages/codemirror-workspace" }]
+  "include": ["src"]
 }

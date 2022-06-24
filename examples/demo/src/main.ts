@@ -1,3 +1,5 @@
+import "./style.css";
+
 import CodeMirror from "codemirror";
 import "codemirror/mode/javascript/javascript";
 import "codemirror/mode/htmlmixed/htmlmixed";
@@ -17,10 +19,10 @@ import marked from "marked";
 import { Workspace } from "@qualified/codemirror-workspace";
 import "@qualified/codemirror-workspace/css/default.css";
 
-import addTs from "!!raw-loader!../workspace/add.ts";
-import sampleTs from "!!raw-loader!../workspace/source.ts";
-import sampleHtml from "!!raw-loader!../workspace/project.html";
-import sampleCss from "!!raw-loader!../workspace/style.css";
+import addTs from "../workspace/add.ts?raw";
+import sampleTs from "../workspace/source.ts?raw";
+import sampleHtml from "../workspace/project.html?raw";
+import sampleCss from "../workspace/style.css?raw";
 
 const modeMap: { [k: string]: string } = {
   typescript: "text/typescript",
@@ -90,7 +92,7 @@ const cssEditor = CodeMirror($("#css-editor"), {
 });
 
 const workspace = new Workspace({
-  rootUri: ROOT_URI,
+  rootUri: "source://",
   getLanguageAssociation: (uri: string) => {
     // javascript, javascriptreact, typescript, typescriptreact
     if (/\.(?:[jt]sx?)$/.test(uri)) {

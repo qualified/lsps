@@ -1,3 +1,5 @@
+import "./style.css";
+
 import CodeMirror from "codemirror";
 import "codemirror/mode/rust/rust";
 import "codemirror/lib/codemirror.css";
@@ -15,7 +17,7 @@ import marked from "marked";
 import { Workspace } from "@qualified/codemirror-workspace";
 import "@qualified/codemirror-workspace/css/default.css";
 
-import sampleRust from "!!raw-loader!../workspace/src/lib.rs";
+import sampleRust from "../workspace/src/lib.rs?raw";
 
 const highlight = (code: string, language: string) => {
   const mode =

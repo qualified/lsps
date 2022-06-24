@@ -1,0 +1,15 @@
+.CodeMirror {
+  height: 100% !important;
+}
+
+.editor {
+  width: 100%;
+  overflow: auto;
+  height: 800px;
+}
+
+.editors {
+  margin: 5rem auto;
+  max-width: 80ch;
+  height: 800px;
+}
