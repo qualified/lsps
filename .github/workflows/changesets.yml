@@ -22,7 +22,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: create versions
-        uses: changesets/action@master
+        uses: changesets/action@v1
         with:
           version: "pnpm run changeset-version"
           commit: "chore: update versions"
