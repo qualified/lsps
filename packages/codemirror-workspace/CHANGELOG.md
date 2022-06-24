@@ -1,5 +1,11 @@
 # @qualified/codemirror-workspace
 
+## 0.4.1
+
+### Patch Changes
+
+- 90dcd05: Fix undefined error with Worker connection
+
 ## 0.4.0
 
 ### Minor Changes
