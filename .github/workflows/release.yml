@@ -41,18 +41,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
+      - uses: pnpm/action-setup@v2
         with:
-          node-version: 12.x
+          version: '^6.10.0'
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: .nvmrc
           registry-url: https://registry.npmjs.org
-      - run: npm i -g pnpm@6
-      - uses: actions/cache@v3
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
-      - run: pnpm install
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
       - run: pnpm publish -r
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NODE_AUTH_TOKEN}}         
+          NODE_AUTH_TOKEN: ${{secrets.NODE_AUTH_TOKEN}}
