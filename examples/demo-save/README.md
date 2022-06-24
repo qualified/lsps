@@ -32,7 +32,7 @@ pnpm install
 In this directory:
 
 ```
-pnpm start
+pnpm dev
 ```
 
 [`lsp-ws-proxy`]: https://github.com/qualified/lsp-ws-proxy
