@@ -1,5 +1,11 @@
 # @qualified/codemirror-workspace
 
+## 0.4.2
+
+### Patch Changes
+
+- b7b96ee: Fix `MarkedString` rendered as plain text
+
 ## 0.4.1
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@qualified/codemirror-workspace-demo-vue",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
     "dev": "concurrently \"vite\" \"pnpm start-proxy\"",
@@ -9,7 +9,7 @@
     "start-proxy": "cd workspace && PATH=$(pwd)/../bin:$PATH RUST_LOG=info,lsp_ws_proxy=debug lsp-ws-proxy --remap -l 9990 -- vue-language-server --stdio"
   },
   "dependencies": {
-    "@qualified/codemirror-workspace": "workspace:0.4.1",
+    "@qualified/codemirror-workspace": "workspace:0.4.2",
     "codemirror": "^5.59.2",
     "marked": "^4.0.17",
     "vue": "^3.2.37"
