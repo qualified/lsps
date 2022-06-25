@@ -102,12 +102,12 @@ const markupContentToString = (
     ? renderMarkdown(content.value)
     : escapeHtml(content.value);
 
+// Markdown string or code-block with language identifier
 const markedStringToString = (
   m: MarkedString,
   render: (x: string) => string
 ) => {
-  // Remove two backslashes in front of periods and hyphens in plain text.
-  if (typeof m === "string") return m.replace(/\\(?=[-.])/g, "");
+  if (typeof m === "string") return render(m);
 
   // To Markdown code block
   return render(["```" + m.language, m.value, "```"].join("\n"));
