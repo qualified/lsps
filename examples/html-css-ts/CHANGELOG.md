@@ -1,5 +1,14 @@
 # @qualified/codemirror-workspace-demo
 
+## 0.2.3
+
+### Patch Changes
+
+- d5d4505: Update marked in demos to fix ReDoS
+- e7631ff: Replace Webpack with Vite
+- Updated dependencies [b7b96ee]
+  - @qualified/codemirror-workspace@0.4.2
+
 ## 0.2.2
 
 ### Patch Changes

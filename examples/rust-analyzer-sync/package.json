@@ -1,6 +1,6 @@
 {
   "name": "@qualified/codemirror-workspace-demo-save",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "private": true,
   "scripts": {
     "dev": "concurrently \"pnpm start-ls-rust\" \"vite\"",
@@ -9,7 +9,7 @@
     "start-ls-rust": "cd ./workspace && PATH=$(pwd)/../bin:$PATH lsp-ws-proxy -l 9999 --remap --sync -- rust-analyzer"
   },
   "dependencies": {
-    "@qualified/codemirror-workspace": "workspace:0.4.1",
+    "@qualified/codemirror-workspace": "workspace:0.4.2",
     "codemirror": "^5.59.2",
     "marked": "^4.0.17"
   },
