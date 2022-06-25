@@ -16,7 +16,7 @@ importers:
       pretty-quick: 3.0.2_prettier@2.1.1
       typescript: 4.0.2
 
-  examples/demo:
+  examples/html-css-ts:
     specifiers:
       '@qualified/codemirror-workspace': workspace:0.4.1
       '@types/codemirror': ^5.0.0
@@ -43,7 +43,7 @@ importers:
       typescript: 4.0.2
       vite: 2.9.12
 
-  examples/demo-rust:
+  examples/rust-analyzer:
     specifiers:
       '@qualified/codemirror-workspace': workspace:0.4.1
       '@types/codemirror': ^5.0.0
@@ -64,7 +64,7 @@ importers:
       typescript: 4.0.2
       vite: 2.9.12
 
-  examples/demo-save:
+  examples/rust-analyzer-sync:
     specifiers:
       '@qualified/codemirror-workspace': workspace:0.4.1
       '@types/codemirror': ^5.0.0
@@ -85,7 +85,7 @@ importers:
       typescript: 4.0.2
       vite: 2.9.12
 
-  examples/demo-worker:
+  examples/web-worker:
     specifiers:
       '@qualified/codemirror-workspace': workspace:0.4.1
       '@rollup/plugin-commonjs': ^22.0.0

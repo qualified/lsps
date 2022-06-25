@@ -17,8 +17,8 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: |
-          cd examples/demo-worker && pnpm build
+          cd examples/web-worker && pnpm build
       - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./examples/demo-worker/dist
+          publish_dir: ./examples/web-worker/dist

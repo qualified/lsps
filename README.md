@@ -37,14 +37,14 @@ Simple snippets are supported as well:
 
 ![demo-snippet-completion](https://user-images.githubusercontent.com/639336/92679093-58841700-f2dc-11ea-8f27-84e64996d8f3.gif)
 
-See [examples/demo-rust](./examples/demo-rust) to run this locally.
+See [examples/rust-analyzer](./examples/rust-analyzer) to run this locally.
 
-See [examples/demo-save](./examples/demo-save) to run this locally with an ability to save the changes to disk.
+See [examples/rust-analyzer-sync](./examples/rust-analyzer-sync) to run this locally with an ability to save the changes to disk.
 
-See [examples/demo-worker](./examples/demo-worker) for an example with simple JSON Language Server running in Web Worker.
+See [examples/web-worker](./examples/web-worker) for an example with simple JSON Language Server running in Web Worker.
 A live demo is also available at https://qualified.github.io/lsps/.
 
-See [examples/demo](./examples/demo) for a simple demo project with TypeScript + CSS + HTML editors.
+See [examples/html-css-ts](./examples/html-css-ts) for a simple demo project with TypeScript + CSS + HTML editors.
 
 ## Tools
 
