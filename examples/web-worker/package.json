@@ -1,6 +1,6 @@
 {
   "name": "@qualified/codemirror-workspace-demo-worker",
-  "version": "0.1.13",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "pnpm build-worker && vite",
@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@qualified/codemirror-workspace": "workspace:0.4.2",
+    "@qualified/codemirror-workspace": "workspace:0.5.0",
     "codemirror": "^5.59.2",
     "marked": "^4.0.17",
     "vscode-json-languageservice": "^5.0.0",

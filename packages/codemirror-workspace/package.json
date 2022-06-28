@@ -8,7 +8,7 @@
     "languageserver",
     "languageclient"
   ],
-  "version": "0.4.2",
+  "version": "0.5.0",
   "license": "MIT",
   "homepage": "https://github.com/qualified/lsps#readme",
   "repository": "https://github.com/qualified/lsps",
@@ -29,9 +29,9 @@
     "codemirror": "^5.59.2"
   },
   "dependencies": {
-    "@qualified/lsp-connection": "workspace:0.2.2",
-    "@qualified/vscode-jsonrpc-ws": "workspace:0.3.0",
-    "@qualified/vscode-jsonrpc-ww": "workspace:0.2.0",
+    "@qualified/lsp-connection": "workspace:0.3.0",
+    "@qualified/vscode-jsonrpc-ws": "workspace:0.4.0",
+    "@qualified/vscode-jsonrpc-ww": "workspace:0.3.0",
     "@qualified/vscode-snippet-parser": "workspace:0.1.0",
     "vscode-languageserver-protocol": "^3.17.1"
   },

@@ -18,7 +18,7 @@ importers:
 
   examples/html-css-ts:
     specifiers:
-      '@qualified/codemirror-workspace': workspace:0.4.2
+      '@qualified/codemirror-workspace': workspace:0.5.0
       '@types/codemirror': ^5.0.0
       '@types/marked': ^4.0.3
       codemirror: ^5.59.2
@@ -45,7 +45,7 @@ importers:
 
   examples/rust-analyzer:
     specifiers:
-      '@qualified/codemirror-workspace': workspace:0.4.2
+      '@qualified/codemirror-workspace': workspace:0.5.0
       '@types/codemirror': ^5.0.0
       '@types/marked': ^4.0.3
       codemirror: ^5.59.2
@@ -66,7 +66,7 @@ importers:
 
   examples/rust-analyzer-sync:
     specifiers:
-      '@qualified/codemirror-workspace': workspace:0.4.2
+      '@qualified/codemirror-workspace': workspace:0.5.0
       '@types/codemirror': ^5.0.0
       '@types/marked': ^4.0.3
       codemirror: ^5.59.2
@@ -87,7 +87,7 @@ importers:
 
   examples/vue-volar:
     specifiers:
-      '@qualified/codemirror-workspace': workspace:0.4.2
+      '@qualified/codemirror-workspace': workspace:0.5.0
       '@types/codemirror': ^5.0.0
       '@types/marked': ^4.0.3
       '@volar/vue-language-server': ^0.38.1
@@ -112,7 +112,7 @@ importers:
 
   examples/web-worker:
     specifiers:
-      '@qualified/codemirror-workspace': workspace:0.4.2
+      '@qualified/codemirror-workspace': workspace:0.5.0
       '@rollup/plugin-commonjs': ^22.0.0
       '@rollup/plugin-node-resolve': ^13.3.0
       '@rollup/plugin-typescript': ^8.3.3
@@ -144,9 +144,9 @@ importers:
   packages/codemirror-workspace:
     specifiers:
       '@jest/types': ^28.1.1
-      '@qualified/lsp-connection': workspace:0.2.2
-      '@qualified/vscode-jsonrpc-ws': workspace:0.3.0
-      '@qualified/vscode-jsonrpc-ww': workspace:0.2.0
+      '@qualified/lsp-connection': workspace:0.3.0
+      '@qualified/vscode-jsonrpc-ws': workspace:0.4.0
+      '@qualified/vscode-jsonrpc-ww': workspace:0.3.0
       '@qualified/vscode-snippet-parser': workspace:0.1.0
       '@types/codemirror': ^5.0.0
       '@types/jest': ^28.1.3
