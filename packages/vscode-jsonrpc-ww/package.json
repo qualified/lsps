@@ -18,7 +18,7 @@
     "lib/**/*.d.ts"
   ],
   "dependencies": {
-    "vscode-jsonrpc": "^6.0.0"
+    "vscode-jsonrpc": "^8.0.0"
   },
   "devDependencies": {
     "typescript": "^4.7.4"

@@ -177,29 +177,29 @@ importers:
   packages/lsp-connection:
     specifiers:
       typescript: ^4.7.4
-      vscode-jsonrpc: ^6.0.0
+      vscode-jsonrpc: ^8.0.0
       vscode-languageserver-protocol: ^3.16.0
     dependencies:
       vscode-languageserver-protocol: 3.16.0
     devDependencies:
       typescript: 4.7.4
-      vscode-jsonrpc: 6.0.0
+      vscode-jsonrpc: 8.0.1
 
   packages/vscode-jsonrpc-ws:
     specifiers:
       typescript: ^4.7.4
-      vscode-jsonrpc: ^6.0.0
+      vscode-jsonrpc: ^8.0.0
     dependencies:
-      vscode-jsonrpc: 6.0.0
+      vscode-jsonrpc: 8.0.1
     devDependencies:
       typescript: 4.7.4
 
   packages/vscode-jsonrpc-ww:
     specifiers:
       typescript: ^4.7.4
-      vscode-jsonrpc: ^6.0.0
+      vscode-jsonrpc: ^8.0.0
     dependencies:
-      vscode-jsonrpc: 6.0.0
+      vscode-jsonrpc: 8.0.1
     devDependencies:
       typescript: 4.7.4
 
@@ -2883,7 +2883,6 @@ packages:
 
   /graceful-fs/4.2.10:
     resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==}
-    dev: true
 
   /graceful-fs/4.2.6:
     resolution: {integrity: sha512-nTnJ528pbqxYanhpDYsi4Rd8MAeaBA67+RZ10CM1m3bTAVFEDcd5AuA4a6W5YkGZ1iNXHzZz8T6TBKLeBuNriQ==}
@@ -3857,7 +3856,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.6
+      graceful-fs: 4.2.10
     dev: false
 
   /jstransformer/1.0.0:
@@ -5276,11 +5275,11 @@ packages:
   /vscode-jsonrpc/6.0.0:
     resolution: {integrity: sha512-wnJA4BnEjOSyFMvjZdpiOwhSq9uDoK8e/kpRJDTaMYzwlkrhG1fwDIZI94CLsLzlCK5cIbMMtFlJlfR57Lavmg==}
     engines: {node: '>=8.0.0 || >=10.0.0'}
+    dev: false
 
   /vscode-jsonrpc/8.0.1:
     resolution: {integrity: sha512-N/WKvghIajmEvXpatSzvTvOIz61ZSmOSa4BRA4pTLi+1+jozquQKP/MkaylP9iB68k73Oua1feLQvH3xQuigiQ==}
     engines: {node: '>=14.0.0'}
-    dev: true
 
   /vscode-languageserver-protocol-foldingprovider/2.0.1:
     resolution: {integrity: sha512-N8bOS8i0xuQMn/y0bijyefDbOsMl6hiH6LDREYWavTLTM5jbj44EiQfStsbmAv/0eaFKkL/jf5hW7nWwBy2HBw==}
