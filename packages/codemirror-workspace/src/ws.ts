@@ -335,11 +335,8 @@ export default class SturdyWebSocket implements WebSocket {
   }
 
   private reestablishConnection(): void {
-    const {
-      minReconnectDelay,
-      maxReconnectDelay,
-      reconnectBackoffFactor,
-    } = this.options;
+    const { minReconnectDelay, maxReconnectDelay, reconnectBackoffFactor } =
+      this.options;
     this.reconnectCount++;
     const retryTime = this.nextRetryTime;
     this.nextRetryTime = Math.max(
