@@ -74,30 +74,32 @@ export const createLspConnection = (conn: MessageConnection) => {
     }
   });
 
-  const maybeReq = <T extends ProtocolRequestType<any, any, any, any, any>>(
-    cond: () => boolean,
-    type: T
-  ) => (
-    params: Params<T>,
-    token?: CancellationToken
-  ): Promise<Result<T> | null> =>
-    cond() ? conn.sendRequest(type, params, token) : Promise.resolve(null);
+  const maybeReq =
+    <T extends ProtocolRequestType<any, any, any, any, any>>(
+      cond: () => boolean,
+      type: T
+    ) =>
+    (params: Params<T>, token?: CancellationToken): Promise<Result<T> | null> =>
+      cond() ? conn.sendRequest(type, params, token) : Promise.resolve(null);
 
-  const maybeNotify = <T extends ProtocolNotificationType<any, any>>(
-    cond: () => boolean,
-    type: T
-  ) => (params: Params<T>): void =>
-    cond() ? conn.sendNotification(type, params) : undefined;
+  const maybeNotify =
+    <T extends ProtocolNotificationType<any, any>>(
+      cond: () => boolean,
+      type: T
+    ) =>
+    (params: Params<T>): void =>
+      cond() ? conn.sendNotification(type, params) : undefined;
 
-  const notifier = <T extends ProtocolNotificationType<any, any>>(type: T) => (
-    params: Params<T>
-  ): void => conn.sendNotification(type, params);
+  const notifier =
+    <T extends ProtocolNotificationType<any, any>>(type: T) =>
+    (params: Params<T>): void =>
+      conn.sendNotification(type, params);
 
-  const onNotification = <T extends ProtocolNotificationType<any, any>>(
-    type: T
-  ) => (handler: NotificationHandler<Params<T>>): void => {
-    conn.onNotification(type, handler);
-  };
+  const onNotification =
+    <T extends ProtocolNotificationType<any, any>>(type: T) =>
+    (handler: NotificationHandler<Params<T>>): void => {
+      conn.onNotification(type, handler);
+    };
 
   const hasTextDocumentWillSave = () => {
     const c = capabilities.textDocumentSync ?? TextDocumentSyncKind.None;

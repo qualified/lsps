@@ -32,83 +32,85 @@ export const fromDomEvent = <K extends keyof HTMLElementEventMap>(
 
 // Operators
 // Transform value
-export const map = <T, U>(transform: (x: T) => U) => (
-  stream: Stream<T>
-): Stream<U> => {
-  return (cb) => stream((x) => cb(transform(x)));
-};
+export const map =
+  <T, U>(transform: (x: T) => U) =>
+  (stream: Stream<T>): Stream<U> => {
+    return (cb) => stream((x) => cb(transform(x)));
+  };
 
 // Perform side effect
-export const tap = <T>(effect: (x: T) => void) => (
-  stream: Stream<T>
-): Stream<T> => {
-  return (cb) => {
-    return stream((x) => {
-      effect(x);
-      cb(x);
-    });
+export const tap =
+  <T>(effect: (x: T) => void) =>
+  (stream: Stream<T>): Stream<T> => {
+    return (cb) => {
+      return stream((x) => {
+        effect(x);
+        cb(x);
+      });
+    };
   };
-};
 
 type Maybe<T> = null | { value: T };
 // stream: ____1____2____2____3
 // result: ____1____2_________3
-export const skipDuplicates = <T>(
-  equals: (prev: T, next: T) => boolean = (a, b) => a === b
-) => (stream: Stream<T>): Stream<T> => {
-  return (cb) => {
-    let prev: Maybe<T> = null;
-    return stream((x) => {
-      if (!prev || !equals(prev.value, x)) {
-        prev = { value: x };
-        cb(x);
-      }
-    });
+export const skipDuplicates =
+  <T>(equals: (prev: T, next: T) => boolean = (a, b) => a === b) =>
+  (stream: Stream<T>): Stream<T> => {
+    return (cb) => {
+      let prev: Maybe<T> = null;
+      return stream((x) => {
+        if (!prev || !equals(prev.value, x)) {
+          prev = { value: x };
+          cb(x);
+        }
+      });
+    };
   };
-};
 
-export const debounce = <T>(ms: number) => (stream: Stream<T>): Stream<T> => {
-  return (cb) => {
-    let timeout: ReturnType<typeof setTimeout> | null = null;
-    return stream((x) => {
-      if (timeout !== null) {
-        clearTimeout(timeout);
-        timeout = null;
-      }
-      timeout = setTimeout(() => cb(x), ms);
-    });
+export const debounce =
+  <T>(ms: number) =>
+  (stream: Stream<T>): Stream<T> => {
+    return (cb) => {
+      let timeout: ReturnType<typeof setTimeout> | null = null;
+      return stream((x) => {
+        if (timeout !== null) {
+          clearTimeout(timeout);
+          timeout = null;
+        }
+        timeout = setTimeout(() => cb(x), ms);
+      });
+    };
   };
-};
 
-export const debouncedBuffer = <T>(ms: number) => (
-  stream: Stream<T>
-): Stream<T[]> => {
-  return (cb) => {
-    let timeout: ReturnType<typeof setTimeout> | null = null;
-    const buffer: T[] = [];
-    return stream((x) => {
-      if (timeout !== null) {
-        clearTimeout(timeout);
-        timeout = null;
-      }
-      buffer.push(x);
-      timeout = setTimeout(() => {
-        cb(buffer.slice());
-        buffer.length = 0;
-      }, ms);
-    });
+export const debouncedBuffer =
+  <T>(ms: number) =>
+  (stream: Stream<T>): Stream<T[]> => {
+    return (cb) => {
+      let timeout: ReturnType<typeof setTimeout> | null = null;
+      const buffer: T[] = [];
+      return stream((x) => {
+        if (timeout !== null) {
+          clearTimeout(timeout);
+          timeout = null;
+        }
+        buffer.push(x);
+        timeout = setTimeout(() => {
+          cb(buffer.slice());
+          buffer.length = 0;
+        }, ms);
+      });
+    };
   };
-};
 
-export const filter = <T>(test: (x: T) => boolean) => (
-  stream: Stream<T>
-): Stream<T> => {
-  return (cb) => {
-    return stream((x) => {
-      if (test(x)) cb(x);
-    });
+export const filter =
+  <T>(test: (x: T) => boolean) =>
+  (stream: Stream<T>): Stream<T> => {
+    return (cb) => {
+      return stream((x) => {
+        if (test(x)) cb(x);
+      });
+    };
   };
-};
 
 // For returning a Stream piped through operators.
 export const piped: Piped = (

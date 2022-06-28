@@ -40,20 +40,17 @@ const conn = createProtocolConnection(
   new BrowserMessageReader(worker),
   new BrowserMessageWriter(worker)
 );
-conn.onRequest(
-  InitializeRequest.type,
-  (_params): InitializeResult => {
-    return {
-      capabilities: {
-        textDocumentSync: TextDocumentSyncKind.Incremental,
-        completionProvider: {
-          triggerCharacters: ['"', ":"],
-        },
-        hoverProvider: true,
+conn.onRequest(InitializeRequest.type, (_params): InitializeResult => {
+  return {
+    capabilities: {
+      textDocumentSync: TextDocumentSyncKind.Incremental,
+      completionProvider: {
+        triggerCharacters: ['"', ":"],
       },
-    };
-  }
-);
+      hoverProvider: true,
+    },
+  };
+});
 conn.onNotification(
   DidOpenTextDocumentNotification.type,
   ({ textDocument: { uri, languageId, version, text } }) => {

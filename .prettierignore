@@ -2,7 +2,7 @@ pnpm-*.yaml
 node_modules/
 lib/
 .tmp/
-examples/*/lib/
+examples/*/dist/
 examples/*/public/
 examples/*/workspace/
 packages/vscode-snippet-parser/src/charCode.ts
