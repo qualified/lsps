@@ -21,7 +21,8 @@ pnpm run watch:esm
 # pnpm run watch:cjs if you want commonjs
 ```
 
-Try some of the [examples](./examples/). Demos must be restarted manually to pick up the changes.
+Try some of the [examples](./examples/).
+Examples will reload automatically when you make changes.
 
 ## Changesets
 
