@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 
 public/worker.js
+public/worker.js.map
