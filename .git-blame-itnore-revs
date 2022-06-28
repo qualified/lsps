@@ -1,0 +1,6 @@
+# GitHub's blame view ignores the commits listed in this file.
+# To let your local tools ignore them, run the following command:
+#
+#     git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+5d69d88695c40735fc62d099dc6076ee403f34c5 # Format with updated Prettier
