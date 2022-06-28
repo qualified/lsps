@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "pnpm build-worker && vite",
-    "build-worker": "rollup -f es -i src/worker.ts -p typescript -p 'node-resolve={browser: true}' -p commonjs -o public/worker.js",
     "build": "tsc && pnpm build-worker && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build-worker": "rollup -f es -i src/worker.ts -p typescript -p 'node-resolve={browser: true}' -p commonjs -o public/worker.js"
   },
   "dependencies": {
     "@qualified/codemirror-workspace": "workspace:0.5.0",

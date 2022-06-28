@@ -3,9 +3,9 @@
   "version": "0.2.4",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"vite\" \"pnpm start-proxy\"",
+    "dev": "concurrently 'vite' 'pnpm start-proxy'",
     "build": "tsc && vite build",
-    "preview": "concurrently \"vite preview\" \"pnpm start-proxy\"",
+    "preview": "concurrently 'vite preview' 'pnpm start-proxy'",
     "start-proxy": "cd workspace && PATH=$(pwd)/../bin:$PATH RUST_LOG=info,lsp_ws_proxy=debug lsp-ws-proxy --remap -l 9990 -- typescript-language-server --stdio -- css-languageserver --stdio -- html-languageserver --stdio"
   },
   "dependencies": {
