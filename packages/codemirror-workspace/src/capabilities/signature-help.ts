@@ -44,7 +44,7 @@ export const showSignatureHelp = (
   const label = document.createElement("div");
   let hasParameterDoc = false;
   // Emphasize active parameter within the signature.
-  if (help.activeParameter !== null && info.parameters) {
+  if (help.activeParameter != null && info.parameters) {
     // Ensure index is within bounds for variadic parameters.
     const index = Math.min(help.activeParameter, info.parameters.length - 1);
     const paramInfo = info.parameters[index];

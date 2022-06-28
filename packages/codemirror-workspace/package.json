@@ -33,7 +33,7 @@
     "@qualified/vscode-jsonrpc-ws": "workspace:0.3.0",
     "@qualified/vscode-jsonrpc-ww": "workspace:0.2.0",
     "@qualified/vscode-snippet-parser": "workspace:0.1.0",
-    "vscode-languageserver-protocol": "^3.16.0"
+    "vscode-languageserver-protocol": "^3.17.1"
   },
   "devDependencies": {
     "@jest/types": "^28.1.1",

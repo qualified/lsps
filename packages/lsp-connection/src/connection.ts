@@ -87,12 +87,12 @@ export const createLspConnection = (conn: MessageConnection) => {
       cond: () => boolean,
       type: T
     ) =>
-    (params: Params<T>): void =>
-      cond() ? conn.sendNotification(type, params) : undefined;
+    (params: Params<T>): Promise<void> =>
+      cond() ? conn.sendNotification(type, params) : Promise.resolve();
 
   const notifier =
     <T extends ProtocolNotificationType<any, any>>(type: T) =>
-    (params: Params<T>): void =>
+    (params: Params<T>): Promise<void> =>
       conn.sendNotification(type, params);
 
   const onNotification =
