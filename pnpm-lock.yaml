@@ -124,13 +124,13 @@ importers:
       typescript: ^4.7.4
       vite: ^2.9.9
       vscode-json-languageservice: ^5.0.0
-      vscode-languageserver-protocol: ^3.16.0
+      vscode-languageserver-protocol: ^3.17.1
     dependencies:
       '@qualified/codemirror-workspace': link:../../packages/codemirror-workspace
       codemirror: 5.63.3
       marked: 4.0.17
       vscode-json-languageservice: 5.0.0
-      vscode-languageserver-protocol: 3.16.0
+      vscode-languageserver-protocol: 3.17.1
     devDependencies:
       '@rollup/plugin-commonjs': 22.0.0_rollup@2.75.7
       '@rollup/plugin-node-resolve': 13.3.0_rollup@2.75.7
@@ -156,13 +156,13 @@ importers:
       jest-environment-jsdom: ^28.1.1
       ts-jest: ^28.0.5
       typescript: ^4.7.4
-      vscode-languageserver-protocol: ^3.16.0
+      vscode-languageserver-protocol: ^3.17.1
     dependencies:
       '@qualified/lsp-connection': link:../lsp-connection
       '@qualified/vscode-jsonrpc-ws': link:../vscode-jsonrpc-ws
       '@qualified/vscode-jsonrpc-ww': link:../vscode-jsonrpc-ww
       '@qualified/vscode-snippet-parser': link:../vscode-snippet-parser
-      vscode-languageserver-protocol: 3.16.0
+      vscode-languageserver-protocol: 3.17.1
     devDependencies:
       '@jest/types': 28.1.1
       '@types/codemirror': 5.60.0
@@ -177,29 +177,29 @@ importers:
   packages/lsp-connection:
     specifiers:
       typescript: ^4.7.4
-      vscode-jsonrpc: ^6.0.0
-      vscode-languageserver-protocol: ^3.16.0
+      vscode-jsonrpc: ^8.0.1
+      vscode-languageserver-protocol: ^3.17.1
     dependencies:
-      vscode-languageserver-protocol: 3.16.0
+      vscode-languageserver-protocol: 3.17.1
     devDependencies:
       typescript: 4.7.4
-      vscode-jsonrpc: 6.0.0
+      vscode-jsonrpc: 8.0.1
 
   packages/vscode-jsonrpc-ws:
     specifiers:
       typescript: ^4.7.4
-      vscode-jsonrpc: ^6.0.0
+      vscode-jsonrpc: ^8.0.1
     dependencies:
-      vscode-jsonrpc: 6.0.0
+      vscode-jsonrpc: 8.0.1
     devDependencies:
       typescript: 4.7.4
 
   packages/vscode-jsonrpc-ww:
     specifiers:
       typescript: ^4.7.4
-      vscode-jsonrpc: ^6.0.0
+      vscode-jsonrpc: ^8.0.1
     dependencies:
-      vscode-jsonrpc: 6.0.0
+      vscode-jsonrpc: 8.0.1
     devDependencies:
       typescript: 4.7.4
 
@@ -5099,7 +5099,7 @@ packages:
       tempy: 1.0.1
       vscode-jsonrpc: 5.0.1
       vscode-languageserver: 7.0.0
-      vscode-languageserver-protocol: 3.16.0
+      vscode-languageserver-protocol: 3.17.1
       vscode-languageserver-textdocument: 1.0.1
       vscode-uri: 1.0.8
     dev: false
@@ -5276,23 +5276,16 @@ packages:
   /vscode-jsonrpc/6.0.0:
     resolution: {integrity: sha512-wnJA4BnEjOSyFMvjZdpiOwhSq9uDoK8e/kpRJDTaMYzwlkrhG1fwDIZI94CLsLzlCK5cIbMMtFlJlfR57Lavmg==}
     engines: {node: '>=8.0.0 || >=10.0.0'}
+    dev: false
 
   /vscode-jsonrpc/8.0.1:
     resolution: {integrity: sha512-N/WKvghIajmEvXpatSzvTvOIz61ZSmOSa4BRA4pTLi+1+jozquQKP/MkaylP9iB68k73Oua1feLQvH3xQuigiQ==}
     engines: {node: '>=14.0.0'}
-    dev: true
 
   /vscode-languageserver-protocol-foldingprovider/2.0.1:
     resolution: {integrity: sha512-N8bOS8i0xuQMn/y0bijyefDbOsMl6hiH6LDREYWavTLTM5jbj44EiQfStsbmAv/0eaFKkL/jf5hW7nWwBy2HBw==}
     dependencies:
-      vscode-languageserver-protocol: 3.15.3
-      vscode-languageserver-types: 3.15.1
-    dev: false
-
-  /vscode-languageserver-protocol/3.15.3:
-    resolution: {integrity: sha512-zrMuwHOAQRhjDSnflWdJG+O2ztMWss8GqUUB8dXLR/FPenwkiBNkMIJJYfSN6sgskvsF0rHAoBowNQfbyZnnvw==}
-    dependencies:
-      vscode-jsonrpc: 5.0.1
+      vscode-languageserver-protocol: 3.17.1
       vscode-languageserver-types: 3.15.1
     dev: false
 
@@ -5308,7 +5301,6 @@ packages:
     dependencies:
       vscode-jsonrpc: 8.0.1
       vscode-languageserver-types: 3.17.1
-    dev: true
 
   /vscode-languageserver-textdocument/1.0.1:
     resolution: {integrity: sha512-UIcJDjX7IFkck7cSkNNyzIz5FyvpQfY7sdzVy+wkKN/BLaD4DQ0ppXQrKePomCxTS7RrolK1I0pey0bG9eh8dA==}
@@ -5332,7 +5324,7 @@ packages:
     resolution: {integrity: sha512-61y8Raevi9EigDgg9NelvT9cUAohiEbUl1LOwQQgOCAaNX62yKny/ddi0uC+FUTm4CzsjhBu+06R+vYgfCYReA==}
     hasBin: true
     dependencies:
-      vscode-languageserver-protocol: 3.15.3
+      vscode-languageserver-protocol: 3.17.1
       vscode-uri: 1.0.8
     dev: false
 
