@@ -8,7 +8,7 @@ describe("insertionSort", () => {
   test("sorts the input according to the compare function in place", () => {
     fc.assert(
       fc.property(
-        fc.array(fc.nat(10), 10),
+        fc.array(fc.nat(10), { maxLength: 10 }),
         fc.compareFunc<number>(),
         (xs, cmp) => {
           insertionSort(xs, cmp);
