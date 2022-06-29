@@ -12736,3 +12736,4 @@ conn.onRequest(browser$1.exports.HoverRequest.type, async ({ textDocument, posit
     return jsonService.doHover(doc, position, jsonService.parseJSONDocument(doc));
 });
 conn.listen();
+//# sourceMappingURL=worker.js.map
