@@ -12,7 +12,6 @@ import "codemirror/addon/hint/show-hint";
 import "codemirror/addon/edit/matchbrackets";
 import "codemirror/addon/edit/closebrackets";
 import "codemirror/addon/runmode/runmode";
-// import "codemirror/keymap/vim";
 
 import { marked } from "marked";
 
@@ -20,9 +19,9 @@ import { Workspace } from "@qualified/codemirror-workspace";
 import "@qualified/codemirror-workspace/css/default.css";
 
 import addTs from "../workspace/add.ts?raw";
-import sampleTs from "../workspace/source.ts?raw";
-import sampleHtml from "../workspace/project.html?raw";
-import sampleCss from "../workspace/style.css?raw";
+import sourceTs from "../workspace/source.ts?raw";
+import projectHtml from "../workspace/project.html?raw";
+import styleCss from "../workspace/style.css?raw";
 
 const modeMap: { [k: string]: string } = {
   typescript: "text/typescript",
@@ -52,44 +51,16 @@ marked.use({
   },
 });
 
-const $ = (sel: string) => {
-  const el = document.querySelector(sel);
-  if (!el) throw new Error(`No element matching ${sel}`);
-  return el as HTMLElement;
-};
-
-const config: CodeMirror.EditorConfiguration = {
-  theme: "idea",
-  // keyMap: "vim",
-  gutters: ["cmw-gutter"],
-  lineNumbers: true,
-  matchBrackets: true,
-  autoCloseBrackets: true,
-};
-
-const tsEditorSource = CodeMirror($("#ts-editor-1"), {
-  ...config,
-  mode: "text/typescript",
-  value: sampleTs,
-});
-
-const tsEditorAdd = CodeMirror($("#ts-editor-2"), {
-  ...config,
-  mode: "text/typescript",
-  value: addTs,
-});
-
-const htmlEditor = CodeMirror($("#html-editor"), {
-  ...config,
-  mode: "text/html",
-  value: sampleHtml,
-});
-
-const cssEditor = CodeMirror($("#css-editor"), {
-  ...config,
-  mode: "text/css",
-  value: sampleCss,
-});
+const createEditor = (id: string, value: string, mode: string) =>
+  CodeMirror(document.getElementById(id)!, {
+    theme: "idea",
+    gutters: ["cmw-gutter"],
+    lineNumbers: true,
+    matchBrackets: true,
+    autoCloseBrackets: true,
+    mode,
+    value,
+  });
 
 const workspace = new Workspace({
   rootUri: "source://",
@@ -128,10 +99,24 @@ const workspace = new Workspace({
   renderMarkdown: (markdown) => marked(markdown),
 });
 
-workspace.openTextDocument("add.ts", tsEditorAdd);
-workspace.openTextDocument("source.ts", tsEditorSource);
-workspace.openTextDocument("project.html", htmlEditor);
-workspace.openTextDocument("style.css", cssEditor);
+// `source.ts` imports `add.ts`
+// The files are in the same workspace and shares the same connection.
+workspace.openTextDocument(
+  "source.ts",
+  createEditor("ts-editor-1", sourceTs, "text/typescript")
+);
+workspace.openTextDocument(
+  "add.ts",
+  createEditor("ts-editor-2", addTs, "text/typescript")
+);
+workspace.openTextDocument(
+  "project.html",
+  createEditor("html-editor", projectHtml, "text/html")
+);
+workspace.openTextDocument(
+  "style.css",
+  createEditor("css-editor", styleCss, "text/css")
+);
 
 const enablePopupsButton = document.getElementById("enablePopups")!;
 enablePopupsButton.addEventListener("click", () => {
