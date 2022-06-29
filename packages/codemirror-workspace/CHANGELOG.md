@@ -1,5 +1,20 @@
 # @qualified/codemirror-workspace
 
+## 0.5.0
+
+### Minor Changes
+
+- 27d336c: Update vscode-languageserver-protocol to 3.17.1
+
+### Patch Changes
+
+- 8a1bd9a: Fix overflowing tooltip
+- Updated dependencies [27d336c]
+- Updated dependencies [27d336c]
+  - @qualified/lsp-connection@0.3.0
+  - @qualified/vscode-jsonrpc-ws@0.4.0
+  - @qualified/vscode-jsonrpc-ww@0.3.0
+
 ## 0.4.2
 
 ### Patch Changes
