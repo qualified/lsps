@@ -4,6 +4,8 @@ Provides intelligence to CodeMirror editors.
 
 `Workspace` is an abstraction to allow CodeMirror editors to use Language Servers.
 
+Language Servers can be in-browser (WebWorker) or remote over WebSocket.
+
 ## Usage Example
 
 ```typescript
@@ -11,6 +13,7 @@ import { Workspace } from "@qualified/codemirror-workspace";
 
 const workspace = new Workspace({
   // Project root. Required.
+  // Relative URI (`source://`) can be used with https://github.com/qualified/lsp-ws-proxy
   rootUri: "file:///workspace/",
 
   // Provide language associaton (language id and server ids) for URI. Required.
@@ -24,18 +27,10 @@ const workspace = new Workspace({
       };
     }
 
-    const styles = uri.match(/\.(css|less|s[ac]ss)$/);
-    if (styles !== null) {
+    if (uri.endsWith(".css")) {
       return {
-        languageId: styles[1],
+        languageId: "css",
         languageServerIds: ["css-language-server"],
-      };
-    }
-
-    if (uri.endsWith(".html")) {
-      return {
-        languageId: "html",
-        languageServerIds: ["html-language-server"],
       };
     }
 
@@ -56,16 +51,14 @@ const workspace = new Workspace({
   getConnectionString: async (langserverId: string) => {
     switch (langserverId) {
       case "typescript-language-server":
-        // Use some API to start remote Language Server and return a string.
+        // Use some API to start remote Language Server and return the WebSocket URI.
         const res = await fetch("/start", { method: "POST" });
-        return res.json().uri;
+        const { uri } = await res.json();
+        return uri; // wss://example.com/tsls
 
       case "css-language-server":
         // Return an endpoint of already running proxy.
         return "ws://localhost:9991";
-
-      case "html-language-server":
-        return "ws://localhost:9992";
 
       case "json-worker":
         // Return a location of a script to start Language Server in Web Worker.
@@ -79,14 +72,25 @@ const workspace = new Workspace({
   // Optional function to return HTML string from Markdown.
   renderMarkdown: (markdown: string): string => markdown,
 });
-// Open text document in workspace to enable code intelligence.
+```
+
+Open text document in workspace to enable code intelligence:
+
+```typescript
 // `cm` is CodeMirror.Editor instance with contents of the file.
 workspace.openTextDocument("example.js", cm);
 ```
+
+See [examples](https://github.com/qualified/lsps/tree/main/examples) for more.
+
+## Tools
+
+- [`lsp-ws-proxy`]: WebSocketify any Language Server. `lsp-ws-proxy -- langserver --stdio`
 
 ## Prior Art
 
 - [`lsp-editor-adapter`] by [@wylieconlon]
 
+[`lsp-ws-proxy`]: https://github.com/qualified/lsp-ws-proxy
 [`lsp-editor-adapter`]: https://github.com/wylieconlon/lsp-editor-adapter
 [@wylieconlon]: https://github.com/wylieconlon
