@@ -21,6 +21,6 @@
     "vscode-jsonrpc": "^8.0.1"
   },
   "devDependencies": {
-    "typescript": "^4.7.4"
+    "typescript": "^5.0.0"
   }
 }
