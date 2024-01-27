@@ -5,13 +5,13 @@ importers:
   .:
     specifiers:
       '@changesets/cli': ^2.23.0
-      husky: ^8.0.1
+      husky: ^9.0.0
       prettier: ^2.7.1
       pretty-quick: ^3.1.3
       typescript: ^4.7.4
     devDependencies:
       '@changesets/cli': 2.23.0
-      husky: 8.0.1
+      husky: 9.0.6
       prettier: 2.7.1
       pretty-quick: 3.1.3_prettier@2.7.1
       typescript: 4.7.4
@@ -3019,9 +3019,9 @@ packages:
     engines: {node: '>=10.17.0'}
     dev: true
 
-  /husky/8.0.1:
-    resolution: {integrity: sha512-xs7/chUH/CKdOCs7Zy0Aev9e/dKOMZf3K1Az1nar3tzlv0jfqnYtu235bstsWTmXOR0EfINrPa97yy4Lz6RiKw==}
-    engines: {node: '>=14'}
+  /husky/9.0.6:
+    resolution: {integrity: sha512-EEuw/rfTiMjOfuL7pGO/i9otg1u36TXxqjIA6D9qxVjd/UXoDOsLor/BSFf5hTK50shwzCU3aVVwdXDp/lp7RA==}
+    engines: {node: '>=18'}
     hasBin: true
     dev: true
 
@@ -3886,7 +3886,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: 4.2.6
+      graceful-fs: 4.2.10
     dev: true
 
   /jstransformer/1.0.0:
