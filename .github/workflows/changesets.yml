@@ -16,7 +16,7 @@ jobs:
       - uses: pnpm/action-setup@v2
         with:
           version: '^6.10.0'
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
